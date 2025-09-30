@@ -23,6 +23,15 @@ class Report_model extends CI_Model {
         $this->db->from('product');
         return $this->db->get()->result();
     }
+    public function loaduser() {
+        $this->db->select('users.first_name,users.active,users.role,users.id');
+        $this->db->from('users');
+        $this->db->where('users.active',1);
+        $this->db->where_in('users.role', [1, 4]);
+        return $this->db->get()->result();
+    }
+
+   
 
     public function loadSerialProduct() {
         $this->db->select('product.ProductCode,product.Prd_Description');

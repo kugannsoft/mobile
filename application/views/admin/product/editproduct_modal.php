@@ -16,13 +16,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="product" class="control-label">Part No <span class="required">*</span></label>
-                            <input type="text" class="form-control" value="<?php echo $product->Cus_PrdCode; ?>" required="required"  name="part_no" id="part_no" placeholder="Enter Part No">
+                            <input type="text" class="form-control" value="<?php echo $product->Cus_PrdCode; ?>" required="required"  name="part_no" id="part_no" placeholder="Enter Part No" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="product" class="control-label">Mercedes Part No <span class="required">*</span></label>
-                    <input type="text" class="form-control" required="required" value="<?php echo $product->OrgPartNo; ?>"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No">
+                    <input type="text" class="form-control" required="required" value="<?php echo $product->OrgPartNo; ?>"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No" readonly>
                 </div>
                 <div class="form-group">
                     <label for="product" class="control-label">Name <span class="required">*</span></label>

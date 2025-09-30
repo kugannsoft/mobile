@@ -210,6 +210,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 
                                             </div>
                                         </div>
+                                       <div class="form-group">
+                                            <label for="sellingPrice"class="col-sm-4 control-label">Wholesale Price <span class="required">*</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="number"  tabindex="13"  min="0" step="1" class="form-control" name="wholesalesPrice" id="wholesalesPrice" placeholder="Enter Wholesales Price">
+                                                
+                                            </div>
+                                        </div>
                                         <div class="form-group" id="dv_SN">
                                             <label for="product" class="col-sm-4 control-label">EMI No <span class="required">*</span></label>
                                             <div class="col-sm-6">
@@ -269,8 +276,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>Whole sales Price</th>
                                             <th>Discount (%)</th>
                                             <th>Total Net Amount</th>
+<<<<<<< HEAD
                                             <th>EMI No</th>
                                             <th>Serial No</th>
+=======
+                                            <!-- <th>Serial</th> -->
+>>>>>>> mobile/main
                                             <th></th>
                                         </tr>
                                     </thead>

@@ -726,13 +726,16 @@ class Report extends Admin_Controller {
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['locations'] = $this->Report_model->loadroot();
-        $people = array("1", "10", "13");
-
-        if (in_array($_SESSION['user_id'], $people)) {
-            $this->template->admin_render('admin/report/dailybalancedetailreport', $this->data);
-        } else {
-            $this->template->admin_render('admin/report/dailybalancedetailreport', $this->data);
-        }
+        $this->data['users'] = $this->Report_model->loaduser();
+        $user = $this->ion_auth->user()->row();
+        $this->data['is_per'] = $this->db->select('is_delete')
+            ->from('system_permission_set')
+            ->where('role_id',$user->role)
+            ->where('per_code', 'M15')
+            ->get()->row(); 
+       
+        
+        $this->template->admin_render('admin/report/dailybalancedetailreport', $this->data);
     }
 
     public function monthlybalancedetail() {
@@ -1382,7 +1385,15 @@ class Report extends Admin_Controller {
         $startdate = $_POST['startdate'];
         $route     = isset($_POST['route']) ? $_POST['route'] : NULL;
         $routeAr   = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
-         $user_id = $this->session->userdata('user_id');
+        $user = $this->session->userdata('user_id');
+        if($user==1){
+            $user_id = isset($_POST['userid']) ? $_POST['userid'] : NULL;
+           
+        }else{
+            $user_id = $this->session->userdata('user_id');
+            
+        }
+       
         $bal_date = $this->db->select('MAX(date(JobInvoiceDate)) As baldate')->from('jobinvoicehed')->where('JobLocation',$route)->where('date(JobInvoiceDate)<',$enddate)->get()->row()->baldate;
         
         
@@ -1418,28 +1429,30 @@ class Report extends Admin_Controller {
 
         $isEnd = $this->db->select('EndFlot')->from('cashierbalancesheet')->where('Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->get()->num_rows();
         if($isEnd>0){
-            $result['lastbal']     = $this->db->select('EndFlot')->from('cashierbalancesheet')->where('Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->EndFlot;
+            $result['lastbal']     = $this->db->select('EndFlot')->from('cashierbalancesheet')->where('Location',$route)->where('SystemUser',$user_id)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->EndFlot;
         }else{
             $result['lastbal']     = 0;
         }
 
-        $isStart = $this->db->select('StartFlot')->from('cashierbalancesheet')->where('Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->get()->num_rows();
+        $isStart = $this->db->select('StartFlot')->from('cashierbalancesheet')->where('Location',$route)->where('SystemUser',$user_id)->where('DATE(BalanceDate)=' ,$enddate)->get()->num_rows();
         if($isStart>0){
-            $result['startbal']     = $this->db->select('StartFlot')->from('cashierbalancesheet')->where('Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->StartFlot;
+            $result['startbal']     = $this->db->select('StartFlot')->from('cashierbalancesheet')->where('Location',$route)->where('SystemUser',$user_id)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->StartFlot;
         }else{
             $result['startbal']     = 0;
         }
 
-        $isCash = $this->db->select('SystemUser')->from('cashierbalancesheet')->where('Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->get()->num_rows();
+        $isCash = $this->db->select('SystemUser')->from('cashierbalancesheet')->where('Location',$route)->where('SystemUser',$user_id)->where('DATE(BalanceDate)=' ,$enddate)->get()->num_rows();
+       
         if($isCash>0){
-            $result['cashier']     = $this->db->select('first_name')->from('cashierbalancesheet')->join('users','users.id=cashierbalancesheet.SystemUser')->where('cashierbalancesheet.Location',$route)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->first_name;
+            $result['cashier']     = $this->db->select('first_name')->from('cashierbalancesheet')->join('users','users.id=cashierbalancesheet.SystemUser')->where('cashierbalancesheet.Location',$route)
+            ->where('cashierbalancesheet.SystemUser',$user_id)->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->first_name;
         }else{
             $result['cashier']     = '';
         }
         // $result['startbal']    = $this->db->select('StartFlot')->from('cashierbalancesheet')->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->StartFlot;
         // $result['cashier']     = $this->db->select('first_name')->from('cashierbalancesheet')->join('users','users.id=cashierbalancesheet.SystemUser')->where('DATE(BalanceDate)=' ,$enddate)->order_by('BalanceDate','desc')->limit(1)->get()->row()->first_name;
 
-        $query = $this->db->query("CALL SPR_DAILY_BALANCE_SHEET('$enddate','$route','')");
+        $query = $this->db->query("CALL SPR_DAILY_BALANCE_SHEET('$enddate','$route','$user_id')");
         $result['bal'] =$query->result();
 
         // $query2 = $this->db->query("CALL SPR_DAILY_BALANCE_SHEET('$bal_date','$route','')");

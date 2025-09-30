@@ -1269,7 +1269,11 @@ var vatSellingPrice = 0;
         } else if (costPrice > sellingPrice && isSellZero==0) {
             $.notify("Selling price can not be less than cost price.", "warning");
             return false;
+<<<<<<< HEAD
         } else if (parseFloat(priceStock) < qty || parseFloat(priceStock) <= 0) {
+=======
+        } else if (parseFloat(priceStock) < (qty+freeQty) || parseFloat(priceStock) <= 0) {
+>>>>>>> mobile/main
             $.notify("Stock not available.", "warning");
             return false;
         } else if (is_serail == 1 && serialNoCheck == '') {
@@ -3192,7 +3196,7 @@ $("#chequeData").hide();
 
 
 function addPayment(pcash, pcredit, pcard,pcheque,pcusType,padvance,pbank,preturn) {
-
+   
     dueAmount = totalNetAmount - parseFloat(pcash + pcard+pcheque+pcredit+padvance+pbank+preturn);
 
            if (dueAmount > 0 && pcusType==2) {
@@ -3242,7 +3246,7 @@ function addPayment(pcash, pcredit, pcard,pcheque,pcusType,padvance,pbank,pretur
 
 var ccard = [];
 
-    $("#addCard").click(function() {
+      $("#addCard").click(function() {
 
         var cref = $("#card_ref").val();
         var ctype = $("#card_type option:selected").val();
@@ -3250,35 +3254,75 @@ var ccard = [];
         var camount = parseFloat($("#ccard_amount").val());
         var ccTypeArrIndex = $.inArray(ctype, ccard);
 
-        if (ctype == '' || ctype == 0) {
+        if(dueAmount == 0){
+            if(camount>totalNet){
+                 $("#errCard").show();
+                $("#errCard").html('You Cant Pay morethan Net Amount').addClass('alert alert-danger alert-sm');
+                $("#errCard").fadeOut(1500);
+                return false;
+            }else if (ctype == '' || ctype == 0) {
+                $("#errCard").show();
+                $("#errCard").html('Please select a card type').addClass('alert alert-danger alert-sm');
+                $("#errCard").fadeOut(1500);
+                return false;
+
+            } else if (camount == '' || camount == 0) {
+                $("#errCard").show();
+                $("#errCard").html('Please enter card amount').addClass('alert alert-danger alert-xs');
+                $("#errCard").fadeOut(1500);
+                return false;
+            } else {
+                if (ccTypeArrIndex < 0) {
+                    $("#tblCard tbody").append("<tr ctype='" + ctype + "'  cref='" + cref + "'  camount='" + camount + "' cname='" + cname + "' ><td>" + cname + "</td><td>" + cref + "</td><td class='text-right'>" + accounting.formatMoney(camount) + "</td><td><a href='#' class='btn btn-danger removeCard' ><i class='fa fa-close'></i></a></td></tr>");
+                    ccard.push(ctype);
+                    cardAmount += camount;
+                    addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
+                    $("#card_amount").val((cardAmount));
+                    $("#card_ref").val('');
+                    $("#card_type").val(0);
+                    $("#ccard_amount").val(0);
+                } else {
+                    $("#errCard").show();
+                    $("#errCard").html('Card type already exist').addClass('alert alert-danger alert-sm');
+                    $("#errCard").fadeOut(1500);
+                }
+            }
+        }else{
+            if(camount>dueAmount){
+                $("#errCard").show();
+                $("#errCard").html('You Cant Pay morethan Due Amount').addClass('alert alert-danger alert-sm');
+                $("#errCard").fadeOut(1500);
+                return false;
+            }else if (ctype == '' || ctype == 0) {
             $("#errCard").show();
             $("#errCard").html('Please select a card type').addClass('alert alert-danger alert-sm');
             $("#errCard").fadeOut(1500);
             return false;
 
-        } else if (camount == '' || camount == 0) {
-            $("#errCard").show();
-            $("#errCard").html('Please enter card amount').addClass('alert alert-danger alert-xs');
-            $("#errCard").fadeOut(1500);
-            return false;
-        } else {
-            if (ccTypeArrIndex < 0) {
-                $("#tblCard tbody").append("<tr ctype='" + ctype + "'  cref='" + cref + "'  camount='" + camount + "' cname='" + cname + "' ><td>" + cname + "</td><td>" + cref + "</td><td class='text-right'>" + accounting.formatMoney(camount) + "</td><td><a href='#' class='btn btn-danger removeCard' ><i class='fa fa-close'></i></a></td></tr>");
-                ccard.push(ctype);
-                cardAmount += camount;
-               addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
-                $("#card_amount").val((cardAmount));
-                $("#card_ref").val('');
-                $("#card_type").val(0);
-                $("#ccard_amount").val(0);
-            } else {
+            } else if (camount == '' || camount == 0) {
                 $("#errCard").show();
-                $("#errCard").html('Card type already exist').addClass('alert alert-danger alert-sm');
+                $("#errCard").html('Please enter card amount').addClass('alert alert-danger alert-xs');
                 $("#errCard").fadeOut(1500);
+                return false;
+            } else {
+                if (ccTypeArrIndex < 0) {
+                    $("#tblCard tbody").append("<tr ctype='" + ctype + "'  cref='" + cref + "'  camount='" + camount + "' cname='" + cname + "' ><td>" + cname + "</td><td>" + cref + "</td><td class='text-right'>" + accounting.formatMoney(camount) + "</td><td><a href='#' class='btn btn-danger removeCard' ><i class='fa fa-close'></i></a></td></tr>");
+                    ccard.push(ctype);
+                    cardAmount += camount;
+                    addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
+                    $("#card_amount").val((cardAmount));
+                    $("#card_ref").val('');
+                    $("#card_type").val(0);
+                    $("#ccard_amount").val(0);
+                } else {
+                    $("#errCard").show();
+                    $("#errCard").html('Card type already exist').addClass('alert alert-danger alert-sm');
+                    $("#errCard").fadeOut(1500);
+                }
             }
         }
+        
     });
-
 
 
     $("#addCredit").click(function() {

@@ -1274,7 +1274,7 @@ class Job extends Admin_Controller {
 
          $isInvoice=0;
          $EstJobType =$this->db->select('EstJobType')->from('estimatehed')->where('EstimateNo', $estimateNo)->get()->row()->EstJobType;
-
+    
          if($EstJobType==1){
                 if($estimateNo!='' && $supplemetNo==0){
             

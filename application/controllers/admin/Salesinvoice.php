@@ -2795,6 +2795,7 @@ $arr[] =null;
             $grnNo = $this->Salesinvoice_model->get_max_code('TaxInvoiceNo'.$location);
         }elseif($_POST['action']==1 && $SalesInvType==3){
             $grnNo = $this->Salesinvoice_model->get_max_code('CreditInvoiceNo'.$location);
+           
         }elseif ($_POST['action']==2) {
            $grnNo = $_POST['grn_no'];
         }
@@ -2854,15 +2855,51 @@ $arr[] =null;
         }
         //add to here
         $grnHed = array(
-            'AppNo' => '1','SalesInvNo' => $grnNo,'SalesOrderNo'=>'','SalesVehicle'=>$vehicleno,'SalesInsCompany'=>$SalesInsCompany,'SalesLocation' => $location,'SalesOrgDate' => $grnDattime,
-            'SalesDate' => $invDate,'SalesCustomer' => $customer,'SalesInvType' => $SalesInvType,'SalesInvAmount' => $total_amount,'SalesNetAmount' => $total_net_amount,
-            'SalesCashAmount'=>$cashAmount,'SalesShippingLabel'=>$shipping_label,'SalesShipping'=>$shipping,'SalesBankAcc'=>$bank_account,'SalesBankAmount'=>$bankAmount,
-            'SalesCCardAmount'=>$cardAmount,'SalesCreditAmount'=>$creditAmount,'SalesChequeAmount'=>$chequeAmount,'SalesCustomerPayment'=>$customerPayment,
-            'SalesAdvancePayment'=>$advanceAmount,'AdvancePayNo'=>$advancePayNo,'SalesReturnPayment'=>$returnAmount,'SalesDisAmount' => $total_discount,
-            'SalesDisPercentage' => $totalDisPerent,'SalesInvUser' => $invUser,'IsComplete' => $isComplete,'InvIsCancel'=>0,'SalesIsNbt'=>$isTotalNbt,'SalesIsVat'=>$isTotalVat,
-            'SalesNbtRatio'=>$nbtRatioRate,'SalesNbtAmount'=>$totalNbt,'SalesVatAmount'=>$totalVat,'SalesPONumber'=>$po_number,'SalesPerson'=>$newsalesperson,
-            'SalesReceiver'=>$receiver_name,'SalesRecNic'=>$receiver_nic,'SalesCommsion'=>$com_amount,'SalesComCus'=>$compayto,'salesInvRemark'=>$remark,'refferNo'=>$refferNo
+            'AppNo' => '1',
+            'SalesInvNo' => $grnNo,
+            'SalesOrderNo'=>$salesorder,
+            'SalesVehicle'=>$vehicleno,
+            'SalesInsCompany'=>$SalesInsCompany,
+            'SalesLocation' => $location,
+            'SalesOrgDate' => $grnDattime,
+            'SalesDate' => $invDate,
+            'SalesCustomer' => $customer,
+            'SalesInvType' => $SalesInvType,
+            'SalesInvAmount' => $total_amount,
+            'SalesNetAmount' => $total_net_amount,
+            'SalesCashAmount'=>$cashAmount,
+            'SalesShippingLabel'=>$shipping_label,
+            'SalesShipping'=>$shipping,
+            'SalesBankAcc'=>$bank_account,
+            'SalesBankAmount'=>$bankAmount,
+            'SalesCCardAmount'=>$cardAmount,
+            'SalesCreditAmount'=>$creditAmount,
+            'SalesChequeAmount'=>$chequeAmount,
+            'SalesCustomerPayment'=>$customerPayment,
+            'SalesAdvancePayment'=>$advanceAmount,
+            'AdvancePayNo'=>$advancePayNo,
+            'SalesReturnPayment'=>$returnAmount,
+            'SalesDisAmount' => $total_discount,
+            'SalesDisPercentage' => $totalDisPerent,
+            'SalesInvUser' => $invUser,
+            'IsComplete' => $isComplete,
+            'InvIsCancel'=>0,
+            'SalesIsNbt'=>$isTotalNbt,
+            'SalesIsVat'=>$isTotalVat,
+            'SalesNbtRatio'=>$nbtRatioRate,
+            'SalesNbtAmount'=>$totalNbt,
+            'SalesVatAmount'=>$totalVat,
+            'SalesPONumber'=>$po_number,
+            'SalesPerson'=>$newsalesperson,
+            'SalesReceiver'=>$receiver_name,
+            'SalesRecNic'=>$receiver_nic,
+            'SalesCommsion'=>$com_amount,
+            'SalesComCus'=>$compayto,
+            'salesInvRemark'=>$remark,
+            'refferNo'=>$refferNo
         );
+
+
 
         $id3 = array('CompanyID' => $location);
         $this->data['company'] = $this->Salesinvoice_model->get_data_by_where('company',$id3);
@@ -2870,6 +2907,7 @@ $arr[] =null;
 
         if($_POST['action']==1){
             $res2= $this->Salesinvoice_model->saveSalesInvoice($grnHed,$_POST,$grnNo,$totalDisPerent);
+            
         }elseif ($_POST['action']==2) {
             $grnHed = array(
             'AppNo' => '1','SalesInvNo' => $grnNo,'SalesOrderNo'=>'','SalesVehicle'=>$vehicleno,'SalesInsCompany'=>$SalesInsCompany,'SalesLocation' => $location,
@@ -3068,7 +3106,7 @@ $arr[] =null;
                             }
 
                             $proCode = $row['SalesProductCode'];
-                            $totalGrnQty = $row['SalesQty'];
+                            $totalGrnQty = $row['SalesQty'] +$row['SalesFreeQty'];
                             $loc = $row['SalesInvLocation'];
                             $pl = $row['SalesPriceLevel'];
                             $costp = $row['SalesCostPrice'];

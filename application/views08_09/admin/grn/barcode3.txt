@@ -1,0 +1,5 @@
+Company,ProductCode,ProductName,Price
+
+Phone House,100254,6G BACK COVER,490
+Phone House,100254,6G BACK COVER,490
+Phone House,100949,nokia 106 back cover,200

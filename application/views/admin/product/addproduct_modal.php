@@ -17,13 +17,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="product" class="control-label">Part No <span class="required">*</span></label>
-                            <input type="text" class="form-control" required="required"  name="part_no" id="part_no" placeholder="Enter Part No">
+                            <input type="text" class="form-control" required="required"  name="part_no" id="part_no" placeholder="Enter Part No" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="product" class="control-label">Mercedes Part No <span class="required">*</span></label>
-                    <input type="text" class="form-control" required="required"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No">
+                    <input type="text" class="form-control" required="required"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No" readonly>
                 </div>
                 
                 
@@ -207,7 +207,11 @@
 <!--                            </label>-->
 <!--                        </div>-->
                     </div>
+<<<<<<< HEAD
                    <!-- <div class="col-md-4"> -->
+=======
+<!--                    <div class="col-md-4">-->
+>>>>>>> mobile/main
                        <div class="form-group">
                            <label for="ismultiprice" class="control-label">
                                <input class="prd_icheck" type="checkbox" name="ismultiprice" value="1">
