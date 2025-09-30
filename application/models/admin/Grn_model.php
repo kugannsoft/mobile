@@ -166,7 +166,7 @@ class Grn_model extends CI_Model {
         $caseCostArr = json_decode($post['case_cost']);
         $upcArr = json_decode($post['upc']);
         $total_netArr = json_decode($post['total_net']);
-        $price_levelArr = json_decode($post['price_level']);
+        $price_levelArr = '1';
         $totalAmountArr = json_decode($post['pro_total']);
         $isSerialArr = json_decode($post['isSerial']);
         $branchCostArr = json_decode($post['sendBranch_cost_price']);

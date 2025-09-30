@@ -207,7 +207,11 @@
 <!--                            </label>-->
 <!--                        </div>-->
                     </div>
+<<<<<<< HEAD
+                   <!-- <div class="col-md-4"> -->
+=======
 <!--                    <div class="col-md-4">-->
+>>>>>>> mobile/main
                        <div class="form-group">
                            <label for="ismultiprice" class="control-label">
                                <input class="prd_icheck" type="checkbox" name="ismultiprice" value="1">
@@ -220,14 +224,15 @@
                                 Is Serial No
                             </label>
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label for="israwmaterial" class="control-label">-->
-<!--                                <input class="prd_icheck" type="checkbox" name="israwmaterial" value="1"> -->
-<!--                                 Is Raw Mtr-->
-<!--                            </label>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                      
+                   <!-- </div> -->
                     <div class="col-md-4">
+                         <div class="form-group">
+                           <label for="israwmaterial" class="control-label">
+                               <input class="prd_icheck" type="checkbox" name="israwmaterial" value="1">
+                                Is Emi No
+                           </label>
+                       </div>
 <!--                        <div class="form-group">-->
 <!--                            <label for="isfraction" class="control-label">-->
 <!--                                <input class="prd_icheck" type="checkbox" name="isfraction" value="1"> -->
@@ -240,30 +245,30 @@
 <!--                                Is Free Issue-->
 <!--                            </label>-->
 <!--                        </div>-->
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="isfreeissue" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isvat" value="1"> 
                                 Is VAT
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="isfraction" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isnbt" id="isnbt" value="1"> 
                                 Is NBT
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" id="nbtratioDiv">
+                        <!-- <div class="form-group" id="nbtratioDiv">
                             <label for="isfreeissue" class="control-label">
                                     NBT Ratio
                             </label>
                             <input class="form-control input-sm" type="text" id="nbtratio" name="nbtratio" value="1"> 
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4"> </div>
                 </div>

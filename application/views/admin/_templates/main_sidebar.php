@@ -46,9 +46,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </a>
             </li> -->
            <li class="<?= active_link_controller('Imei') ?>">
+<<<<<<< HEAD
+                <a href="<?php echo site_url('admin/imei/imei_check'); ?>">
+                    <i class="fa fa-code"></i> <span>IMEI Checker</span>
+                </a>
+=======
                 <!-- <a href="<?php echo site_url('admin/imei/imei_check'); ?>">
                     <i class="fa fa-code"></i> <span>IMEI Checker</span>
                 </a> -->
+>>>>>>> mobile/main
             </li> 
             <?php if (in_array("M2", $blockView) || $blockView == null) { ?>
                 <li class="treeview <?= active_link_controller('customer') ?>">
@@ -127,12 +133,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!--                    </a>-->
 <!--                </li>-->
 
+<<<<<<< HEAD
+                <li class="<?= active_link_controller('Job') ?>">
+=======
                 <!-- <li class="<?= active_link_controller('Job') ?>">
+>>>>>>> mobile/main
                     <a href="<?php echo site_url('admin/job/view_job'); ?>">
                         <i class="fa fa-book">
                         </i> <span>All Job Cards</span>
                     </a>
+<<<<<<< HEAD
+                </li>
+=======
                 </li> -->
+>>>>>>> mobile/main
 
                 <!-- <a href="#">
                     <i class="fa fa-book"></i><span>
@@ -158,11 +172,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php if (in_array("M5", $blockView) || $blockView == null) { ?>
                 <li class="treeview <?= active_link_controller('estimate') ?>">
 
+<<<<<<< HEAD
+                    <a href="<?php echo site_url('admin/job/allCostSheet'); ?>">
+                        <i class="fa fa-tags">
+                        </i> <span>Issue Note</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+=======
                     <!-- <a href="<?php echo site_url('admin/job/allCostSheet'); ?>">
                         <i class="fa fa-tags">
                         </i> <span>Issue Note</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a> -->
+>>>>>>> mobile/main
 
                     <ul class="treeview-menu">
                         <?php if (in_array("SM51", $blockAdd) || $blockAdd == null) { ?>
@@ -270,9 +292,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php }
                         }
                         if (in_array("SM43", $blockAdd) || $blockAdd == null) { ?>
+<<<<<<< HEAD
+                            <li class="<?= active_link_function('job_invoice') ?>">
+                                <a href="<?php echo site_url('admin/Salesinvoice/job_invoice'); ?>">Add Job Invoice</a>
+                            </li>
+=======
                             <!-- <li class="<?= active_link_function('job_invoice') ?>">
                                 <a href="<?php echo site_url('admin/Salesinvoice/job_invoice'); ?>">Add Job Invoice</a>
                             </li> -->
+>>>>>>> mobile/main
                         <?php }
                         if (in_array("SM44", $blockView) || $blockView == null) {
                             ?>
@@ -283,9 +311,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!--                            </li>-->
                         <?php }
                         if (in_array("SM45", $blockView) || $blockView == null) { ?>
+<<<<<<< HEAD
+                            <li class="<?= active_link_function('index') ?>">
+                                <a href="<?php echo site_url('admin/AllSalesinvoice'); ?>">All Job Invoice</a>
+                            </li>
+=======
                             <!-- <li class="<?= active_link_function('index') ?>">
                                 <a href="<?php echo site_url('admin/AllSalesinvoice'); ?>">All Job Invoice</a>
                             </li> -->
+>>>>>>> mobile/main
                         <?php } ?>
                     </ul>
                 </li>
@@ -567,9 +601,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </ul>
                 <ul class="treeview-menu">
                     <li class="<?= active_link_controller('report') ?>">
+<<<<<<< HEAD
+                        <a href="#"><i class="fa fa-gratipay"></i><span>Issue Note</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+=======
                         <!-- <a href="#"><i class="fa fa-gratipay"></i><span>Issue Note</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a> -->
+>>>>>>> mobile/main
                         <ul class="treeview-menu">
                             <li class="<?= active_link_function('issueNoteByDate') ?>">
                                 <a href="<?php echo site_url('admin/report/issueNoteByDate'); ?>">Issue Note By Date</a>
@@ -582,9 +622,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </ul>
                 <ul class="treeview-menu">
                     <li class="<?= active_link_controller('report') ?>">
+<<<<<<< HEAD
+                        <a href="#"><i class="fa fa-gratipay"></i><span>Job Sale</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+=======
                         <!-- <a href="#"><i class="fa fa-gratipay"></i><span>Job Sale</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a> -->
+>>>>>>> mobile/main
                         <ul class="treeview-menu">
                             <li class="<?= active_link_function('jobsalesbydate') ?>">
                                 <a href="<?php echo site_url('admin/report/jobsalesbydate'); ?>">Date wise Job sale</a>
@@ -662,9 +708,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </ul>    
                 <ul class="treeview-menu">
                     <li class="<?= active_link_controller('report') ?>">
+<<<<<<< HEAD
+                        <a href="#"><i class="fa fa-gratipay"></i><span>Part Request</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+=======
                         <!-- <a href="#"><i class="fa fa-gratipay"></i><span>Part Request</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a> -->
+>>>>>>> mobile/main
                         <ul class="treeview-menu">
                             <li class="<?= active_link_function('partRequest') ?>">
                                 <a href="<?php echo site_url('admin/report/partRequest'); ?>">Part Request Details</a>
@@ -857,11 +909,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
          
             <?php if (in_array("M9", $blockView) || $blockView == null) { ?>
             <li class="treeview <?= active_link_controller('stocktransfer') ?>">
+<<<<<<< HEAD
+                <a href="#">
+                    <i class="fa fa-support"></i>
+                    <span>Stock Tranfer</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+=======
                 <!-- <a href="#">
                     <i class="fa fa-support"></i>
                     <span>Stock Tranfer</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a> -->
+>>>>>>> mobile/main
 
                 <ul class="treeview-menu">
                   
@@ -869,7 +929,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 href="<?php echo site_url('admin/stocktransfer/stockout'); ?>">Stock Tranfer Out</a></li>
                     <li class="<?= active_link_function('stocktransfer') ?>"><a
                                 href="<?php echo site_url('admin/stocktransfer/allstockout'); ?>">All Stock Tranfer Out</a></li>
+<<<<<<< HEAD
+                    <!-- <li class="<?= active_link_function('stocktransfer') ?>"><a
+                                href="<?php echo site_url('admin/stocktransfer/stockin'); ?>">Stock Tranfer In</a></li> -->
+                    <!-- <li class="<?= active_link_function('stocktransfer') ?>"><a
+                                href="<?php echo site_url('admin/stocktransfer/stockout'); ?>">All Stock Tranfer In</a></li> -->
+=======
                    
+>>>>>>> mobile/main
                 </ul>
             </li>
             <?php } 
