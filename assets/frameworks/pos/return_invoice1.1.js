@@ -407,6 +407,7 @@ var invPrice=0;
                             qty: item.qty,
                             price: item.price,
                             name:item.name,
+                            serial:item.serial,
                             data: item
                         }
                     }));
@@ -418,6 +419,7 @@ var invPrice=0;
         select: function(event, ui) {
             itemCode = ui.item.value;
             var proname = ui.item.name;
+            var serial = ui.item.serial;
             minQty = ui.item.qty;
              invPrice = ui.item.price;
             if(isNonRt==1){
@@ -455,11 +457,11 @@ var invPrice=0;
                      $.ajax({
                         type: "POST",
                         url: "../Salesinvoice/getSalesInvoiceProductById",
-                        data: { proCode: itemCode , invNo: invNo , name: proname },
+                        data: { proCode: itemCode , invNo: invNo , name: proname , serial: serial },
                         success: function(data) {
                             var resultData = JSON.parse(data);
                             if (resultData) {
-                                loadProModal(resultData.product.SalesProductName, resultData.product.ProductCode, (resultData.product.SalesInvNetAmount/resultData.product.SalesQty), resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyMonth);
+                                loadProModal(resultData.product.SalesProductName, resultData.product.ProductCode, (resultData.product.SalesInvNetAmount/resultData.product.SalesQty), resultData.product.Prd_CostPrice, resultData.product.SalesSerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyMonth);
                             } else {
                                 $.notify("Product not found.", "warning");
                                 $("#itemCode").val('');
@@ -529,9 +531,9 @@ $("#addpro").click(function(e){
         $("#qty").focus();
 //       alert(misSerial);
         if (misSerial == 1) {
-//            $("#serialNo").val(mserial);
+              $("#serialNo").val(mserial);
 //            $("#qty").val(1);
-//            $("#qty").attr('disabled', true);
+              $("#qty").attr('disabled', true);
             $("#dv_SN").show();
             $("#qty").focus();
         } else {

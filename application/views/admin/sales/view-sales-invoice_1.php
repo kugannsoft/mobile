@@ -33,15 +33,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php if($invHed->InvIsCancel==1){$disabled='disabled'; }else{$disabled='';}?>
 
                             <div class="col-sm-2"></div>
-                            <div class="col-sm-2"></div>
+                            <!--<div class="col-sm-2"></div>-->
                             <div class="col-sm-1"></div>
                             <?php if (in_array("SM162", $blockView) || $blockView == null) { ?>
+                            <div class="col-sm-2">
+                                    <button type="button" id="btnPrintPos" class="btn btn-success btn-sm btn-block">Print POS
+                                    </button>
+                                </div>
+                                <div class="col-sm-2"><a href="<?php echo base_url('admin/Salesinvoice/view_sales_invoice_pdf/') . base64_encode($invNo); ?>" target="blank_" class="btn btn-warning btn-sm">Mobile Print</a></div>
                                 <div class="col-sm-2">
                                     <button type="button" id="btnPrint" class="btn btn-primary btn-sm btn-block">Print
                                     </button>
                                 </div>
-                            <?php } ?>
-                            <!--div class="col-sm-1"><a href="<?php echo base_url('admin/Salesinvoice/view_sales_invoice_pdf/') . base64_encode($invNo); ?>" target="blank_" class="btn btn-primary btn-sm">Pdf</a></div-->
+                            <!-- <?php } ?>
                             <div class="col-sm-1"><a
                                         href="<?php echo base_url('admin/Salesinvoice/addSalesInvoice?action=1&id=') . base64_encode($invNo); ?>"
                                         target="blank_" class="btn btn-info btn-sm">Clone</a></div>
@@ -50,7 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <a href="<?php echo base_url('admin/Salesinvoice/addSalesInvoice?action=2&id=') . base64_encode($invNo); ?>"
                                            target="blank_" class="btn btn-info btn-sm">Edit</a>
                                     <?php } ?></div>
-                            <?php } ?>
+                            <?php } ?> -->
                             <?php if (in_array("SM42", $blockDelete) || $blockDelete == null) { ?>
                             <div class="col-sm-2"><?php if ($invHed->InvIsCancel == 0) { ?>
                                 <button type="button" <?php echo $disabled; ?> id="btnCancel"
@@ -219,6 +223,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th style='padding: 3px;color:#fff; text-align:center;'>Description</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Warranty</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Qty</th>
+                            <th style='padding: 3px;color:#fff; text-align:center;'>FreeQty</th>
                             <th style='padding: 3px;color:#fff; text-align:center;' >Unit Price</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Amount</th>
                         </tr>
@@ -230,6 +235,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Description</th>
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Warranty</th> 
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Qty</th>
+                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Free Qty</th>
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Unit Price</th>
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Amount</th>
                         </tr>
@@ -250,6 +256,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           <td style="border-right:1px solid #000000;"><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?></td>
                           <td style="border-right:1px solid #000000;"><?php echo $invdata->type;?></td>
                           <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
+                          <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesFreeQty),0)?></td>
                           <td style="border-right:1px solid #000000; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                           <td style="border-right:1px solid #000000; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesInvNetAmount),2)?></td>
                         </tr>
@@ -262,8 +269,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <tr style="line-height:20px; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">
                           <td style="border-bottom:1px solid #e4dbdb;"><?php echo $invdata->SalesProductCode;?></td>
                           <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?> </td>
-                          <td style="border-bottom:1px solid #e4dbdb;"><?php echo number_format(($invdata->WarrantyMonth),0)?>&nbsp; Month</td>
+                          <td style="border-bottom:1px solid #e4dbdb;"><?php echo $invdata->type; ?></td>
                           <td style="border-bottom:1px solid #e4dbdb; text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
+                          <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesFreeQty),0)?></td>
                           <td style="border-bottom:1px solid #e4dbdb; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                           <td style="border-bottom:1px solid #e4dbdb; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesTotalAmount),2)?></td>
                         </tr>
@@ -280,35 +288,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $payment_term ='';
                      if($invHed->SalesInvType==2){ ?>
                         <tr style="line-height:25px; border-top:1px solid #000000;  border-right:1px solid #000000;" id="rowTotal">
-                        <td colspan="4" style="border-top: 1px #000000 solid;border-right: 1px #000000 solid;"></td>
+                        <td colspan="5" style="border-top: 1px #000000 solid;border-right: 1px #000000 solid;"></td>
                         <td style="text-align:right;padding: 3px;">Sub Total </td>
                         <td id="lbltotalPOAmount"   style='text-align:right;padding: 3px;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
                         </tr><?php }else{ ?> 
-                        <tr style="line-height:25px; border-top:1px solid #000000; border-right:1px solid #000000;" id="rowTotal"><td colspan="4" style="border-bottom: 1px #00000 solid;"></td><td style="text-align:right;padding: 3px; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">Sub Total </td>
+                        <tr style="line-height:25px; border-top:1px solid #000000; border-right:1px solid #000000;" id="rowTotal"><td colspan="5" style="border-bottom: 1px #00000 solid;"></td><td style="text-align:right;padding: 3px; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">Sub Total </td>
                         <td id="lbltotalPOAmount"   style='text-align:right;padding: 3px; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'><?php echo number_format($invHed->SalesInvAmount,2);?></td></tr>
                         <?php } ?>
                         <?php if($invHed->SalesDisAmount>0){?>
                          <tr style="line-height:25px;" id="rowDiscount">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Discount  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesDisAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Discount  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesDisAmount,2);?></td>
                          </tr>
                           <?php }?>
                          <?php if($invHed->SalesVatAmount>0 && $invHed->SalesInvType==2){?>
                          <tr style="line-height:25px;" id="rowVAT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">VAT Amount  </td><td id="lbltotalVat"   style='text-align:right'><?php echo number_format($invHed->SalesVatAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">VAT Amount  </td><td id="lbltotalVat"   style='text-align:right'><?php echo number_format($invHed->SalesVatAmount,2);?></td>
                          </tr><?php } ?>
                           <?php if($invHed->SalesNbtAmount>0 && $invHed->SalesInvType==2){?>
                         <tr style="line-height:25px;" id="rowNBT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">NBT Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesNbtAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">NBT Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesNbtAmount,2);?></td>
                         </tr>
                          <?php } ?>
                          <?php if($invHed->SalesShipping>0){?>
                          <tr style="line-height:25px;" id="rowDiscount">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"><?php echo $invHed->SalesShippingLabel; ?>  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesShipping,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"><?php echo $invHed->SalesShippingLabel; ?>  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesShipping,2);?></td>
                          </tr>
                           <?php }?>
                          <?php if($invHed->SalesVatAmount>0 || $invHed->SalesNbtAmount>0 || $invHed->SalesShipping>0 || $invHed->SalesDisAmount>0){?>
                         <tr style="line-height:25px;" id="rowNET">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="font-weight:bold;text-align:right">Total  </td><td id="lbltotalNet"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesNetAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="font-weight:bold;text-align:right">Total  </td><td id="lbltotalNet"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesNetAmount,2);?></td>
                         </tr>
                         <?php } ?>
 
@@ -317,12 +325,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           $payment_term="Cash";
                           ?>
                          <tr style="line-height:25px;" id="rowDiscount">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">Cash Amount  </td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">Cash Amount  </td>
                           <td id="lbltotalDicount"   style='text-align:right; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'><?php echo number_format($invHed->SalesCashAmount,2);?></td>
                          </tr>
                           <?php } else { ?>
                             <tr style="line-height:25px;">
-                                <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"> </td><td id=""   style='text-align:right'></td>
+                                <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"> </td><td id=""   style='text-align:right'></td>
                             </tr>
 
                         <?php } ?>
@@ -330,28 +338,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           $payment_term="Bank";
                           ?>
                         <tr style="line-height:25px;" id="rowNBT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Bank Transfer  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesBankAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Bank Transfer  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesBankAmount,2);?></td>
                         </tr>
                          <?php } ?>
                           <?php if($invHed->SalesChequeAmount>0){
                             $payment_term="Cheque";
                             ?>
                         <tr style="line-height:25px;" id="rowNBT">
-                          <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Cheque  Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesChequeAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Cheque  Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesChequeAmount,2);?></td>
                         </tr>
                          <?php } ?>
                          <?php if($invHed->SalesCCardAmount>0){
                           $payment_term="Card";
                           ?>
                         <tr style="line-height:25px;" id="rowNBT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Card Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesCCardAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Card Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesCCardAmount,2);?></td>
                         </tr>
                          <?php } ?>
                     <?php if($invHed->SalesReturnPayment>0){
                         $payment_term="Card";
                         ?>
                         <tr style="line-height:25px;" id="rowNBT">
-                            <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Payment  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnPayment,2);?></td>
+                            <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Payment  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnPayment,2);?></td>
                         </tr>
                     <?php } ?>
                          
@@ -360,15 +368,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           $payment_term="Credit";
                           ?>
                          <tr style="line-height:25px;" id="rowVAT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right;font-weight:bold;background-color:#e4dbdb !important;">TOTAL PAYABLE  </td><td id="lbltotalVat"   style='font-weight:bold;text-align:right;background-color:#e4dbdb !important;'><?php echo number_format($invHed->SalesCreditAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right;font-weight:bold;background-color:#e4dbdb !important;">TOTAL PAYABLE  </td><td id="lbltotalVat"   style='font-weight:bold;text-align:right;background-color:#e4dbdb !important;'><?php echo number_format($invHed->SalesCreditAmount,2);?></td>
                          </tr><?php } ?>
                          <?php if($invHed->SalesReturnAmount>0){
                           
                           ?>
                         <tr style="line-height:25px;" id="rowNBT">
-                          <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnAmount,2);?></td>
+                          <td colspan="5" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnAmount,2);?></td>
                         </tr>
-                        <tr><td colspan="6">
+                        <tr><td colspan="5">
                           Return Items 
                             <p>
                            <?php  if($returnDtlArr){ foreach ($returnDtlArr AS $rtinvdata) { ?>
@@ -380,16 +388,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                          <?php } } ?>
 
                          <tr>
-                           <td colspan="6">
+                           <td colspan="7">
                              <table style="width:730px; font-size:14px;" border="0">
 <!--                          <tr><td colspan="5" style="text-align:right;">&nbsp;</td></tr>-->
-                          <tr><td colspan="6" style="text-align:left;font-size:14px;"><b>Remarks&nbsp;&nbsp;:&nbsp;&nbsp;</b><?php echo $invHed->salesInvRemark; ?></td></tr>
+                          <tr><td colspan="7" style="text-align:left;font-size:14px;"><b>Remarks&nbsp;&nbsp;:&nbsp;&nbsp;</b><?php echo $invHed->salesInvRemark; ?></td></tr>
                          
-                          <tr><td colspan="6" style="text-align:justify; font-size:12px;"><b><u>Warranty Claims</u></b><br><b>Warranty cover only Manufactures defects, damages or defects due to other causes such as negligence, mususe, improper operation
+                          <tr><td colspan="7" style="text-align:justify; font-size:12px;"><b><u>Warranty Claims</u></b><br><b>Warranty cover only Manufactures defects, damages or defects due to other causes such as negligence, mususe, improper operation
                           , power fluctuation lightning or other natural disaster, sabotage or accident etc. Are not included under this warranty, Repairs or replacement necessitated by such
                           causes are not covered by the warranty are subject to change for labour, time and material.</b></td></tr>
                           
-                          <tr><td colspan="6" style="text-align:center;"><b>Goods Once Sold will not return Money.</b></td></tr>
+                          <tr><td colspan="7" style="text-align:center;"><b>Goods Once Sold will not return Money.</b></td></tr>
 <!--                          <tr><td colspan="5" style="text-align:left;">-->
 <!--                           <ul>-->
 <!--                             <!-- <li>No cash refunds.</li>-->
@@ -524,6 +532,257 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
 </section>
     <div>
+        <div class="row" id="printAreaPos" align="center" style='margin:0px;'>
+            <?php $this->load->view('admin/_templates/company_header_mini.php',true); ?>
+            <table style="border-collapse:collapse;width:290px;font-family: Arial, Helvetica, sans-serif;" border="0"  align="center">
+                <!--                <tr style="text-align:center;">-->
+                <!--                    <td colspan="4" style="text-align: center;">-->
+                <!--                    <td colspan="2" rowspan="6" style="border:0px solid #000;font-size:15px;width:430px;padding: 5px;" v-align="top">-->
+                <!--                        --><?php //$this->load->view('admin/_templates/company_header.php',true); ?>
+                <!--                        <span style="font-size: 13px;"><a href="--><?php //echo base_url('admin/payment/view_customer/').$invCus->CusCode ?><!--">Customer :--><?php //echo $invCus->DisplayName;?><!--</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-size: 13px;" id="lbladdress2">TP : --><?php //echo $invCus->LanLineNo;?><!-- Mobile : --><?php //echo $invCus->MobileNo;?><!--</span>-->
+                <!--                        --><?php //if ($invCus->DisType==4): ?>
+                <!--                            --><?php //echo $invCus->ContactPerson;?><!--<br>-->
+                <!--                        --><?php //endif ?>
+                <!--                    </td>-->
+                <!--                </tr>-->
+
+                <tr style="text-align:center;font-size:13px;">
+                    <td colspan="4" style="border-bottom: #000 solid 1px;text-align:center;font-size:15px;font-weight: bold;""><b>&nbsp;Cash Invoice</b></td>
+                </tr>
+                <tr style="text-align:left;font-size:13px;">
+                    <td style="padding-top:0px;font-size:13px;text-align:left;">Cash Invoice No </td>
+                    <td style="text-align: left;">:</td>
+                    <td colspan="2" style="font-size:13px;text-align:left;"><?php echo $invHed->SalesInvNo ?></td>
+                </tr>
+                <tr style="text-align:left;font-size:13px;">
+                    <td style="text-align:left;">Invoice Date</td>
+                    <td style="text-align: left;">:</td>
+                    <td colspan="2" style="text-align:left;"><?php echo date('Y-m-d',strtotime($invHed->SalesDate));?>&nbsp;</td>
+                </tr>
+                <!--                <tr style="text-align:left;font-size:13px;">-->
+                <!--                    <td style="padding-top:0px;font-size:13px;text-align:left;">Pay. Terms </td>-->
+                <!--                    <td style="">:</td>-->
+                <!--                    <td colspan="2" style="font-size:13px;text-align:right;">--><?php //if ($invHed->JobCreditAmount > 0) { $invtype= 'CREDIT'; } else { $invtype= 'CASH'; } ?><!----><?php //echo $invtype; ?><!--</td>-->
+                <!--                </tr>-->
+                <tr style="text-align:left;font-size:13px;">
+                    <td style="padding-top:0px;font-size:13px;text-align:left;">Customer </td>
+                    <td style="text-align: left;">:</td>
+                    <td colspan="2" style="font-size:13px;text-align:left;"><?php echo $invCus->DisplayName; ?></td>
+                </tr>
+
+
+
+                <style type="text/css" media="screen">
+
+                    #tbl_po_data2 tbody tr td{
+                        padding: 5px  !important;
+                        border-bottom:1px solid #fff !important;
+                    }
+
+                </style>
+                <table id="tbl_po_data" style="border-collapse:collapse;width:290px;padding:0px;font-size:15px;" border="0">
+                    <?php if($invHed->SalesInvType==2 || $invHed->SalesInvType==3){?>
+                        <thead id="taxHead"">
+                        <tr><td colspan="5" style="border-top:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #fff;text-align: right;"></td></tr>
+                        <tr style="background-color:#5d5858 !important;color:#fff !important;line-height:20px; border-bottom:1px solid #000000; border-top:1px solid #000000; ">
+                            <!--                            <th style='padding: 3px;color:#fff; text-align:center;'>Code</th>-->
+                            <!--                            <th style='padding: 3px;color:#fff; text-align:center;'>Warranty</th>-->
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Warranty</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;' >Price</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Dis</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Amount</th>
+                        </tr>
+                        </thead>
+                    <?php }elseif($invHed->SalesInvType==1){?>
+                        <thead  id="invHead">
+                        <tr style="background-color:#5d5858 !important;color:#fff !important;line-height:20px; border-bottom:1px solid #000000; border-top:1px solid #000000;">
+                            <!--                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Code</th>-->
+                            <!--                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Warranty</th> -->
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Warranty</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
+                            <th style='padding: 3px;color:#060404; text-align:right;' >Price</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Dis</th>
+                            <th style='padding: 3px;color:#060404; text-align:center;'>Amount</th>
+                        </tr>
+                        </thead>
+                    <?php } ?>
+                    <tbody>
+                    <?php
+                    $i=1;
+                    //var_dump($invDtlArr);
+                    $noOfItem = count($invDtl);
+                    foreach ($invDtl AS $invdata) {
+
+                        if($invHed->SalesInvType==1 || $invHed->SalesInvType==3){
+                            //normal invoice
+
+                            ?>
+                            <tr style="line-height:20px;">
+                                <td colspan="3" style="text-align: left"><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?></td>
+                            </tr>
+                            <tr style="line-height:20px;">
+                                <td style="text-align:center;"><?php echo $invdata->type; ?></td>
+                                <td style="text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesDisValue),2)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesInvNetAmount),2)?></td>
+                            </tr>
+                            <?php $i++;
+                        }elseif($invHed->SalesInvType==2){
+                            //Tax Invoice
+                            ?>
+                            <tr style="line-height:20px;">
+                                <td colspan="3" style=""><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?></td>
+                            </tr>
+                            <tr style="line-height:20px;">
+                                <td style="text-align:center;"><?php echo $invdata->type; ?></td>
+                                <td style="text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesDisValue),2)?></td>
+                                <td style="text-align:right;"><?php echo number_format(($invdata->SalesTotalAmount),2)?></td>
+                            </tr>
+                            <?php $i++;
+
+                        }
+                    }//foreach end
+                    ?>
+                    </tbody>
+                    <tfoot>
+                    <?php
+                    $payment_term ='';
+                    if($invHed->SalesInvType==2){ ?>
+                        <tr style="line-height:25px;border-top: 1px #060404 solid;" id="rowTotal">
+                        <td colspan="3" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount</td>
+                        <td style="border-top: 1px #060404 solid;">:</td>
+                        <td id="lbltotalPOAmount"   style='text-align:right;padding: 3px;border-top: 1px #060404 solid;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
+                        </tr><?php }else{ ?>
+                        <tr style="line-height:25px;border-top: 1px #060404 solid;" id="rowTotal">
+                            <td colspan="3" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount </td>
+                            <td style="border-top: 1px #060404 solid;">:</td>
+                            <td id="lbltotalPOAmount"   style='font-weight:bold;text-align:right;padding: 3px;border-top: 1px #060404 solid;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <tr style="line-height:25px;" id="rowDiscount">
+                        <td colspan="3" style="text-align:left">Total Dis Amount  </td>
+                        <td style="">:</td>
+                        <td id="lbltotalDicount"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesDisAmount,2);?></td>
+                    </tr>
+
+                    <?php if($invHed->SalesVatAmount>0 && $invHed->SalesInvType==2){?>
+                        <tr style="line-height:25px;" id="rowVAT">
+                        <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">VAT Amount  </td><td id="lbltotalVat"   style='text-align:right'><?php echo number_format($invHed->SalesVatAmount,2);?></td>
+                        </tr><?php } ?>
+                    <?php if($invHed->SalesNbtAmount>0 && $invHed->SalesInvType==2){?>
+                        <tr style="line-height:25px;" id="rowNBT">
+                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">NBT Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesNbtAmount,2);?></td>
+                        </tr>
+                    <?php } ?>
+                    <?php if($invHed->SalesShipping>0){?>
+                        <tr style="line-height:25px;" id="rowDiscount">
+                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"><?php echo $invHed->SalesShippingLabel; ?>  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesShipping,2);?></td>
+                        </tr>
+                    <?php }?>
+                    <!--                    --><?php //if($invHed->SalesVatAmount>0 || $invHed->SalesNbtAmount>0 || $invHed->SalesShipping>0 || $invHed->SalesDisAmount>0){?>
+                    <tr style="line-height:25px;" id="rowNET">
+                        <td colspan="3" style="font-weight:bold;text-align:left">Total Net Amount  </td>
+                        <td style="">:</td>
+                        <td id="lbltotalNet"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesNetAmount,2);?></td>
+                    </tr>
+                    <!--                    --><?php //} ?>
+
+
+                    <!--                    --><?php //if($invHed->SalesCashAmount>0){
+                    //                        $payment_term="Cash";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowDiscount">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;">Cash Amount  </td>-->
+                    <!--                            <td id="lbltotalDicount"   style='text-align:right; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>--><?php //echo number_format($invHed->SalesCashAmount,2);?><!--</td>-->
+                    <!--                        </tr>-->
+                    <!--                    --><?php //} else { ?>
+                    <!--                        <tr style="line-height:25px;">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"> </td><td id=""   style='text-align:right'></td>-->
+                    <!--                        </tr>-->
+                    <!---->
+                    <!--                    --><?php //} ?>
+                    <!--                    --><?php //if($invHed->SalesBankAmount>0){
+                    //                        $payment_term="Bank";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowNBT">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Bank Transfer  </td><td id="lbltotalNbt"   style='text-align:right'>--><?php //echo number_format($invHed->SalesBankAmount,2);?><!--</td>-->
+                    <!--                        </tr>-->
+                    <!--                    --><?php //} ?>
+                    <!--                    --><?php //if($invHed->SalesChequeAmount>0){
+                    //                        $payment_term="Cheque";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowNBT">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Cheque  Amount  </td><td id="lbltotalNbt"   style='text-align:right'>--><?php //echo number_format($invHed->SalesChequeAmount,2);?><!--</td>-->
+                    <!--                        </tr>-->
+                    <!--                    --><?php //} ?>
+                    <!--                    --><?php //if($invHed->SalesCCardAmount>0){
+                    //                        $payment_term="Card";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowNBT">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Card Amount  </td><td id="lbltotalNbt"   style='text-align:right'>--><?php //echo number_format($invHed->SalesCCardAmount,2);?><!--</td>-->
+                    <!--                        </tr>-->
+                    <!--                    --><?php //} ?>
+                    <!--                    --><?php //if($invHed->SalesReturnPayment>0){
+                    //                        $payment_term="Card";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowNBT">-->
+                    <!--                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Payment  </td><td id="lbltotalNbt"   style='text-align:right'>--><?php //echo number_format($invHed->SalesReturnPayment,2);?><!--</td>-->
+                    <!--                        </tr>-->
+                    <!--                    --><?php //} ?>
+                    <!---->
+                    <!---->
+                    <!--                    --><?php //if($invHed->SalesCreditAmount>0){
+                    //                        $payment_term="Credit";
+                    //                        ?>
+                    <!--                        <tr style="line-height:25px;" id="rowVAT">-->
+                    <!--                        <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right;font-weight:bold;background-color:#e4dbdb !important;">TOTAL PAYABLE  </td><td id="lbltotalVat"   style='font-weight:bold;text-align:right;background-color:#e4dbdb !important;'>--><?php //echo number_format($invHed->SalesCreditAmount,2);?><!--</td>-->
+                    <!--                        </tr>--><?php //} ?>
+                    <?php if($invHed->SalesReturnAmount>0){
+
+                        ?>
+                        <tr style="line-height:25px;" id="rowNBT">
+                            <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnAmount,2);?></td>
+                        </tr>
+                        <tr><td colspan="6">
+                        Return Items
+                        <p>
+                        <?php  if($returnDtlArr){ foreach ($returnDtlArr AS $rtinvdata) { ?>
+                            <?php echo $rtinvdata->SalesProductName ?>-<?php echo $rtinvdata->SalesReturnQty ?>, &nbsp;
+                        <?php } ?></p>
+
+
+                            </td></tr>
+                        <?php } } ?>
+
+                    <tr>
+                        <td colspan="6">
+                            <table style="width:290px; font-size:14px;" border="0">
+                                <tr><td colspan="5" style="text-align:left;font-size:12px;">Numbers of Items&nbsp;&nbsp;:&nbsp;&nbsp;<?php echo $noOfItem; ?></td></tr>
+
+                                <tr><td colspan="5" style="font-size:18px;text-align:center;">Thank You come again</td></tr>
+
+                                <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>Any inquiries should be forwarded together with the invoice.</i></td></tr>
+                                <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>ිකුණුම් සම්බන්ධ විමසුමකදී මෙම බිල්පත් රැගෙන ඒම අනිවාර්ය වේ.</i></td></tr>
+                                <tr><td colspan="5" style="text-align:center;font-size: 9PX"><i>Software By Nsoft Solutions www.nsoft.lk</i></td></tr>
+
+                            </table>
+                        </td>
+                    </tr>
+
+                    </tfoot>
+                </table>
+
+                <style type="text/css" media="screen">
+                    #tbl_po_data tbody tr td{
+                        padding: 13px;
+                    }
+                </style>
+        </div>
     </div>
 </div>
 <?php //die; ?>
@@ -537,6 +796,10 @@ var inv =$("#inv").val();
 
 $("#btnPrint").click(function(){
 $('#printArea').focus().print();
+});
+
+$("#btnPrintPos").click(function(){
+    $('#printAreaPos').focus().print();
 });
 
 $("#btnPrint2").click(function(){

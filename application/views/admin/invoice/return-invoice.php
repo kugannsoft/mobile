@@ -163,7 +163,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <div class="form-group" id="dv_SN">
                                             <label for="product" class="col-sm-4 control-label">Serial No <span class="required">*</span></label>
                                             <div class="col-sm-6">
-                                                <input type="text" tabindex="14" class="form-control" required="required"  name="serialNo" id="serialNo" placeholder="Enter Serial No"  value="">
+                                                <input readonly="readonly" type="text" tabindex="14" class="form-control" required="required"  name="serialNo" id="serialNo" placeholder="Enter Serial No"  value="">
                                                 <input type="hidden" tabindex="14" class="form-control" required="required"  name="serialQty" id="serialQty"  value="0">
                                             </div>
                                         </div>

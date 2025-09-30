@@ -38,6 +38,19 @@ class Product_model extends CI_Model {
         return $query;
     }
 
+    public function loadproductstockbyid($product,$location)
+    {
+        return $this->db->select('Stock')
+            ->from('productstock')->where('ProductCode', $product)->where('Location', $location)
+            ->get()->row();
+    }
+    
+    public function loadproductstockbyidForSerial($product,$location)
+    {
+        return $this->db->select('productserialstock.Quantity AS Stock')
+            ->from('productserialstock')->where('SerialNo', $product)->where('Location', $location)
+            ->get()->row();
+    }
 
     public function get_max_code($form) {
         $query = $this->db->select('*')->where('FormName', $form)->get('codegenerate');
@@ -102,11 +115,26 @@ class Product_model extends CI_Model {
     }
 
     public function loadproductbypcode($product, $pl) {
-        return $this->db->select('product.*,productcondition.*,productprice.ProductPrice')->from('product')
+        return $this->db->select('product.*,productcondition.*,productprice.ProductPrice,productstock.stock')->from('product')
                         ->where('product.ProductCode', $product)
                         ->where('productprice.PL_No', $pl)
                         ->join('productcondition', 'productcondition.ProductCode = product.ProductCode')
                         ->join('productprice', 'productprice.ProductCode = product.ProductCode')
+                        ->join('productstock', 'productstock.ProductCode = product.ProductCode')
+                        ->get()->row();
+    }
+
+   
+
+    public function loadproductbypcodegrn($product, $pl) {
+        return $this->db->select('product.*,productcondition.*,
+                        productprice.ProductPrice')
+                        ->from('product')
+                        ->where('product.ProductCode', $product)
+                        // ->where('productprice.PL_No', $pl)
+                        ->join('productcondition', 'productcondition.ProductCode = product.ProductCode')
+                        ->join('productprice', 'productprice.ProductCode = product.ProductCode')
+                       
                         ->get()->row();
     }
 
@@ -374,4 +402,30 @@ class Product_model extends CI_Model {
      public function loadSystemOptionById($id){
        return $this->db->select('Value')->from('systemoptions')->where('ID', $id)->get()->row()->Value;
     }
+
+
+      public function loadpricestockbyid($product,$location,$price,$pl)
+    {
+            return $this->db->select('Stock,Price,UnitCost')
+            ->from('pricestock')
+            ->where('PSCode', $product)
+            ->where('PSLocation', $location)
+            ->where('Price', $price)
+            ->where('PSPriceLevel', $pl)
+            ->get()->row();
+        
+        
+    }
+
+     public function loadproductbypcodegrnWhole($product, $pl) {
+        return $this->db->select('productprice.ProductPrice')
+                        ->from('product')
+                        ->where('product.ProductCode', $product)
+                         ->where('productprice.PL_No', 2)
+                        ->join('productcondition', 'productcondition.ProductCode = product.ProductCode')
+                        ->join('productprice', 'productprice.ProductCode = product.ProductCode')
+                        ->get()->row();
+    }
+
+   
 }

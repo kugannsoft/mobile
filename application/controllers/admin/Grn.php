@@ -72,13 +72,14 @@ class Grn extends Admin_Controller {
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['plv'] = $this->Grn_model->loadpricelevel();
         $this->data['location'] = $this->Grn_model->loadlocations();
-        $people = array("1", "3", "13");
+        // $people = array("1", "3", "13");
         
-        if (in_array($_SESSION['user_id'], $people)) {
-            $this->template->admin_render('admin/grn/add_grn', $this->data);
-        }else{
-           redirect('admin/dashboard'); 
-        }
+         $this->template->admin_render('admin/grn/add_grn', $this->data);
+        // if (in_array($_SESSION['user_id'], $people)) {
+           
+        // }else{
+        //   redirect('admin/dashboard'); 
+        // }
     }
 
     public function loadallgrns() {
@@ -94,10 +95,13 @@ class Grn extends Admin_Controller {
         die;
     }
     
-    public function loadproductjson() {
+    public function loadproductjsonGrn() {
         $query = $_GET['q'];
-        $sup= $_REQUEST['sup'];$supCode= $_REQUEST['supcode'];
-        echo $this->Grn_model->loadproductjson($query,$sup,$supCode);
+        $sup= $_REQUEST['sup'];
+        $supCode= $_REQUEST['supcode'];
+        // $pLevel = $_GET['price_level'];
+       
+        echo $this->Grn_model->loadproductjsonGrn($query,$sup,$supCode);
         die;
     }
     
@@ -141,6 +145,7 @@ class Grn extends Admin_Controller {
         $price_levelArr = json_decode($_POST['price_level']);
         $totalAmountArr = json_decode($_POST['pro_total']);
         $pro_nameArr = json_decode($_POST['proName']);
+        $sendwholesales_priceArr = json_decode($_POST['sendwholesales_price']);
         
         $grnHed = array(
             'AppNo' => '1','GRN_No' => $grnNo,'GRN_PONo'=>'','GRN_Location' => $location,'GRN_Date' => $invDate,'GRN_DateORG' => $grnDattime,

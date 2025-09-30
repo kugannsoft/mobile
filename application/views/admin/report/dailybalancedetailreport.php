@@ -785,7 +785,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function printdiv() {
         var datebalance = $("#enddate").val();
         $("#printReport").print({
-            prepend:"<h3 style='text-align:center'>THILAKA FURNITURE <br>Daily Cash Balance Report - "+datebalance+"</h3><hr/>",
+            prepend:"<h3 style='text-align:center'>Smart Mobile <br>Daily Cash Balance Report - "+datebalance+"</h3><hr/>",
             title:'Daily Cash Balance Report '+datebalance
         });
     }
