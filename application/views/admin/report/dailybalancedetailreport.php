@@ -29,11 +29,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </select>
                                     <input type="hidden" name="route_ar" id="route_ar">
                                 </div>
+                                <?php if($is_per->is_delete==1){?>
+                                
                                 <div class="col-md-3">
+                                    <select class="form-control" name="userid" id="userid">
+                                       
+                                        <?php foreach ($users AS $loc) { ?>
+                                            <option value="<?php echo $loc->id ?>"><?php echo $loc->first_name ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    
+                                </div>
+                                <?php } ?>
+
+                                <div class="col-md-1">
                                     <button type="submit" class="btn btn-flat btn-success">Show</button>
                                 </div>
                             </form>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <button onclick="printdiv()" class="btn btn-flat btn-default">Print</button>
                             </div>
                         </div>
@@ -51,16 +64,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <tr>
                                     <td>Date</td>
                                     <td>Invoice No</td>
-                                    <td>Vehicle No</td>
+                                    <!-- <td>Vehicle No</td> -->
                                     <td>Job Description</td>
-                                    <td>Amount</td>
-                                    <td>Cash</td>
-                                    <td>Card</td>
-                                    <td>Cheque</td>
-                                    <td>Bank</td>
-                                    <td>Oder Advance</td>
-                                    <td>Advance</td>
-                                    <td>Credit</td>
+                                    <td style="text-align: right;">Amount</td>
+                                    <td style="text-align: right;">Cash</td>
+                                    <td style="text-align: right;">Card</td>
+                                    <td style="text-align: right;">Cheque</td>
+                                    <td style="text-align: right;">Bank</td>
+                                    <!-- <td>Oder Advance</td> -->
+                                    <td style="text-align: right;">Advance</td>
+                                    <td style="text-align: right;">Credit</td>
 
                                 </tr>
                             </thead>
@@ -68,7 +81,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th></th>
+                                    <!-- <th></th> -->
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -77,7 +90,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th id="totalpcard" style="text-align: right;color: #00aaf1;"></th>
                                     <th id="totalpcheque" style="text-align: right;color: #00aaf1;"></th>
                                     <th id="totalpbank" style="text-align: right;color: #00aaf1;"></th>
-                                    <th id="totalorderadvance" style="text-align: right;color: #00aaf1;"></th>
+                                    <!-- <th id="totalorderadvance" style="text-align: right;color: #00aaf1;"></th> -->
                                     <th id="totalpadvance" style="text-align: right;color: #00aaf1;"></th>
                                     <th id="totalpcredit" style="text-align: right;color: #00aaf1;"></th></tr>
                             </tfoot>
@@ -452,6 +465,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         for (var i = 0; i < data.bal.length; i++) {
+            console.log(data.lastbal);
             cuspayment=parseFloat(data.bal[i].CUSTOMER_PAYMENT);
             cashSale=parseFloat(data.bal[i].CASH_SALES);
             $("#expIn").html(accounting.formatMoney(data.bal[i].EX_IN));
@@ -476,7 +490,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             endBalance=parseFloat(data.bal[i].BALANCE_AMOUNT)+parseFloat(data.startbal);
             $("#balance").html(accounting.formatMoney(endBalance));
             endFloat=parseFloat(data.lastbal);
-            $("#dif").html(accounting.formatMoney(endBalance-endFloat));
+            $("#dif").html(accounting.formatMoney(endFloat-endBalance));
            
             totalCash+=parseFloat(data.bal[i].CASH_SALES);
             jobCredit+=parseFloat(data.bal[i].CREDIT_SALES);
@@ -675,7 +689,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         row.append($("<td class='cash' align='right'>" + accounting.formatMoney(rowData.InvCashAmount) + "</td>"));
         row.append($("<td class='card' align='right'>" + accounting.formatMoney(rowData.InvCCardAmount) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(rowData.InvChequeAmount) + "</td>"));
-        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(0) + "</td>"));
+      
         row.append($("<td class='advance' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='credit' align='right'>" + accounting.formatMoney(rowData.InvCreditAmount) + "</td>"));
     }
@@ -687,14 +701,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         
         row.append($("<td>" + rowData.InvDate + "</td>"));
         row.append($("<td>" + rowData.SalesInvNo + "</td>"));
-        row.append($("<td>" + rowData.SalesVehicle + "</td>"));
+      
         row.append($("<td align='left'>" + rowData.AppearName + "</td>"));
        row.append($("<td class='net' align='right'>" + accounting.formatMoney(rowData.NetAmount) + "</td>"));
         row.append($("<td class='cash' align='right'>" + accounting.formatMoney(rowData.SalesCashAmount) + "</td>"));
         row.append($("<td class='card' align='right'>" + accounting.formatMoney(rowData.SalesCCardAmount) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(rowData.SalesChequeAmount) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(rowData.SalesBankAmount) + "</td>"));
-        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(rowData.SalesAdvancePayment) + "</td>"));
+      
         row.append($("<td class='advance' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='credit' align='right'>" + accounting.formatMoney(rowData.SalesCreditAmount) + "</td>"));
     }
@@ -707,14 +721,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         row.append($("<td>" + rowData.InvDate + "</td>"));
         row.append($("<td>" + rowData.InvNo + "</td>"));
-        row.append($("<td></td>"));
+      
         row.append($("<td align='left'>" + rowData.AppearName + "</td>"));
         row.append($("<td class='net' align='right'>" + accounting.formatMoney(rowData.DueAmount) + "</td>"));
         row.append($("<td class='cash' align='right'>" + accounting.formatMoney(rowData.DownPayment) + "</td>"));
         row.append($("<td class='card' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(0) + "</td>"));
-        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(0) + "</td>"));
+      
         row.append($("<td class='advance' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='credit' align='right'>" + accounting.formatMoney(rowData.FinalAmount) + "</td>"));
     }
@@ -726,14 +740,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         row.append($("<td>" + rowData.InvDate + "</td>"));
         row.append($("<td>" + rowData.PO_No + "</td>"));
-        row.append($("<td></td>"));
+       
         row.append($("<td align='left'>" + rowData.AppearName + "</td>"));
         row.append($("<td class='net' align='right'>" + accounting.formatMoney(rowData.PO_NetAmount) + "</td>"));
         row.append($("<td class='cash' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='card' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(0) + "</td>"));
-        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(0) + "</td>"));
+       
         row.append($("<td class='advance' align='right'>" + accounting.formatMoney(0) + "</td>"));
         row.append($("<td class='credit' align='right'>" + accounting.formatMoney(rowData.PO_NetAmount) + "</td>"));
     }
@@ -785,7 +799,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function printdiv() {
         var datebalance = $("#enddate").val();
         $("#printReport").print({
-            prepend:"<h3 style='text-align:center'>THILAKA FURNITURE <br>Daily Cash Balance Report - "+datebalance+"</h3><hr/>",
+            prepend:"<h3 style='text-align:center'>Smart Mobile <br>Daily Cash Balance Report - "+datebalance+"</h3><hr/>",
             title:'Daily Cash Balance Report '+datebalance
         });
     }

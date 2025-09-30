@@ -1,0 +1,17 @@
+Company,ProductCode,ProductName,Price
+
+Smart Mobile,100001,MOBILE 1,300
+Smart Mobile,100001,MOBILE 1,300
+Smart Mobile,100001,MOBILE 1,300
+Smart Mobile,100001,MOBILE 1,300
+Smart Mobile,100001,MOBILE 1,300
+Smart Mobile,100002,MOBILE 2,500
+Smart Mobile,100002,MOBILE 2,500
+Smart Mobile,100002,MOBILE 2,500
+Smart Mobile,100002,MOBILE 2,500
+Smart Mobile,100002,MOBILE 2,500
+Smart Mobile,100003,MOBILE 3,700
+Smart Mobile,100003,MOBILE 3,700
+Smart Mobile,100003,MOBILE 3,700
+Smart Mobile,100003,MOBILE 3,700
+Smart Mobile,100003,MOBILE 3,700

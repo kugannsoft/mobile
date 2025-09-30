@@ -16,13 +16,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="product" class="control-label">Part No <span class="required">*</span></label>
-                            <input type="text" class="form-control" value="<?php echo $product->Cus_PrdCode; ?>" required="required"  name="part_no" id="part_no" placeholder="Enter Part No">
+                            <input type="text" class="form-control" value="<?php echo $product->Cus_PrdCode; ?>" required="required"  name="part_no" id="part_no" placeholder="Enter Part No" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="product" class="control-label">Mercedes Part No <span class="required">*</span></label>
-                    <input type="text" class="form-control" required="required" value="<?php echo $product->OrgPartNo; ?>"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No">
+                    <input type="text" class="form-control" required="required" value="<?php echo $product->OrgPartNo; ?>"  name="orgpart_no" id="orgpart_no" placeholder="Enter Mercedes Part No" readonly>
                 </div>
                 <div class="form-group">
                     <label for="product" class="control-label">Name <span class="required">*</span></label>
@@ -198,12 +198,12 @@
                                 Is Open Price
                             </label>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="ispromotion" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="ispromotion" value="1" <?php echo ($product->IsPromotions == 1) ? 'checked' : '' ?>> 
                                 Is Promotion
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -331,7 +331,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="costprice" class="control-label">Cost Price<span class="required">*</span></label>
+                                <?php if (in_array("SM135", $blockView) || $blockView == null) { ?>
                                 <input type="text" class="form-control"  name="costprice" id="costprice" value="<?php echo $product->Prd_CostPrice; ?>">
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -341,6 +343,15 @@
                                 <input type="text" class="form-control"  name="setaprice" id="setaprice" value="<?php echo $product->Prd_SetAPrice; ?>">
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="productCode" class="control-label">Branch Cost Price<span class="required">*</span></label>
+                                <input type="text" class="form-control" required="required" min="0" value="<?php echo $product->branchCost; ?>" name="branchCostprice" id="branchCostprice">
+                            </div>
+                        </div>
+
                     </div>
                     <div class="form-group">
                         <label for="pricelevel" class="control-label">Price level <span class="required">*</span></label>
