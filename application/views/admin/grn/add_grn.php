@@ -267,6 +267,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>Whole sales Price</th>
                                             <th>Discount (%)</th>
                                             <th>Total Net Amount</th>
+                                            <th>EMI No</th>
+                                            <th>Serial No</th>
                                             <!-- <th>Serial</th> -->
                                             <th></th>
                                         </tr>

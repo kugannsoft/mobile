@@ -109,21 +109,43 @@ class Product extends Admin_Controller {
         }
     }
 
-    public function allProducts() {
-//        $this->load->library('Datatables');
-//        $this->datatables->select('product.*, productprice.ProductPrice');
-//        $this->datatables->from('product');
-//        $this->datatables->join('productprice','productprice.ProductCode=product.ProductCode', 'inner');
-//        $this->datatables->where('productprice.PL_No',1);
-//        echo $this->datatables->generate('json', 'ISO-8859-1');
-//        die;
+    // public function allProducts() {
 
+
+    //     $this->load->library('Datatables');
+    //     $this->datatables->select('product.*');
+    //     $this->datatables->from('product');
+    //     echo $this->datatables->generate();
+    //     die;
+    // }
+
+
+    public function allProducts() {
         $this->load->library('Datatables');
-        $this->datatables->select('product.*');
-        $this->datatables->from('product');
+
+        $this->datatables->select('
+            p.ProductCode,
+            p.Prd_Description,
+            p.Prd_AppearName,
+            p.Prd_CostPrice,
+            p.Prd_SetAPrice,
+            IFNULL((SELECT pp.ProductPrice 
+                    FROM productprice pp 
+                    WHERE pp.ProductCode = p.ProductCode 
+                    AND pp.PL_No = 1 
+                    LIMIT 1), 0) AS retail_price,
+            IFNULL((SELECT pp.ProductPrice 
+                    FROM productprice pp 
+                    WHERE pp.ProductCode = p.ProductCode 
+                    AND pp.PL_No = 2 
+                    LIMIT 1), 0) AS wholesale_price
+        ', false);
+
+        $this->datatables->from('product p');
         echo $this->datatables->generate();
-        die;
+        die();
     }
+
 
     public function get_products() {
         if (isset($_GET['term'])) {

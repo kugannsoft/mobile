@@ -221,47 +221,47 @@
                         <div class="form-group">
                             <label for="israwmaterial" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="israwmaterial" value="1" <?php echo ($product->IsRawMaterial == 1) ? 'checked' : '' ?>> 
-                                Is Raw Mtr
+                                Is Emi No
                             </label>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="isfraction" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isfraction" value="1" <?php echo ($product->IsFraction == 1) ? 'checked' : '' ?>> 
                                 Is Fraction
                             </label>
-                        </div>
-                        <div class="form-group">
+                        </div> -->
+                        <!-- <div class="form-group">
                             <label for="isfreeissue" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isfreeissue" value="1" <?php echo ($product->IsFreeIssue == 1) ? 'checked' : '' ?>> 
                                 Is Free Issue
                             </label>
-                        </div>
-                        <div class="form-group">
+                        </div> -->
+                        <!-- <div class="form-group">
                             <label for="isfreeissue" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isvat" value="1" <?php echo ($product->IsTax == 1) ? 'checked' : '' ?>> 
                                 Is VAT
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="isfraction" class="control-label">
                                 <input class="prd_icheck" type="checkbox" name="isnbt" id="isnbt" value="1" <?php echo ($product->IsNbt == 1) ? 'checked' : '' ?>> 
                                 Is NBT
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group" id="nbtratioDiv">
+                        <!-- <div class="form-group" id="nbtratioDiv">
                             <label for="isfreeissue" class="control-label">
                                     NBT Ratio
                             </label>
                             <input class="form-control input-sm" type="text" id="nbtratio" name="nbtratio" value="<?php echo ($product->NbtRatio); ?>"> 
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-md-4"> </div>
                 </div>
