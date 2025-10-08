@@ -200,6 +200,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <input type="hidden" class="form-control" required="required"  name="batchCode" id="batchCode">
                                                 <input type="hidden" class="form-control" required="required"  name="upc" id="upc">
                                                 <input type="hidden" class="form-control" required="required"  name="isSerial" id="isSerial">
+                                                <input type="hidden" class="form-control" required="required"  name="isEmiNo" id="isEmiNo">
+                                            </div>
+                                        </div>
+                                       <div class="form-group">
+                                            <label for="sellingPrice"class="col-sm-4 control-label">Wholesale Price <span class="required">*</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="number"  tabindex="13"  min="0" step="1" class="form-control" name="wholesalesPrice" id="wholesalesPrice" placeholder="Enter Wholesales Price">
+                                                
                                             </div>
                                         </div>
                                        <div class="form-group">
@@ -210,9 +218,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </div>
                                         </div>
                                         <div class="form-group" id="dv_SN">
-                                            <label for="product" class="col-sm-4 control-label">Serial No <span class="required">*</span></label>
+                                            <label for="product" class="col-sm-4 control-label">EMI No <span class="required">*</span></label>
                                             <div class="col-sm-6">
-                                                <input type="text" tabindex="14" class="form-control" required="required"  name="serialNo" id="serialNo" placeholder="Enter Serial No"  value="">
+                                                <input type="hidden" tabindex="14" class="form-control" required="required"  name="serialNo" id="serialNo" placeholder="Enter Serial No"  value="">
+                                                <input type="text" tabindex="14" class="form-control" required="required"  name="emiNo" id="emiNo" placeholder="Enter Serial No"  value="">
                                                 <input type="hidden" tabindex="14" class="form-control" required="required"  name="serialQty" id="serialQty"  value="0">
                                             </div>
                                         </div>
@@ -269,7 +278,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>Total Net Amount</th>
                                             <th>EMI No</th>
                                             <th>Serial No</th>
-                                            <!-- <th>Serial</th> -->
                                             <th></th>
                                         </tr>
                                     </thead>

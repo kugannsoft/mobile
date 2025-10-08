@@ -1269,7 +1269,7 @@ var vatSellingPrice = 0;
         } else if (costPrice > sellingPrice && isSellZero==0) {
             $.notify("Selling price can not be less than cost price.", "warning");
             return false;
-        } else if (parseFloat(priceStock) < (qty+freeQty) || parseFloat(priceStock) <= 0) {
+        } else if (parseFloat(priceStock) < qty || parseFloat(priceStock) <= 0) {
             $.notify("Stock not available.", "warning");
             return false;
         } else if (is_serail == 1 && serialNoCheck == '') {
