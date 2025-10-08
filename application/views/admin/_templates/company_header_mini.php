@@ -1,13 +1,7 @@
 <table style="border-collapse:collapse;width:width:290px;margin:0px;font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;" border="0">
     <tr style="text-align:center;font-size:19px;font-family: Arial, Helvetica, sans-serif;">
-<<<<<<< HEAD
         <td colspan="5" style="font-size:19px;font-family: Arial, Helvetica, sans-serif;text-align: center;"><b> <?php echo $company['CompanyName'] ?> <?php echo $company['CompanyName2'] ?></b>
 
-=======
-        <td colspan="5" style="font-size:19px;font-family: Arial, Helvetica, sans-serif;text-align: center;"><b> <?php echo $company['CompanyName'] ?> 
-        <?php echo $company['CompanyName2'] ?></b>
-     (සේව්මෝ)</b>
->>>>>>> mobile/main
 
         </td>
         <td rowspan="3">
