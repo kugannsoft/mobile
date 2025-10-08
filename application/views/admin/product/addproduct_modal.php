@@ -207,11 +207,7 @@
 <!--                            </label>-->
 <!--                        </div>-->
                     </div>
-<<<<<<< HEAD
                    <!-- <div class="col-md-4"> -->
-=======
-<!--                    <div class="col-md-4">-->
->>>>>>> mobile/main
                        <div class="form-group">
                            <label for="ismultiprice" class="control-label">
                                <input class="prd_icheck" type="checkbox" name="ismultiprice" value="1">

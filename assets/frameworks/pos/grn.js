@@ -363,7 +363,7 @@ $(document).ready(function() {
         var emiNo = $("#emiNo").val();
         var is_serail = $("#isSerial").val();
         var priceLevel = $("#priceLevel option:selected").val();
-        
+        // console.log(priceLevel); need to check its working or not
         var qty = parseFloat($("#qty").val());
         var upc = parseFloat($("#upc").val());
         costPrice = parseFloat($("#unitcost").val());

@@ -45,11 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <button type="button" id="btnPrint" class="btn btn-primary btn-sm btn-block">Print
                                     </button>
                                 </div>
-<<<<<<< HEAD
                             <!-- <?php } ?>
-=======
-                            <?php } ?>
->>>>>>> mobile/main
                             <div class="col-sm-1"><a
                                         href="<?php echo base_url('admin/Salesinvoice/addSalesInvoice?action=1&id=') . base64_encode($invNo); ?>"
                                         target="blank_" class="btn btn-info btn-sm">Clone</a></div>
@@ -227,11 +223,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th style='padding: 3px;color:#fff; text-align:center;'>Description</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Warranty</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Qty</th>
-<<<<<<< HEAD
                             <th style='padding: 3px;color:#fff; text-align:center;'>FreeQty</th>
-=======
-                            <th style='padding: 3px;color:#fff; text-align:center;'>Free</th>
->>>>>>> mobile/main
                             <th style='padding: 3px;color:#fff; text-align:center;' >Unit Price</th>
                             <th style='padding: 3px;color:#fff; text-align:center;'>Amount</th>
                         </tr>
@@ -243,11 +235,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Description</th>
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Warranty</th> 
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Qty</th>
-<<<<<<< HEAD
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Free Qty</th>
-=======
-                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Free</th>
->>>>>>> mobile/main
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Unit Price</th>
                             <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Amount</th>
                         </tr>
@@ -267,13 +255,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           <td style="border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode;?></td>
                           <td style="border-right:1px solid #000000;"><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?></td>
                           <td style="border-right:1px solid #000000;"><?php echo $invdata->type;?></td>
-<<<<<<< HEAD
                           <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
                           <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesFreeQty),0)?></td>
-=======
-                          <td style="border-right:1px solid #000000; text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesQty, '0'), '.'); ?></td>
-                          <td style="border-right:1px solid #000000; text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesFreeQty, '0'), '.'); ?></td>
->>>>>>> mobile/main
                           <td style="border-right:1px solid #000000; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                           <td style="border-right:1px solid #000000; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesInvNetAmount),2)?></td>
                         </tr>
@@ -287,13 +270,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                           <td style="border-bottom:1px solid #e4dbdb;"><?php echo $invdata->SalesProductCode;?></td>
                           <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?> </td>
                           <td style="border-bottom:1px solid #e4dbdb;"><?php echo $invdata->type; ?></td>
-<<<<<<< HEAD
                           <td style="border-bottom:1px solid #e4dbdb; text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
                           <td style="border-right:1px solid #000000; text-align:center;"><?php echo number_format(($invdata->SalesFreeQty),0)?></td>
-=======
-                          <td style="border-bottom:1px solid #e4dbdb; text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesQty, '0'), '.'); ?></td>
-                          <td style="border-right:1px solid #000000; text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesFreeQty, '0'), '.'); ?></td>
->>>>>>> mobile/main
                           <td style="border-bottom:1px solid #e4dbdb; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                           <td style="border-bottom:1px solid #e4dbdb; text-align:right;" class='text-right'><?php echo number_format(($invdata->SalesTotalAmount),2)?></td>
                         </tr>
@@ -609,14 +587,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <tr style="background-color:#5d5858 !important;color:#fff !important;line-height:20px; border-bottom:1px solid #000000; border-top:1px solid #000000; ">
                             <!--                            <th style='padding: 3px;color:#fff; text-align:center;'>Code</th>-->
                             <!--                            <th style='padding: 3px;color:#fff; text-align:center;'>Warranty</th>-->
-<<<<<<< HEAD
                             <th style='padding: 3px;color:#060404; text-align:center;'>Warranty</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
-=======
-                            <th style='padding: 3px;color:#060404; text-align:center;'>Items</th>
-                            <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
-                            <th style='padding: 3px;color:#060404; text-align:center;'>free</th>
->>>>>>> mobile/main
                             <th style='padding: 3px;color:#060404; text-align:center;' >Price</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Dis</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Amount</th>
@@ -627,14 +599,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <tr style="background-color:#5d5858 !important;color:#fff !important;line-height:20px; border-bottom:1px solid #000000; border-top:1px solid #000000;">
                             <!--                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Code</th>-->
                             <!--                            <th style='padding: 3px;color:#fff; text-align:center; border-bottom:1px solid #000000; border-top:1px solid #000000; border-left:1px solid #000000; border-right:1px solid #000000;'>Warranty</th> -->
-<<<<<<< HEAD
                             <th style='padding: 3px;color:#060404; text-align:center;'>Warranty</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
-=======
-                            <th style='padding: 3px;color:#060404; text-align:center;'>Items</th>
-                            <th style='padding: 3px;color:#060404; text-align:center;'>Qty</th>
-                             <th style='padding: 3px;color:#060404; text-align:center;'>free</th>
->>>>>>> mobile/main
                             <th style='padding: 3px;color:#060404; text-align:right;' >Price</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Dis</th>
                             <th style='padding: 3px;color:#060404; text-align:center;'>Amount</th>
@@ -657,12 +623,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </tr>
                             <tr style="line-height:20px;">
                                 <td style="text-align:center;"><?php echo $invdata->type; ?></td>
-<<<<<<< HEAD
                                 <td style="text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
-=======
-                                <td style="text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesQty, '0'), '.'); ?></td>
-                                <td style="text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesFreeQty, '0'), '.'); ?></td>
->>>>>>> mobile/main
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesDisValue),2)?></td>
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesInvNetAmount),2)?></td>
@@ -676,12 +637,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </tr>
                             <tr style="line-height:20px;">
                                 <td style="text-align:center;"><?php echo $invdata->type; ?></td>
-<<<<<<< HEAD
                                 <td style="text-align:center;"><?php echo number_format(($invdata->SalesQty),0)?></td>
-=======
-                                <td style="text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesQty, '0'), '.'); ?></td>
-                                <td style="text-align:center;"> <?php echo rtrim(rtrim($invdata->SalesFreeQty, '0'), '.'); ?></td>
->>>>>>> mobile/main
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesDisValue),2)?></td>
                                 <td style="text-align:right;"><?php echo number_format(($invdata->SalesTotalAmount),2)?></td>
@@ -697,16 +653,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $payment_term ='';
                     if($invHed->SalesInvType==2){ ?>
                         <tr style="line-height:25px;border-top: 1px #060404 solid;" id="rowTotal">
-<<<<<<< HEAD
                         <td colspan="3" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount</td>
-=======
-                        <td colspan="4" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount</td>
->>>>>>> mobile/main
                         <td style="border-top: 1px #060404 solid;">:</td>
                         <td id="lbltotalPOAmount"   style='text-align:right;padding: 3px;border-top: 1px #060404 solid;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
                         </tr><?php }else{ ?>
                         <tr style="line-height:25px;border-top: 1px #060404 solid;" id="rowTotal">
-<<<<<<< HEAD
                             <td colspan="3" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount </td>
                             <td style="border-top: 1px #060404 solid;">:</td>
                             <td id="lbltotalPOAmount"   style='font-weight:bold;text-align:right;padding: 3px;border-top: 1px #060404 solid;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
@@ -715,91 +666,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                     <tr style="line-height:25px;" id="rowDiscount">
                         <td colspan="3" style="text-align:left">Total Dis Amount  </td>
-=======
-                            <td colspan="4" style="text-align:left;padding: 3px;border-top: 1px #060404 solid;">Total Amount </td>
-                            <td style="border-top: 1px #060404 solid;">:</td>
-                            <td id="lbltotalPOAmount"   style='font-weight:bold;text-align:right;padding: 3px;border-top: 1px #060404 solid;'><?php echo number_format($invHed->SalesInvAmount,2);?></td>
-                        </tr>
-                        
-                    <?php } ?>
-
-                    
-
-                    <!-- <tr style="line-height:25px;" id="rowDiscount">
-                        <td colspan="4" style="text-align:left">Balace Amount  </td>
-                        <td style="">:</td>
-                        <td id="lbltotalDicount"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesCustomerPayment - $invHed->SalesInvAmount ,2);?></td>
-                    </tr> -->
-
-                    <tr style="line-height:25px;" id="rowDiscount">
-                        <td colspan="4" style="text-align:left">Total Dis Amount  </td>
->>>>>>> mobile/main
                         <td style="">:</td>
                         <td id="lbltotalDicount"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesDisAmount,2);?></td>
                     </tr>
 
                     <?php if($invHed->SalesVatAmount>0 && $invHed->SalesInvType==2){?>
                         <tr style="line-height:25px;" id="rowVAT">
-<<<<<<< HEAD
                         <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">VAT Amount  </td><td id="lbltotalVat"   style='text-align:right'><?php echo number_format($invHed->SalesVatAmount,2);?></td>
                         </tr><?php } ?>
                     <?php if($invHed->SalesNbtAmount>0 && $invHed->SalesInvType==2){?>
                         <tr style="line-height:25px;" id="rowNBT">
                             <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">NBT Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesNbtAmount,2);?></td>
-=======
-                        <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">VAT Amount  </td><td id="lbltotalVat"   style='text-align:right'><?php echo number_format($invHed->SalesVatAmount,2);?></td>
-                        </tr><?php } ?>
-                    <?php if($invHed->SalesNbtAmount>0 && $invHed->SalesInvType==2){?>
-                        <tr style="line-height:25px;" id="rowNBT">
-                            <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">NBT Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesNbtAmount,2);?></td>
->>>>>>> mobile/main
                         </tr>
                     <?php } ?>
                     <?php if($invHed->SalesShipping>0){?>
                         <tr style="line-height:25px;" id="rowDiscount">
-<<<<<<< HEAD
                             <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"><?php echo $invHed->SalesShippingLabel; ?>  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesShipping,2);?></td>
-=======
-                            <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right"><?php echo $invHed->SalesShippingLabel; ?>  </td><td id="lbltotalDicount"   style='text-align:right'><?php echo number_format($invHed->SalesShipping,2);?></td>
->>>>>>> mobile/main
                         </tr>
                     <?php }?>
                     <!--                    --><?php //if($invHed->SalesVatAmount>0 || $invHed->SalesNbtAmount>0 || $invHed->SalesShipping>0 || $invHed->SalesDisAmount>0){?>
                     <tr style="line-height:25px;" id="rowNET">
-<<<<<<< HEAD
                         <td colspan="3" style="font-weight:bold;text-align:left">Total Net Amount  </td>
                         <td style="">:</td>
                         <td id="lbltotalNet"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesNetAmount,2);?></td>
                     </tr>
                     <!--                    --><?php //} ?>
-=======
-                        <td colspan="4" style="font-weight:bold;text-align:left">Total Net Amount  </td>
-                        <td style="">:</td>
-                        <td id="lbltotalNet"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesNetAmount,2);?></td>
-                    </tr>
-
-                    <tr style="line-height:25px;" id="rowDiscount">
-                        <td colspan="4" style="text-align:left">Paid Amount  </td>
-                        <td style="">:</td>
-                        <td id="lbltotalDicount"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesCustomerPayment,2);?></td>
-                    </tr>
-
-                        <?php if($invHed->SalesCreditAmount>0){
-                            $payment_term="Credit";
-                        ?>
-                        
-                           
-
-                         <tr style="line-height:25px;" id="rowDiscount">
-                        <td colspan="4" style="text-align:left">Credit Amount  </td>
-                        <td style="">:</td>
-                        <td id="lbltotalDicount"   style='font-weight:bold;text-align:right'><?php echo number_format($invHed->SalesCreditAmount,2);?></td>
-                  
-                    </tr>
-                    <?php } ?>
-
-                                     
->>>>>>> mobile/main
 
 
                     <!--                    --><?php //if($invHed->SalesCashAmount>0){
@@ -855,11 +746,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                         ?>
                         <tr style="line-height:25px;" id="rowNBT">
-<<<<<<< HEAD
                             <td colspan="3" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnAmount,2);?></td>
-=======
-                            <td colspan="4" style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></td><td style="text-align:right">Return Amount  </td><td id="lbltotalNbt"   style='text-align:right'><?php echo number_format($invHed->SalesReturnAmount,2);?></td>
->>>>>>> mobile/main
                         </tr>
                         <tr><td colspan="6">
                         Return Items
@@ -877,21 +764,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <table style="width:290px; font-size:14px;" border="0">
                                 <tr><td colspan="5" style="text-align:left;font-size:12px;">Numbers of Items&nbsp;&nbsp;:&nbsp;&nbsp;<?php echo $noOfItem; ?></td></tr>
 
-<<<<<<< HEAD
                                 <tr><td colspan="5" style="font-size:18px;text-align:center;">Thank You come again</td></tr>
 
                                 <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>Any inquiries should be forwarded together with the invoice.</i></td></tr>
                                 <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>ිකුණුම් සම්බන්ධ විමසුමකදී මෙම බිල්පත් රැගෙන ඒම අනිවාර්ය වේ.</i></td></tr>
-=======
-                               
-
-                                <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>Any inquiries should be forwarded together with the invoice.</i></td></tr>
-                                <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>විවිකුණුම් සම්බන්ධ විමසුමකදී මෙම බිල්පත් රැගෙන ඒම අනිවාර්ය වේ.</i></td></tr>
-                                <tr><td colspan="5" style="text-align:center;font-size: 10PX"><i>ඔබේ ඉතිරිකිරීම් අපගේ ප්‍රමුකතාවයයි.....</i></td></tr>
-
-                                <tr><td colspan="5" style="font-size:18px;text-align:center;">ස්තූතියි නැවත එන්න...</td></tr>
-
->>>>>>> mobile/main
                                 <tr><td colspan="5" style="text-align:center;font-size: 9PX"><i>Software By Nsoft Solutions www.nsoft.lk</i></td></tr>
 
                             </table>

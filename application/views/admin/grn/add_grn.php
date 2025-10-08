@@ -276,12 +276,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <th>Whole sales Price</th>
                                             <th>Discount (%)</th>
                                             <th>Total Net Amount</th>
-<<<<<<< HEAD
                                             <th>EMI No</th>
                                             <th>Serial No</th>
-=======
-                                            <!-- <th>Serial</th> -->
->>>>>>> mobile/main
                                             <th></th>
                                         </tr>
                                     </thead>
