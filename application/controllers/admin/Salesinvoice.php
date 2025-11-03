@@ -1608,7 +1608,7 @@ $arr[] =null;
                         );
                      $this->db->insert('jobinvoicedtl',$jobDtl);
                       if($job_idArr[$i]==2){
-                        $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$work_idArr[$i]','$qtyArr[$i]','1','0','$sell_priceArr[$i]','$location','','0','0','0')");
+                        //$this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$work_idArr[$i]','$qtyArr[$i]','1','0','$sell_priceArr[$i]','$location','','0','0','0')");
                     }
                 }
                 //odoout update
@@ -2841,6 +2841,7 @@ $arr[] =null;
         $receiver_nic = $_POST['receiver_nic'];
         $remark = $_POST['remark'];
         $refferNo = $_POST['refferNo'];
+        $mchange = $_POST['mchange'];
         $customerPayment =  $cashAmount+ $chequeAmount+ $cardAmount+$advanceAmount+$bankAmount+$returnAmount;
         $cashAmount=$total_net_amount-$creditAmount-$cardAmount-$chequeAmount-$advanceAmount-$bankAmount-$returnAmount;
          if ($cashAmount < 0){
@@ -2896,7 +2897,8 @@ $arr[] =null;
             'SalesCommsion'=>$com_amount,
             'SalesComCus'=>$compayto,
             'salesInvRemark'=>$remark,
-            'refferNo'=>$refferNo
+            'refferNo'=>$refferNo,
+            'Blance'=>$mchange
         );
 
 
@@ -2918,7 +2920,7 @@ $arr[] =null;
                 'SalesReturnPayment'=>$returnAmount,'SalesDisAmount' => $total_discount,'SalesDisPercentage' => $totalDisPerent,'SalesInvUser' => $invUser,
                 'IsComplete' => $isComplete,'InvIsCancel'=>0,'SalesIsNbt'=>$isTotalNbt,'SalesIsVat'=>$isTotalVat,'SalesNbtRatio'=>$nbtRatioRate,'SalesNbtAmount'=>$totalNbt,
                 'SalesVatAmount'=>$totalVat,'SalesPONumber'=>$po_number,'SalesPerson'=>$newsalesperson,'SalesReceiver'=>$receiver_name,'SalesRecNic'=>$receiver_nic,
-                'SalesCommsion'=>$com_amount,'SalesComCus'=>$compayto,'salesInvRemark'=>$remark,'refferNo'=>$refferNo
+                'SalesCommsion'=>$com_amount,'SalesComCus'=>$compayto,'salesInvRemark'=>$remark,'refferNo'=>$refferNo,'Blance'=>$mchange
         );
            $res2= $this->Salesinvoice_model->updateSalesInvoice($grnHed,$_POST,$grnNo,$totalDisPerent);
         }
@@ -3868,6 +3870,7 @@ public function all_delivery_note() {
     }
 
     public function saveIssueNote() {
+        // echo var_dump('aaa');die;
         $location=$_SESSION['location'];
         $this->load->model('admin/Salesinvoice_model');
 

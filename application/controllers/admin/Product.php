@@ -71,6 +71,7 @@ class Product extends Admin_Controller {
         $this->data['quality'] = $this->db->select('*')->from('productquality')->get()->result();
         $this->data['alldepartment']    = $this->Product_model->loaddepartment();
         $this->data['allsubdepartment'] = $this->Product_model->loadsubdepartment($this->data['product']->DepCode);
+         $this->data['loaddepDis'] = $this->Product_model->loaddepDis($this->data['product']->DepCode);
         $this->data['allcatogery']      = $this->Product_model->loadcategory($this->data['product']->SubDepCode,$this->data['product']->DepCode);
         $this->data['allsubcategory']   = $this->Product_model->loadsubcategory($this->data['product']->CategoryCode,$this->data['product']->SubDepCode,$this->data['product']->DepCode);
 
@@ -255,6 +256,7 @@ class Product extends Admin_Controller {
     
     public function getProductByBarCodeforSTO() {
         $dep = $_POST['proCode'];
+        
         $pl = $_POST['prlevel'];
         $location = $_POST['location'];
         $locationS = $_SESSION['location'];

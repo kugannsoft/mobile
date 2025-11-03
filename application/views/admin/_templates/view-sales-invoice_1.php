@@ -230,7 +230,7 @@
                                         &nbsp;&nbsp;<?php echo $i?></td>
                                     <td colspan="2"
                                         style="border-bottom:1px solid #000 ;border-left: 1px solid #000;border-top:1px solid #000;border-right: 1px solid #000;">
-                                        &nbsp;&nbsp;<?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo."<br>".$invdata->EmiNo;?>
+                                        &nbsp;&nbsp;<?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?>
                                     </td>
                                     <td class='text-right'
                                         style="border-bottom:1px solid #000;border-left: 1px solid #000;border-top:1px solid #000;border-right: 1px solid #000;">
@@ -256,7 +256,7 @@
                                         &nbsp;&nbsp;<?php echo $i?></td>
                                     <td colspan="2"
                                         style="border-bottom:1px solid #000 ;border-left: 1px solid #000;border-top:1px solid #000;border-right: 1px solid #000;">
-                                        &nbsp;&nbsp;<?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo."<br>".$invdata->EmiNo;?>
+                                        &nbsp;&nbsp;<?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?>
                                     </td>
                                     <td class='text-right'
                                         style="border-bottom:1px solid #000;border-left: 1px solid #000;border-top:1px solid #000;border-right: 1px solid #000;">

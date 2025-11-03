@@ -120,6 +120,16 @@
         </tr>
         <tr id="rowCheque"><th style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></th><th colspan="2" style="text-align:right;padding: 3px;">Cheque Amount  </th><th id="lbltotalChequeAmount"   style='text-align:right;padding: 3px;'></th></tr>
         <tr id="rowCard"><th style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;"></th><th colspan="2" style="text-align:right;padding: 3px;">Card Amount  </th><th id="lbltotalCardAmount"   style='text-align:right;padding: 3px;'></th></tr>
+         <tr id="rowTotal">
+            <th colspan="3" style="text-align:left;padding: 3px;">Total Paid Amount  </th>
+            <th style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;">:</th>
+            <th id="lbltotalPaidAmount"   style='text-align:right;padding: 3px;'></th>
+        </tr>
+        <tr id="rowTotal">
+            <th colspan="3" style="text-align:left;padding: 3px;">Blance Amount </th>
+            <th style="border-left: 1px #fff solid;border-bottom: 1px #fff solid;">:</th>
+            <th id="lbltotalBlanceAmount"   style='text-align:right;padding: 3px;'></th>
+        </tr>
         </tfoot>
     </table>
     <table style="width:290px;" border="0">

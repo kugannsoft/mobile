@@ -254,7 +254,8 @@ class Purchase_model extends CI_Model {
         $grnno=$_POST['grn_no'];
         $sup_code = $_POST['sup_code'];
         $total_amount = $_POST['total_amount'];
-
+        $emi_noArr = json_decode($post['emi_no']);
+        $isEmiArr = json_decode($post['isEmi']);
         
         
         $this->db->trans_start();
@@ -272,7 +273,11 @@ class Purchase_model extends CI_Model {
                 'PRN_Selling' => $sell_priceArr[$i],
                 'PRN_Amount' => $totalAmountArr[$i],
                 'IsSerial' => $isSerialArr[$i],
-                'Serial' => $serial_noArr[$i]);
+                'Serial' => $serial_noArr[$i],
+                'EmiNo'=>$emi_noArr[$i],
+                'IsEmi'=>$isEmiArr[$i],
+                
+            );
             $this->db->insert('purchasereturnnotedtl', $grnDtl);
         
             //update price stock

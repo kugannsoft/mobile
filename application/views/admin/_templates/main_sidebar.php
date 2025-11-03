@@ -702,6 +702,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <li class="<?= active_link_function('serialstock') ?>">
                                 <a href="<?php echo site_url('admin/report/serialstock'); ?>">Product Serial Stock</a>
                             </li>
+                             <li class="<?= active_link_function('iemistock') ?>">
+                                <a href="<?php echo site_url('admin/report/iemistock'); ?>">Product IEMI Stock</a>
+                            </li>
+                             <li class="<?= active_link_function('serialiemistock') ?>">
+                                <a href="<?php echo site_url('admin/report/serialiemistock'); ?>">Product Serial IEMI Stock</a>
+                            </li>
 <!--                            <li class="--><?//= active_link_function('dailyfinalreport') ?><!--">-->
 <!--                                <a href="--><?php //echo site_url('admin/report/dailyfinalreport'); ?><!--">Daily Final Stock</a>-->
 <!--                            </li>-->

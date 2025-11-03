@@ -82,6 +82,15 @@
                             <input type="text" class="form-control pull-right" name="edep1" id="edep1">
                             <span class="input-group-btn"><button class="btn btn-primary" id="editDep1">Update</button></span>
                         </div>
+
+                        <label for="cateogry" class="control-label">Department Discount</label>
+                        <div class="input-group" style="width: 200px;">
+                            <input class="form-control" type="int" name="depDiscount"  id="depDiscount" value="<?php echo $loaddepDis->Discount ?>" placeholder="Enter Discount percentage"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning" id="addDepdisbtn"><i class="fa fa-plus"></i></button>
+                                
+                            </span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="sub_category" class="control-label">Sub Department <span class="required">*</span></label>
@@ -1215,5 +1224,43 @@
         $("#loc_array").val(JSON.stringify(loc_array));
         $("#rack_array").val(JSON.stringify(rack_array));
         $("#bin_array").val(JSON.stringify(bin_array));
+    });
+
+    $('#addDepdisbtn').click(function(e) {
+        e.preventDefault(); 
+
+        var department = $("#department").val();
+        var depDiscount = $("#depDiscount").val();
+
+        if (department === "0" || department === "" || department === null) {
+   
+            $.notify("Please select a department.", "warning");
+            $("#department").focus();
+            return false;
+        }
+
+        if (depDiscount === "0" || depDiscount === "" || depDiscount === null) {
+   
+            $.notify("Please Enter Valid Discount.", "warning");
+            $("#depDiscount").focus();
+            return false;
+        }
+        $.ajax({
+                type: "post",
+                url: "<?php echo base_url(); ?>" + "admin/master/depDiscount",
+                data: {department:department,depDiscount:depDiscount},
+                success: function (json) {
+                    var resultData = JSON.parse(json);
+                     if (resultData.fb === true) {
+                        $.notify(resultData.msg, "success");
+                    } else {
+                        $.notify(resultData.msg, "error");
+                    }
+                },
+                error: function () {
+                    alert('Error while request..');
+                }
+            });
+        e.preventDefault();
     });
 </script>

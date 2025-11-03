@@ -233,7 +233,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <tr style="line-height:20px;">
                                         <td style="border-bottom:1px solid #e4dbdb;"><?php echo $i;?></td>
 
-                                        <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?></td>
+                                        <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo."<br>".$invdata->EmiNo;?></td>
                                         <td style="border-bottom:1px solid #e4dbdb;"><?php echo number_format(($invdata->SalesQty),2)?></td>
                                         <td style="border-bottom:1px solid #e4dbdb;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                                         <td style="border-bottom:1px solid #e4dbdb;" class='text-right'><?php echo number_format(($invdata->SalesInvNetAmount),2)?></td>
@@ -246,7 +246,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     ?>
                                     <tr style="line-height:20px;">
                                         <td style="border-bottom:1px solid #e4dbdb;"><?php echo $i;?></td>
-                                        <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo;?> </td>
+                                        <td style="border-bottom:1px solid #e4dbdb;" ><?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo."<br>".$invdata->EmiNo;?> </td>
                                         <td style="border-bottom:1px solid #e4dbdb;"><?php echo number_format(($invdata->SalesQty),2)?></td>
                                         <td style="border-bottom:1px solid #e4dbdb;" class='text-right'><?php echo number_format(($invdata->SalesUnitPrice),2)?></td>
                                         <td style="border-bottom:1px solid #e4dbdb;" class='text-right'><?php echo number_format(($invdata->SalesTotalAmount),2)?></td>

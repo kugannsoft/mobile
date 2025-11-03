@@ -109,7 +109,7 @@ class Grn extends Admin_Controller {
         $barcode = 1;
         $serialAutoGen=$_POST['serialAutoGen'];
         $maxSerialQty=$_POST['maxSerialQty'];
-//        var_dump($_POST);die;
+         
 //        $this->load->model('admin/Grn_model');
         $grnNo = $this->Grn_model->get_max_code('Goods Received Note');
         $invNo = $_POST['invoicenumber'];
@@ -146,6 +146,8 @@ class Grn extends Admin_Controller {
         $totalAmountArr = json_decode($_POST['pro_total']);
         $pro_nameArr = json_decode($_POST['proName']);
         $sendwholesales_priceArr = json_decode($_POST['sendwholesales_price']);
+        $sendisemiNo_Arr = json_decode($_POST['sendisemiNo']);
+        $sendemiNo_Arr = json_decode($_POST['sendemiNo']);
         
         $grnHed = array(
             'AppNo' => '1','GRN_No' => $grnNo,'GRN_PONo'=>'','GRN_Location' => $location,'GRN_Date' => $invDate,'GRN_DateORG' => $grnDattime,
@@ -385,4 +387,27 @@ class Grn extends Admin_Controller {
        $sql = $this->db->update('productstock',array('Stock'=>$stockChange),array('ProductCode'=>$productId,'Location'=>1));
 //        die();
     }
+
+
+    public function check_emi_no(){
+        $emiNo = $this->input->post('emiNo');
+        
+        if (!$emiNo) {
+            echo json_encode(['exists' => false]);
+            return;
+        }
+
+        $existsInEmi = $this->db->where('EmiNo', $emiNo)
+                                ->limit(1)
+                                ->get('productserialemistock')
+                                ->num_rows() > 0;
+
+        $existsInSerial = $this->db->where('SerialNo', $emiNo)
+                                ->limit(1)
+                                ->get('productserialstock')
+                                ->num_rows() > 0;
+
+        echo json_encode(['exists' => ($existsInEmi || $existsInSerial)]);die;
+    }
+
 }

@@ -42,6 +42,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <tr><td>Model</td><td>:</td><td class="text-left" id="model"></td></tr>
                                     <tr><td>Product Code</td><td>:</td><td class="text-left" id="productCode"></td></tr>
                                     <tr><td>Serial</td><td>:</td><td class="text-left"  id="serial"></td></tr>
+                                    <tr><td>Iemi</td><td>:</td><td class="text-left"  id="emino"></td></tr>
+                                    <tr><td>Quantity</td><td>:</td><td class="text-left"  id="quantity"></td></tr>
                                     <?php if (in_array("SM135", $blockView) || $blockView == null) { ?>
                                 <tr><td>Cost Price</td><td>:</td><td class="text-left"  id="costPrice"></td></tr> 
                                 <?php } ?>

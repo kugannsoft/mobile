@@ -17,7 +17,7 @@ class Stocktransfer extends Admin_Controller {
 
 
     public function stockout() {
-        $this->breadcrumbs->unshift(1, lang('menu_addcustomer'), 'admin/StockTranfer');
+        $this->breadcrumbs->unshift(1, lang('menu_addcustomer'), 'admin/Stocktransfer');
         $this->page_title->push('Stock Tranfer Out');
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
@@ -27,7 +27,7 @@ class Stocktransfer extends Admin_Controller {
     }
 
       public function stockin() {
-        $this->breadcrumbs->unshift(1, lang('menu_addcustomer'), 'admin/StockTranfer');
+        $this->breadcrumbs->unshift(1, lang('menu_addcustomer'), 'admin/Stocktransfer');
          $this->page_title->push('Stock Tranfer In');
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();

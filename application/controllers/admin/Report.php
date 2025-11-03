@@ -261,6 +261,33 @@ class Report extends Admin_Controller {
         }
     }
 
+      public function iemistock() {
+        $this->breadcrumbs->unshift(1, 'Reports', 'admin/report');
+        $this->breadcrumbs->unshift(1, 'Stock', 'admin/report/iemireport');
+        $this->page_title->push(('Product Serial Stock'));
+        $this->data['pagetitle'] = $this->page_title->show();
+        $this->data['breadcrumb'] = $this->breadcrumbs->show();
+        $this->data['locations'] = $this->Report_model->loadroot();
+        $this->data['products'] = $this->Report_model->loadproduct();
+
+     
+
+        $this->template->admin_render('admin/report/iemireport', $this->data);
+        
+    }
+
+      public function serialiemistock() {
+        $this->breadcrumbs->unshift(1, 'Reports', 'admin/report');
+        $this->breadcrumbs->unshift(1, 'Stock', 'admin/report/serialiemireport');
+        $this->page_title->push(('Product Serial Stock'));
+        $this->data['pagetitle'] = $this->page_title->show();
+        $this->data['breadcrumb'] = $this->breadcrumbs->show();
+        $this->data['locations'] = $this->Report_model->loadroot();
+        $this->data['products'] = $this->Report_model->loadproduct();
+        $this->template->admin_render('admin/report/serialiemistock', $this->data);
+        
+    }
+
     public function productreport() {
          $this->breadcrumbs->unshift(1, 'Reports', 'admin/report');
         $this->breadcrumbs->unshift(1, 'Stock', 'admin/report/productreport');
@@ -956,6 +983,34 @@ class Report extends Admin_Controller {
          $routeAr = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
          $transfer = isset($_POST['transfer']) ? $_POST['transfer'] : NULL;
         $result = $this->Report_model->productdetailserial($transfer,$routeAr, $isall, $product,$dep,$subdep,$sup,$subcat);
+        echo json_encode($result);die;
+    }
+
+     public function loadiemisockreport() {
+        $product = isset($_POST['productsearch']) ? $_POST['productsearch'] : NULL;
+        $isall = isset($_POST['isall']) ? $_POST['isall'] : 'all';
+        // $route = isset($_POST['route']) ? $_POST['route'] : NULL;
+        $dep = isset($_POST['dep_ar']) ? json_decode($_POST['dep_ar']) : NULL;
+        $subdep = isset($_POST['subdep_ar']) ? json_decode($_POST['subdep_ar']) : NULL;
+        $subcat = isset($_POST['subcategory_ar']) ? json_decode($_POST['subcategory_ar']) : NULL;
+         $sup = isset($_POST['supplier']) ? $_POST['supplier'] : NULL;
+         $routeAr = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
+         $transfer = isset($_POST['transfer']) ? $_POST['transfer'] : NULL;
+        $result = $this->Report_model->loadiemisockreport($transfer,$routeAr, $isall, $product,$dep,$subdep,$sup,$subcat);
+        echo json_encode($result);die;
+    }
+
+     public function loadserialiemisockreport() {
+        $product = isset($_POST['productsearch']) ? $_POST['productsearch'] : NULL;
+        $isall = isset($_POST['isall']) ? $_POST['isall'] : 'all';
+        // $route = isset($_POST['route']) ? $_POST['route'] : NULL;
+        $dep = isset($_POST['dep_ar']) ? json_decode($_POST['dep_ar']) : NULL;
+        $subdep = isset($_POST['subdep_ar']) ? json_decode($_POST['subdep_ar']) : NULL;
+        $subcat = isset($_POST['subcategory_ar']) ? json_decode($_POST['subcategory_ar']) : NULL;
+         $sup = isset($_POST['supplier']) ? $_POST['supplier'] : NULL;
+         $routeAr = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
+         $transfer = isset($_POST['transfer']) ? $_POST['transfer'] : NULL;
+        $result = $this->Report_model->loadserialiemisockreport($transfer,$routeAr, $isall, $product,$dep,$subdep,$sup,$subcat);
         echo json_encode($result);die;
     }
 

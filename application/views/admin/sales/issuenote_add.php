@@ -367,6 +367,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 <input type="hidden" class="form-control" required="required"
                                                     name="isSerial" id="isSerial">
                                                 <input type="hidden" class="form-control" required="required"
+                                                    name="isEmi" id="isEmi">
+                                                <input type="hidden" class="form-control" required="required"
                                                     name="orgSellPrice" id="orgSellPrice">
                                             </div>
                                             <div class="col-sm-1"><input class="" type="hidden" name="isZero"
@@ -393,6 +395,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     required="required" name="serialQty" id="serialQty" value="0">
                                             </div>
                                         </div>
+                                         <div class="form-group" id="emiDiv"> 
+                                             <label for="sellingPrice"class="col-sm-4 control-label">Emi No <span class="required">*</span></label>
+                                             <div class="col-sm-6">
+                                                 <input type="text"  tabindex="13"  min="0" step="1" class="form-control" name="emiNo" id="emiNo" readonly>
+                                                 
+                                             </div>
+                                         </div>
                                         <!--                                        <div class="form-group">-->
                                         <!--                                            <label for="supplier" class="col-sm-4 control-label">Sales Person<span class="required">*</span></label>-->
                                         <!--                                            <div class="col-sm-7">-->
@@ -462,7 +471,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <!--                                        <th>Discount (%)</th>-->
                                             <th>Total Net Amount</th>
                                             <th>Serial</th>
-                                            <!--                                        <th>Sale by</th>-->
+                                            <th>IEMI NO</th>
                                             <th>##</th>
                                             <th>##</th>
                                         </tr>
