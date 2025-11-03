@@ -1937,7 +1937,7 @@ class Report_model extends CI_Model {
                             subdepartment.Description,
                             goodsreceivenotehed.GRN_DateORG');
         $this->db->from('product');
-        $this->db->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode', 'INNER');
+        $this->db->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode', 'Left');
         $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
         $this->db->join('location', 'location.location_id = productserialstock.Location', 'INNER');
         $this->db->join('goodsreceivenotehed', 'goodsreceivenotehed.GRN_No = productserialstock.GrnNo', 'Left');
@@ -1993,7 +1993,7 @@ class Report_model extends CI_Model {
                             subdepartment.Description,
                             materialrequestnotehed.MrnDateORG As GRN_DateORG');
         $this->db->from('product');
-        $this->db->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode', 'INNER');
+        $this->db->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode', 'left');
         $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
         $this->db->join('location', 'location.location_id = productserialstock.Location', 'INNER');
         $this->db->join('materialrequestnotehed', 'materialrequestnotehed.MrnNo = productserialstock.GrnNo', 'Left');
@@ -2030,6 +2030,264 @@ class Report_model extends CI_Model {
             $this->db->where('product.Prd_Supplier', $sup);
         }
         $this->db->group_by('productserialstock.SerialNo');
+        $this->db->order_by('product.DepCode', 'ASC');
+        $this->db->order_by('product.SubDepCode', 'ASC');
+        $this->db->order_by('product.CategoryCode', 'ASC');
+        $this->db->order_by('product.SubCategoryCode', 'ASC');
+//        $this->db->order_by('subcategory.Description', 'ASC');
+
+        $result2=$this->db->get();
+
+        $list = array();
+        if (isset($transfer) && $transfer == 'transfer'){
+            foreach ($result2->result() as $row) {
+                $list[$row->Description][] = $row;
+            }
+        } else{
+            foreach ($result->result() as $row) {
+                $list[$row->Description][] = $row;
+            }
+        }
+
+        return $list;
+    }
+
+
+    public function loadiemisockreport($transfer,$route, $isall, $product = NULL,$dep,$subdep,$sup,$subcat) {
+
+        $this->db->select('product.ProductCode,
+                            product.Prd_Description,
+                            product.Prd_CostPrice AS Prd_CostPrice,
+                            location.location,
+                            productimeistock.Quantity,
+                            productimeistock.EmiNo,
+                            supplier.SupName,
+                            subdepartment.Description,
+                            goodsreceivenotehed.GRN_DateORG');
+        $this->db->from('product');
+        $this->db->join('productimeistock', 'productimeistock.ProductCode = product.ProductCode', 'Left');
+        $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
+        $this->db->join('location', 'location.location_id = productimeistock.Location', 'INNER');
+        $this->db->join('goodsreceivenotehed', 'goodsreceivenotehed.GRN_No = productimeistock.GrnNo', 'Left');
+        $this->db->join('goodsreceivenotedtl', 'goodsreceivenotehed.GRN_No = goodsreceivenotedtl.GRN_No', 'INNER');
+        $this->db->join('supplier', 'supplier.SupCode = goodsreceivenotehed.GRN_SupCode', 'INNER');
+        $this->db->where('product.Prd_IsActive', 1);
+
+        if (isset($isall) && $isall == 'all') {
+        }elseif (isset($isall) && $isall == '1') {
+            $this->db->where('productimeistock.Quantity', $isall);
+        }elseif (isset($isall) && $isall == '0') {
+            $this->db->where('productimeistock.Quantity', $isall);
+        }
+
+        if (isset($route) && $route != '' && count($route)>0) {
+            $this->db->where_in('productimeistock.Location', $route);
+        }
+        if (isset($product) && $product != '' && $isall == 0) {
+            $this->db->where('product.ProductCode', $product);
+        }
+        if (isset($dep) && $dep != '' ) {
+            $this->db->where_in('product.DepCode', $dep);
+        }
+
+        if (isset($subdep) && $subdep != '' ) {
+            $this->db->where_in('product.SubDepCode', $subdep);
+        }
+
+        if ( isset($subcat) && $subcat != '' && count($subcat) != 0) {
+            $this->db->where_in('product.SubCategoryCode', $subcat);
+        }
+
+        if (isset($sup) && $sup != '') {
+            $this->db->where('product.Prd_Supplier', $sup);
+        }
+        $this->db->group_by('productimeistock.EmiNo');
+        $this->db->order_by('product.DepCode', 'ASC');
+        $this->db->order_by('product.SubDepCode', 'ASC');
+        $this->db->order_by('product.CategoryCode', 'ASC');
+        $this->db->order_by('product.SubCategoryCode', 'ASC');
+//        $this->db->order_by('subcategory.Description', 'ASC');
+
+        $result=$this->db->get();
+
+
+        $this->db->select('product.ProductCode,
+                            product.Prd_Description,
+                            product.Prd_CostPrice AS Prd_CostPrice,
+                            location.location,
+                            productimeistock.Quantity,
+                            productimeistock.EmiNo,
+                            supplier.SupName,
+                            subdepartment.Description,
+                            materialrequestnotehed.MrnDateORG As GRN_DateORG');
+        $this->db->from('product');
+        $this->db->join('productimeistock', 'productimeistock.ProductCode = product.ProductCode', 'left');
+        $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
+        $this->db->join('location', 'location.location_id = productimeistock.Location', 'INNER');
+        $this->db->join('materialrequestnotehed', 'materialrequestnotehed.MrnNo = productimeistock.GrnNo', 'Left');
+        $this->db->join('materialrequestnotedtl', 'materialrequestnotehed.MrnNo = materialrequestnotedtl.MrnNo', 'INNER');
+        $this->db->join('supplier', 'supplier.SupCode = product.Prd_Supplier', 'INNER');
+        $this->db->where('product.Prd_IsActive', 1);
+
+        if (isset($isall) && $isall == 'all') {
+        }elseif (isset($isall) && $isall == '1') {
+            $this->db->where('productimeistock.Quantity', $isall);
+        }elseif (isset($isall) && $isall == '0') {
+            $this->db->where('productimeistock.Quantity', $isall);
+        }
+
+        if (isset($route) && $route != '' && count($route)>0) {
+            $this->db->where_in('productimeistock.Location', $route);
+        }
+        if (isset($product) && $product != '' && $isall == 0) {
+            $this->db->where('product.ProductCode', $product);
+        }
+        if (isset($dep) && $dep != '' ) {
+            $this->db->where_in('product.DepCode', $dep);
+        }
+
+        if (isset($subdep) && $subdep != '' ) {
+            $this->db->where_in('product.SubDepCode', $subdep);
+        }
+
+        if ( isset($subcat) && $subcat != '' && count($subcat) != 0) {
+            $this->db->where_in('product.SubCategoryCode', $subcat);
+        }
+
+        if (isset($sup) && $sup != '') {
+            $this->db->where('product.Prd_Supplier', $sup);
+        }
+        $this->db->group_by('productimeistock.EmiNo');
+        $this->db->order_by('product.DepCode', 'ASC');
+        $this->db->order_by('product.SubDepCode', 'ASC');
+        $this->db->order_by('product.CategoryCode', 'ASC');
+        $this->db->order_by('product.SubCategoryCode', 'ASC');
+//        $this->db->order_by('subcategory.Description', 'ASC');
+
+        $result2=$this->db->get();
+
+        $list = array();
+        if (isset($transfer) && $transfer == 'transfer'){
+            foreach ($result2->result() as $row) {
+                $list[$row->Description][] = $row;
+            }
+        } else{
+            foreach ($result->result() as $row) {
+                $list[$row->Description][] = $row;
+            }
+        }
+
+        return $list;
+    }
+
+
+    public function loadserialiemisockreport($transfer,$route, $isall, $product = NULL,$dep,$subdep,$sup,$subcat) {
+
+        $this->db->select('product.ProductCode,
+                            product.Prd_Description,
+                            product.Prd_CostPrice AS Prd_CostPrice,
+                            location.location,
+                            productserialemistock.Quantity,
+                            productserialemistock.SerialNo,
+                            productserialemistock.EmiNo,
+                            supplier.SupName,
+                            subdepartment.Description,
+                            goodsreceivenotehed.GRN_DateORG');
+        $this->db->from('product');
+        $this->db->join('productserialemistock', 'productserialemistock.ProductCode = product.ProductCode', 'Left');
+        $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
+        $this->db->join('location', 'location.location_id = productserialemistock.Location', 'INNER');
+        $this->db->join('goodsreceivenotehed', 'goodsreceivenotehed.GRN_No = productserialemistock.GrnNo', 'Left');
+        $this->db->join('goodsreceivenotedtl', 'goodsreceivenotehed.GRN_No = goodsreceivenotedtl.GRN_No', 'INNER');
+        $this->db->join('supplier', 'supplier.SupCode = goodsreceivenotehed.GRN_SupCode', 'INNER');
+        $this->db->where('product.Prd_IsActive', 1);
+
+        if (isset($isall) && $isall == 'all') {
+        }elseif (isset($isall) && $isall == '1') {
+            $this->db->where('productserialemistock.Quantity', $isall);
+        }elseif (isset($isall) && $isall == '0') {
+            $this->db->where('productserialemistock.Quantity', $isall);
+        }
+
+        if (isset($route) && $route != '' && count($route)>0) {
+            $this->db->where_in('productserialemistock.Location', $route);
+        }
+        if (isset($product) && $product != '' && $isall == 0) {
+            $this->db->where('product.ProductCode', $product);
+        }
+        if (isset($dep) && $dep != '' ) {
+            $this->db->where_in('product.DepCode', $dep);
+        }
+
+        if (isset($subdep) && $subdep != '' ) {
+            $this->db->where_in('product.SubDepCode', $subdep);
+        }
+
+        if ( isset($subcat) && $subcat != '' && count($subcat) != 0) {
+            $this->db->where_in('product.SubCategoryCode', $subcat);
+        }
+
+        if (isset($sup) && $sup != '') {
+            $this->db->where('product.Prd_Supplier', $sup);
+        }
+        $this->db->group_by('productserialemistock.SerialNo');
+        $this->db->order_by('product.DepCode', 'ASC');
+        $this->db->order_by('product.SubDepCode', 'ASC');
+        $this->db->order_by('product.CategoryCode', 'ASC');
+        $this->db->order_by('product.SubCategoryCode', 'ASC');
+//        $this->db->order_by('subcategory.Description', 'ASC');
+
+        $result=$this->db->get();
+
+
+        $this->db->select('product.ProductCode,
+                            product.Prd_Description,
+                            product.Prd_CostPrice AS Prd_CostPrice,
+                            location.location,
+                            productserialemistock.Quantity,
+                            productserialemistock.SerialNo,
+                            productserialemistock.EmiNo,
+                            supplier.SupName,
+                            subdepartment.Description,
+                            materialrequestnotehed.MrnDateORG As GRN_DateORG');
+        $this->db->from('product');
+        $this->db->join('productserialemistock', 'productserialemistock.ProductCode = product.ProductCode', 'left');
+        $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
+        $this->db->join('location', 'location.location_id = productserialemistock.Location', 'INNER');
+        $this->db->join('materialrequestnotehed', 'materialrequestnotehed.MrnNo = productserialemistock.GrnNo', 'Left');
+        $this->db->join('materialrequestnotedtl', 'materialrequestnotehed.MrnNo = materialrequestnotedtl.MrnNo', 'INNER');
+        $this->db->join('supplier', 'supplier.SupCode = product.Prd_Supplier', 'INNER');
+        $this->db->where('product.Prd_IsActive', 1);
+
+        if (isset($isall) && $isall == 'all') {
+        }elseif (isset($isall) && $isall == '1') {
+            $this->db->where('productserialemistock.Quantity', $isall);
+        }elseif (isset($isall) && $isall == '0') {
+            $this->db->where('productserialemistock.Quantity', $isall);
+        }
+
+        if (isset($route) && $route != '' && count($route)>0) {
+            $this->db->where_in('productserialemistock.Location', $route);
+        }
+        if (isset($product) && $product != '' && $isall == 0) {
+            $this->db->where('product.ProductCode', $product);
+        }
+        if (isset($dep) && $dep != '' ) {
+            $this->db->where_in('product.DepCode', $dep);
+        }
+
+        if (isset($subdep) && $subdep != '' ) {
+            $this->db->where_in('product.SubDepCode', $subdep);
+        }
+
+        if ( isset($subcat) && $subcat != '' && count($subcat) != 0) {
+            $this->db->where_in('product.SubCategoryCode', $subcat);
+        }
+
+        if (isset($sup) && $sup != '') {
+            $this->db->where('product.Prd_Supplier', $sup);
+        }
+        $this->db->group_by('productserialemistock.SerialNo');
         $this->db->order_by('product.DepCode', 'ASC');
         $this->db->order_by('product.SubDepCode', 'ASC');
         $this->db->order_by('product.CategoryCode', 'ASC');

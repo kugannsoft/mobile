@@ -37,7 +37,7 @@ $(document).ready(function() {
     $("#dwnLink").hide();
     $("#loadBarCode").hide();
     $("#bankData").hide();
-
+    $("#emiDiv").hide();
     $("#lbl_lotNo").hide();
     $("#lbl_polishWeight").hide();
     $("#lbl_buyAmount").hide();
@@ -531,39 +531,43 @@ $(document).ready(function() {
                     var resultData = JSON.parse(json);
                     if (resultData) {
                          if(resultData.serial){
-                        $.each(resultData.serial, function(key, value) {
+                        var serialArr = [resultData.serial.SerialNo]; 
+                        $.each(serialArr, function(key, value) {
+                             console.log('serialNoArrIndex2value',value);
                             var serialNoArrIndex2 = $.inArray(value, stockSerialnoArr);
+                            console.log('serialNoArrIndex2',serialNoArrIndex2);
                             if (serialNoArrIndex2 < 0) {
                                 stockSerialnoArr.push(value);
                             }
                         });
                     }
 
-                        // if(resultData.product){
-                        //     itemCode = resultData.product.ProductCode;
+                    if(resultData.product){
+                        isEmiNo = resultData.product.IsRawMaterial;
+                        $('#disPercent').val(resultData.product.Discount);
+                        discount_precent = resultData.product.Discount;
+                        loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
+                       
+                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
+                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                              resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
+                    }
 
-                        //     // autoSerial = resultData.product.IsRawMaterial;
-                        //     // loadVATNBT(isJobVat,isJobNbt,isJobNbtRatio);
-                            
-                        //     // $("#productStock").html('/ Available Stock = ' + resultData.productstock.Stock);
-                        //     // stockavalibal = resultData.productstock.Stock;
+                    $("#proStock").html('');
+                    $("#priceStock").html('');
 
-                        //     // loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                        //      loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                        //     loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod, resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice);
+                    if(resultData.price_stock){
+                     
+                        $("#proStock").html(resultData.productstock.Stock);
+                        $("#priceStock").html(resultData.price_stock.Stock);
+                       
+                     }else{
+                        $("#proStock").html(0);
+                        $("#priceStock").html('0');
+                     }
 
-                        // }
-
-                        // $("#proStock").html('');
-
-                        //  if(resultData.pro_stock){
-                        //     $("#proStock").html(resultData.pro_stock);
-                        //  }else{
-                        //     $("#proStock").html(0);
-                        //  }
-//                        itemCode = resultData.ProductCode;
-//                        loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, resultData.SerialNo, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
-//                        $('html, body').animate({scrollTop: $('#cart-table-body').offset().top}, 'slow');
+                    
                     } else {
                         $.notify("Product not found.", "warning");
                         $("#itemCode").val('');
@@ -619,7 +623,7 @@ $(document).ready(function() {
         }
     });
 
-    var autoSerial = 0;
+    var isEmiNo = 0;
 
 //==============load products========================
 
@@ -646,7 +650,8 @@ $(document).ready(function() {
                             return {
                                 label: item.label,
                                 value: item.value,
-                                price: item.price
+                                price: item.price,
+                                discount: item.discount
                             }
                         }));
                     }
@@ -684,6 +689,8 @@ $(document).ready(function() {
 
             itemCode = ui.item.value;
             var price = (ui.item.price);
+            discount_precent = ui.item.discount;
+            $('#disPercent').val(discount_precent);
             $.ajax({
                 type: "post",
                 url: baseUrl+"/Product/getProductByIdforSTO",
@@ -692,26 +699,74 @@ $(document).ready(function() {
                     var resultData = JSON.parse(json);
 
                     if (resultData) {
-                         if(resultData.serial){
-                            $.each(resultData.serial, function(key, value) {
-                                var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
+                        //  if(resultData.serial){
+                        //     $.each(resultData.serial.SerialNo, function(key, value) {
+                        //         var serialNoArrIndex2 = $.inArray(value, stockSerialnoArr);
 
-                                if (serialNoArrIndex1 < 0) {
-                                    stockSerialnoArr.push(value);
+                        //         if (serialNoArrIndex2 < 0) {
+                        //             stockSerialnoArr.push(value);
+                        //         }
+                        //     });
+                        // }
+
+                        if (resultData.serial) {
+                            let SerialNoRaw = resultData.serial.SerialNo;
+
+                            if (Array.isArray(SerialNoRaw)) {
+                                // If it's an array, iterate and push
+                                SerialNoRaw.forEach(function(value) {
+                                    if ($.inArray(value, stockSerialnoArr) < 0) {
+                                        stockSerialnoArr.push(value);
+                                    }
+                                });
+                            } else if (SerialNoRaw) {
+                                // If it's a single value, push it directly
+                                if ($.inArray(SerialNoRaw, stockSerialnoArr) < 0) {
+                                    stockSerialnoArr.push(SerialNoRaw);
                                 }
-                            });
+                            }
                         }
 
-                         if(resultData.product){
-                        autoSerial = resultData.product.IsRawMaterial;
-                    
-                        loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                       
-                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
-                             0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
-                              resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice);
-                    }
+                         let SerialNoRaw = resultData.serial?.SerialNo ?? 0;
+                            let SerialNo = 0;
+
+                            if (SerialNoRaw) {
+                                if (Array.isArray(SerialNoRaw)) {
+                                    
+                                    SerialNo = 0;
+                                } else {
+                                  
+                                    SerialNo = SerialNoRaw;
+                                }
+                            }
+
+                            let EmiNo = resultData.serial?.EmiNo ?? 0;
+
+                            
+
+
+                            // Load VAT/NBT
+                            loadVATNBT(resultData.product.IsTax, resultData.product.IsNbt, resultData.product.NbtRatio);
+
+                            // Load product modal
+                            loadProModal(
+                                resultData.product.Prd_Description,
+                                resultData.product.ProductCode,
+                                resultData.price_stock.Price,
+                                resultData.product.Prd_CostPrice,
+                                SerialNo,
+                                resultData.product.IsSerial,
+                                resultData.product.IsFreeIssue,
+                                resultData.product.IsOpenPrice,
+                                resultData.product.IsMultiPrice,
+                                resultData.product.Prd_UPC,
+                                resultData.product.WarrantyPeriod,
+                                resultData.product.IsRawMaterial,
+                                resultData.product.UOM_Name,
+                                resultData.product.ProductVatPrice,
+                                EmiNo
+                            );
+
 
                     $("#proStock").html('');
                     $("#priceStock").html('');
@@ -879,22 +934,45 @@ var proNbt=0;
     }
 
 //load model
-    function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty, isautoSerial,upm,vatSell) {
-
+    function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty, isEmiNo,upm,vatSell,EmiNo) {
+console.log('EmiNo',EmiNo);
 $("#productName").html('');
         $("#qty").focus();
-      console.log(misSerial,isautoSerial,mserial);
-        if (misSerial == 1 || isautoSerial == 1) {
-           $("#serialNo").val(mserial);
-           $("#serialNoCheck").val(mserial);
-           $("#qty").val(1);
-           $("#qty").attr('disabled', true);
+      console.log(misSerial,isEmiNo,mserial);
+        if (misSerial == 1 && isEmiNo == 0) {
+            $("#serialNo").val(mserial);
+            $("#serialNoCheck").val(mserial);
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
             $("#dv_SN").show();
+            $("#emiDiv").hide();
+           
+            $("#qty").focus();
+            $("#qty").focus();
+        }else if(misSerial == 0 && isEmiNo == 1){
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
+             $("#mSerial").val('');
+            $("#emiDiv").show();
+           
+            $("#qty").focus();
+            $("#qty").focus();
+        }else if (misSerial == 1 && isEmiNo == 1){
+            $("#serialNo").val(mserial);
+            $("#serialNoCheck").val(mserial);
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
+            $("#dv_SN").show();
+            $("#emiDiv").show();
+           
+            $("#qty").focus();
             $("#qty").focus();
         } else {
            $("#mSerial").val('');
             $("#qty").attr('disabled', false);
             $("#dv_SN").hide();
+            $("#emiDiv").hide();
+
         }
         $("#qty").val(1);
 //        $("#mLProCode").html(mcode);
@@ -907,6 +985,8 @@ $("#productName").html('');
         $("#isSerial").val(misSerial);
         $("#upc").val(upc);
         $("#upm").html(upm);
+        $("#emiNo").val(EmiNo);
+        $("#isEmi").val(isEmiNo);
 
         if(vatSell==0 || vatSell==null){
             $("#proVatPrice").val(msellPrice);
@@ -919,6 +999,7 @@ $("#productName").html('');
         } else {
             $("#dv_SN").hide();
         }
+        
 
         if (misFree == 1) {
             $("#dv_FreeQty").show();
@@ -1176,8 +1257,11 @@ var vatSellingPrice = 0;
         orgSellingPrice= parseFloat($("#orgSellPrice").val());
         var unit = $("#mUnit option:selected").val();
         var prdName = $("#prdName").val();
+        var itemCode = $("#itemCode").val();
         var serialNo = $("#serialNo").val();
+        var emiNo = $("#emiNo").val();
         var is_serail = $("#isSerial").val();
+         var isEmi = $("#isEmi").val();
          priceLevel = $("#priceLevel option:selected").val();
         var qty = parseFloat($("#qty").val());
         var upc = parseFloat($("#upc").val());
@@ -1235,7 +1319,7 @@ var vatSellingPrice = 0;
         maxSerialQty = qty;
         maxSerialQty2 = qty;
 
-        if (is_serail == 1 && autoSerial == 0) {
+        if (is_serail == 1 && isEmiNo == 0) {
             serialQty = newSerialQty;
             qty = qty;
         } else {
@@ -1252,7 +1336,7 @@ var vatSellingPrice = 0;
         var itemCodeArrIndex = $.inArray(itemCode, itemcode);
         var itemCodeSellingPrice = itemCode + '_' + sellingPrice;
         var itemCodesellArrIndex = $.inArray(itemCodeSellingPrice, itemcode);
-        autoSerial=0;
+        isEmiNo=0;
 
         if (itemCode == '' || itemCode == 0) {
             $.notify("Please select a item.", "warning");
@@ -1315,7 +1399,36 @@ var vatSellingPrice = 0;
                         $("#serialQty").val(serialQty);
                     }
 
-                    $("#tbl_item tbody").append("<tr serial_batch='0'  ri=" + i + " id=" + i + " isZero='"+isSellZero+"' proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "'  vatunit_price='" + vatSellingPrice + "'  org_unit_price='" + orgSellingPrice + "' upc='" + upc + "' caseCost='" + casecost + "' isSerial='" + is_serail + "' serial='" + serialNo + "' discount_percent='" + discount_precent + "' cPrice='" + costPrice + "' pL='" + priceLevel + "' fQ='" + freeQty + "' nonDisTotalNet='" + totalNet2 + "' netAmount='" + totalNet + "' proDiscount='" + product_discount + "' proName='" + prdName + "'  isvat='"+isNewVat+"' isnbt='"+isNewNbt+"' nbtRatio='"+newNbtRatio+"' proVat='"+proVat+"' proNbt='"+proNbt+"'  salesPerson='"+salesperson+"'  isbatchSerial='0' warranty='"+warranty+"'>" +
+                    $("#tbl_item tbody").append("<tr serial_batch='0'  ri=" + i + 
+                        " id=" + i + 
+                        " isZero='"+isSellZero+
+                        "' proCode='" + itemCode + 
+                        "' uc='" + unit + 
+                        "' qty='" + qty + 
+                        "' unit_price='" + sellingPrice + 
+                        "'  vatunit_price='" + vatSellingPrice + 
+                        "'  org_unit_price='" + orgSellingPrice + 
+                        "' upc='" + upc + 
+                        "' caseCost='" + casecost + 
+                        "' isSerial='" + is_serail + 
+                        "' isEmi='" + isEmi + 
+                        "' serial='" + serialNo + 
+                        "' emiNo='" + emiNo + 
+                        "' discount_percent='" + discount_precent + 
+                        "' cPrice='" + costPrice + 
+                        "' pL='" + priceLevel + 
+                        "' fQ='" + freeQty + 
+                        "' nonDisTotalNet='" + totalNet2 + 
+                        "' netAmount='" + totalNet + 
+                        "' proDiscount='" + product_discount + 
+                        "' proName='" + prdName + 
+                        "'  isvat='"+isNewVat+
+                        "' isnbt='"+isNewNbt+
+                        "' nbtRatio='"+newNbtRatio+
+                        "' proVat='"+proVat+
+                        "' proNbt='"+proNbt+
+                        "'  salesPerson='"+salesperson+
+                        "'  isbatchSerial='0' warranty='"+warranty+"'>" +
                         "<td class='text-center'>" + i + "</td>" +
                         "<td class='text-left'>" + itemCode + "</td>" +
                         "<td>" + prdName + "</td><td>" + unit + "</td>" +
@@ -1326,6 +1439,9 @@ var vatSellingPrice = 0;
                         "<td class='text-right' >" + accounting.formatMoney(totalNet) + "</td>" +
                         "<td>" + serialNo + "</td>" +
                         "<td>" + warrantytype + "</td>" +
+                        "<td>" + emiNo + "</td>" +
+                        "<td style='display:none'>" + is_serail + "</td>" +
+                        "<td style='display:none'>" + isEmi + "</td>" +
                         // "<td>" + salespname + "</td>" +
                         "<td><i class='glyphicon glyphicon-edit edit btn btn-info btn-xs'></i></td>" +
                         "<td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td>" +
@@ -1339,6 +1455,7 @@ var vatSellingPrice = 0;
                         } else {
                             $("#serialNo").val('');
                            $("#serialNo").focus();
+                            clear_gem_data();
                         }
                     }
                     setProductTable();
@@ -1348,8 +1465,7 @@ var vatSellingPrice = 0;
                 }
             }
             else if (is_serail == 1) {
-
-console.log('Serial',serialNo,stockSerialnoArr);
+                console.log('Serial',serialNo,stockSerialnoArr);
                 var serialNoArrIndex = $.inArray(serialNo, serialnoarr);
                 var StockserialNoArrIndex = $.inArray(serialNo, stockSerialnoArr);
                     if (serialNo == '' || serialNo == 0) {
@@ -1400,7 +1516,36 @@ console.log('Serial',serialNo,stockSerialnoArr);
                             $("#serialQty").val(serialQty);
                         }
 
-                        $("#tbl_item tbody").append("<tr serial_batch='"+serialBatch+"' ri=" + i + " id=" + i + "  isZero='"+isSellZero+"'  proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "'  vatunit_price='" + vatSellingPrice + "'   org_unit_price='" + orgSellingPrice + "'  upc='" + upc + "' caseCost='" + casecost + "' isSerial='" + is_serail + "' serial='" + serialNo + "' discount_percent='" + discount_precent + "' cPrice='" + costPrice + "' pL='" + priceLevel + "' fQ='" + freeQty + "' nonDisTotalNet='" + totalNet2 + "' netAmount='" + totalNet + "' proDiscount='" + product_discount + "' proName='" + prdName + "'  isvat='"+isNewVat+"' isnbt='"+isNewNbt+"' nbtRatio='"+newNbtRatio+"' proVat='"+proVat+"' proNbt='"+proNbt+"' salesPerson='"+salesperson+"' isbatchSerial='1' warranty='"+warranty+"'>" +
+                        $("#tbl_item tbody").append("<tr serial_batch='"+serialBatch+"' ri=" + i + 
+                            " id=" + i + 
+                            "  isZero='"+isSellZero+
+                            "'  proCode='" + itemCode + 
+                            "' uc='" + unit + 
+                            "' qty='" + qty + 
+                            "' unit_price='" + sellingPrice + 
+                            "'  vatunit_price='" + vatSellingPrice + 
+                            "'   org_unit_price='" + orgSellingPrice + 
+                            "'  upc='" + upc + 
+                            "' caseCost='" + casecost + 
+                            "' isSerial='" + is_serail + 
+                            "' isEmi='" + isEmi + 
+                            "' serial='" + serialNo + 
+                            "' emiNo='" + emiNo + 
+                            "' discount_percent='" + discount_precent + 
+                            "' cPrice='" + costPrice + 
+                            "' pL='" + priceLevel + 
+                            "' fQ='" + freeQty + 
+                            "' nonDisTotalNet='" + totalNet2 + 
+                            "' netAmount='" + totalNet + 
+                            "' proDiscount='" + product_discount + 
+                            "' proName='" + prdName + 
+                            "'  isvat='"+isNewVat+
+                            "' isnbt='"+isNewNbt+
+                            "' nbtRatio='"+newNbtRatio+
+                            "' proVat='"+proVat+
+                            "' proNbt='"+proNbt+
+                            "' salesPerson='"+salesperson+
+                            "' isbatchSerial='1' warranty='"+warranty+"'>" +
                             "<td class='text-center'>" + i + "</td>" +
                             "<td class='text-left'>" + itemCode + "</td>" +
                             "<td>" + prdName + "</td><td>" + unit + "</td>" +
@@ -1411,6 +1556,9 @@ console.log('Serial',serialNo,stockSerialnoArr);
                             "<td class='text-right' >" + accounting.formatMoney(totalNet) + "</td>" +
                             "<td>" + serialNo + "</td>" +
                             "<td>" + warrantytype + "</td>" +
+                            "<td>" + emiNo + "</td>" +
+                            "<td style='display:none'>" + is_serail + "</td>" +
+                            "<td style='display:none'>" + isEmi + "</td>" +
                             // "<td>"+salespname+"</td>" +
                             "<td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td>" +
                             "</tr>");
@@ -1424,6 +1572,7 @@ console.log('Serial',serialNo,stockSerialnoArr);
                             } else {
                                 $("#serialNo").val('');
                                 $("#serialNo").focus();
+                                 clear_gem_data();
                             }
                         }
                         setProductTable();
@@ -1462,7 +1611,8 @@ console.log('Serial',serialNo,stockSerialnoArr);
         var proNbt = parseFloat($(this).parent().parent().attr('proNbt'));
         var proDiscount = parseFloat($(this).parent().parent().attr('proDiscount'));
         var disPrecent = parseFloat($(this).parent().parent().attr('discount_percent'));
-
+        var emiNo = parseFloat($(this).parent().parent().attr('emiNo'));
+        console.log('editemiNo',emiNo);
         if(disPrecent>0){
             discount_type=1;
             discount_precent=disPrecent;
@@ -1483,6 +1633,7 @@ console.log('Serial',serialNo,stockSerialnoArr);
             $("#freeqty").val(freeqty);
             $("#isSerial").val(isSerial);
             $("#serialNo").val(serialNo);
+            $("#emiNo").val(emiNo);
             $("#proNbtRatio").val(nbtratio);
             // $("#estPrice").val(estPrice);
             $("#unitcost").val(costprice);
@@ -1599,6 +1750,7 @@ var action=0;
         var product_code = new Array();
         var item_code = new Array();
         var serial_no = new Array();
+        var emi_no = new Array();
         var pro_name = new Array();
         var qty = new Array();
         var unit_price = new Array();
@@ -1622,7 +1774,7 @@ var action=0;
         var proNbt = new Array();
         var salePerson = new Array();
         var warrantytype = new Array();
-
+        var isEmi = new Array();
         var ccRef = new Array();
         var ccAmount = new Array();
         var ccType = new Array();
@@ -1695,6 +1847,8 @@ var action=0;
             proNbt.push($(this).attr('proNbt'));
             salePerson.push($(this).attr('salesperson'));
             warrantytype.push($(this).attr('warranty'));
+            emi_no.push($(this).attr('emiNo'));
+            isEmi.push($(this).attr('isEmi'));
         });
 
         var sendProduct_code = JSON.stringify(product_code);
@@ -1721,6 +1875,8 @@ var action=0;
         var proNbtArr = JSON.stringify(proNbt);
         var salePersonArr = JSON.stringify(salePerson);
         var warrantytypeArr = JSON.stringify(warrantytype);
+        var emi_noArr = JSON.stringify(emi_no);
+        var sendIsEmi = JSON.stringify(isEmi);
 
         // var r = confirm("Do you want to save this invoice.?");
         // if (r == true) {
@@ -1740,11 +1896,19 @@ var action=0;
                 $.ajax({
                     type: "post",
                     url: baseUrl+"/Salesinvoice/saveNewSalesInvoice",
-                    data: {remark:remark,com_amount:com_amount, compayto:compayto,receiver_name:receiver_name,receiver_nic:receiver_nic, refferNo:refferNo, regNo:registerNo,cusCode:cusCode,grn_no:poNo,po_number:po_number,insCompany:insCompany,shippingLabel:shippingLabel,shipping:shipping,newsalesperson:newsalesperson,action:action,salesorder: salesorder, invType:invType, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,org_unit_price:sendOrgUnit_price,
+                    data: {remark:remark,com_amount:com_amount, compayto:compayto,receiver_name:receiver_name,receiver_nic:receiver_nic, refferNo:refferNo, regNo:registerNo,cusCode:cusCode,grn_no:poNo,
+                        po_number:po_number,insCompany:insCompany,shippingLabel:shippingLabel,shipping:shipping,newsalesperson:newsalesperson,action:action,salesorder: salesorder, invType:invType, product_code: sendProduct_code,
+                         serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,org_unit_price:sendOrgUnit_price,
                         discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level, upc: sendUpc,
-                        case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name,isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,salePerson:salePersonArr, total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
-                        grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalVat:finalVat,totalNbt:finalNbt,bankacc:bankacc,bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,
-                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr},
+                        case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name,isVat:isVatArr,
+                        isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,salePerson:salePersonArr, total_cost: totalCost, totalProDiscount: totalProWiseDiscount,
+                         totalGrnDiscount: totalGrnDiscount, grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, 
+                         total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,
+                         nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalVat:finalVat,totalNbt:finalNbt,bankacc:bankacc,bank_amount:bank_amount,
+                         cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,
+                         advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,
+                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, 
+                    chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr, emi_no:emi_noArr,isEmi: sendIsEmi},
                     success: function(data) {
                         var resultData = JSON.parse(data);
                         var feedback = resultData['fb'];
@@ -1829,6 +1993,7 @@ var action=0;
         var product_code = new Array();
         var item_code = new Array();
         var serial_no = new Array();
+        var emi_no = new Array();
         var pro_name = new Array();
         var qty = new Array();
         var unit_price = new Array();
@@ -1852,7 +2017,7 @@ var action=0;
         var proNbt = new Array();
         var salePerson = new Array();
         var warrantytype = new Array();
-
+        var isEmi = new Array();
         var ccRef = new Array();
         var ccAmount = new Array();
         var ccType = new Array();
@@ -1926,6 +2091,8 @@ var action=0;
             proNbt.push($(this).attr('proNbt'));
             salePerson.push($(this).attr('salesperson'));
             warrantytype.push($(this).attr('warranty'));
+            emi_no.push($(this).attr('emiNo'));
+             isEmi.push($(this).attr('isEmi'));
         });
 
         var sendProduct_code = JSON.stringify(product_code);
@@ -1952,6 +2119,8 @@ var action=0;
         var proNbtArr = JSON.stringify(proNbt);
         var salePersonArr = JSON.stringify(salePerson);
         var warrantytypeArr = JSON.stringify(warrantytype);
+        var emi_noArr = JSON.stringify(emi_no);
+         var sendIsEmi = JSON.stringify(isEmi);
 
         cardAmount = 0;
         chequeAmount = 0;
@@ -1979,11 +2148,19 @@ var action=0;
             $.ajax({
                 type: "post",
                 url: baseUrl+"/Salesinvoice/saveNewSalesInvoice",
-                data: {remark:remark,com_amount:com_amount, compayto:compayto,receiver_name:receiver_name,receiver_nic:receiver_nic, refferNo:refferNo, regNo:registerNo,cusCode:cusCode,grn_no:poNo,po_number:po_number,insCompany:insCompany,shippingLabel:shippingLabel,shipping:shipping,newsalesperson:newsalesperson,action:action,salesorder: salesorder, invType:invType, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,org_unit_price:sendOrgUnit_price,
-                    discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level, upc: sendUpc,
-                    case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name,isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,salePerson:salePersonArr, total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
-                    grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalVat:finalVat,totalNbt:finalNbt,bankacc:bankacc,bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,
-                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr},
+                data: {remark:remark,com_amount:com_amount, compayto:compayto,receiver_name:receiver_name,receiver_nic:receiver_nic, refferNo:refferNo, regNo:registerNo,
+                    cusCode:cusCode,grn_no:poNo,po_number:po_number,insCompany:insCompany,shippingLabel:shippingLabel,shipping:shipping,newsalesperson:newsalesperson,
+                    action:action,salesorder: salesorder, invType:invType, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,
+                    org_unit_price:sendOrgUnit_price,discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type,
+                    price_level: sendPrice_level, upc: sendUpc,case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, 
+                    isSerial: sendIsSerial, proName: sendPro_name,isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,salePerson:salePersonArr,
+                    total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,grnDate: grnDate, invUser: invUser, 
+                    total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, 
+                    maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,
+                    totalVat:finalVat,totalNbt:finalNbt,bankacc:bankacc,bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,
+                    cardAmount:cardAmount,advance_amount:advance_amount,advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,
+                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, 
+                    chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr,emi_no:emi_noArr,isEmi: sendIsEmi},
                 success: function(data) {
                     var resultData = JSON.parse(data);
                     var feedback = resultData['fb'];
@@ -2069,6 +2246,7 @@ var action=0;
         var product_code = new Array();
         var item_code = new Array();
         var serial_no = new Array();
+         var emi_no = new Array();
         var pro_name = new Array();
         var qty = new Array();
         var unit_price = new Array();
@@ -2092,7 +2270,7 @@ var action=0;
         var proNbt = new Array();
         var salePerson = new Array();
         var warrantytype = new Array();
-
+         var isEmi = new Array();
         var ccRef = new Array();
         var ccAmount = new Array();
         var ccType = new Array();
@@ -2166,6 +2344,8 @@ var action=0;
             proNbt.push($(this).attr('proNbt'));
             salePerson.push($(this).attr('salesperson'));
             warrantytype.push($(this).attr('warranty'));
+            emi_no.push($(this).attr('emiNo'));
+             isEmi.push($(this).attr('isEmi'));
         });
 
         var sendProduct_code = JSON.stringify(product_code);
@@ -2192,6 +2372,8 @@ var action=0;
         var proNbtArr = JSON.stringify(proNbt);
         var salePersonArr = JSON.stringify(salePerson);
         var warrantytypeArr = JSON.stringify(warrantytype);
+        var emi_noArr = JSON.stringify(emi_no);
+         var sendIsEmi = JSON.stringify(isEmi);
 
         cardAmount = 0;
         chequeAmount = 0;
@@ -2223,7 +2405,8 @@ var action=0;
                     discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level, upc: sendUpc,
                     case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name,isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,salePerson:salePersonArr, total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
                     grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalVat:finalVat,totalNbt:finalNbt,bankacc:bankacc,bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,
-                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr},
+                    ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr, ccName: ccNameArr,chequeNo:chequeNo,bank: bank, chequeReference: chequeReference, 
+                    chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate, mchange: mchange, warrantytype:warrantytypeArr,emi_no:emi_noArr,isEmi: sendIsEmi},
                 success: function(data) {
                     var resultData = JSON.parse(data);
                     var feedback = resultData['fb'];
@@ -2304,7 +2487,7 @@ var action=0;
     $("#resetItems").click(function() {
         var r = confirm("Do you want to Reset.?");
         if (r == true) {
-            location.reload();
+            window.location.reload();
         } else {
             return false;
         }
@@ -2488,6 +2671,7 @@ var finalNbt=0;
         $("#sellingPrice").val('');
         $("#proVatPrice").val('');
         $("#serialNo").val('');
+        $("#emiNo").val('');
         $("#serialNoCheck").val('');
         $("#dv_SN").hide();
         $("#itemCode").val('');
@@ -2637,7 +2821,34 @@ function strPad(input, length, string, code) {
                 
                 serialnoarr.push(resultData.si_dtl[i].ProductCode);
 
-                $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + resultData.si_dtl[i].ProductCode + "' uc='" + resultData.si_dtl[i].SalesCaseOrUnit + "' qty='" + resultData.si_dtl[i].SalesQty + "' vatunit_price='" + resultData.si_dtl[i].SalesUnitPrice + "'  org_unit_price='" + resultData.si_dtl[i].SalesUnitPrice + "' unit_price='" + resultData.si_dtl[i].SalesUnitPrice + "' upc='" + resultData.si_dtl[i].SalesUnitPerCase + "' caseCost='" + (resultData.si_dtl[i].SalesCostPrice*resultData.si_dtl[i].SalesQty) + "' isSerial='" + resultData.si_dtl[i].SalesSerialNo + "' serial='" + resultData.si_dtl[i].SalesSerialNo + "' discount_percent='" + resultData.si_dtl[i].SalesDisPercentage + "' cPrice='" + resultData.si_dtl[i].SalesCostPrice + "' pL='" + resultData.si_dtl[i].SalesPriceLevel + "' fQ='" + resultData.si_dtl[i].SalesFreeQty + "' nonDisTotalNet='" + resultData.si_dtl[i].SalesTotalAmount + "' netAmount='" + resultData.si_dtl[i].SalesInvNetAmount + "' proDiscount='" + resultData.si_dtl[i].SalesDisValue + "' proName='" + resultData.si_dtl[i].SalesProductName  + "'   isvat='"+resultData.si_dtl[i].SalesIsVat+"' isnbt='"+resultData.si_dtl[i].SalesIsNbt+"' nbtRatio='"+resultData.si_dtl[i].SalesNbtRatio+"' proVat='"+resultData.si_dtl[i].SalesVatAmount+"' proNbt='"+resultData.si_dtl[i].SalesNbtAmount+"'  salesPerson='"+resultData.si_dtl[i].SalesPerson+"' warranty='"+resultData.si_dtl[i].WarrantyMonthNew+"'>" +
+                $("#tbl_item tbody").append("<tr ri=" + i + 
+                    " id=" + i + 
+                    " proCode='" + resultData.si_dtl[i].ProductCode + 
+                    "' uc='" + resultData.si_dtl[i].SalesCaseOrUnit + 
+                    "' qty='" + resultData.si_dtl[i].SalesQty + 
+                    "' vatunit_price='" + resultData.si_dtl[i].SalesUnitPrice + 
+                    "'  org_unit_price='" + resultData.si_dtl[i].SalesUnitPrice + 
+                    "' unit_price='" + resultData.si_dtl[i].SalesUnitPrice + 
+                    "' upc='" + resultData.si_dtl[i].SalesUnitPerCase + 
+                    "' caseCost='" + (resultData.si_dtl[i].SalesCostPrice*resultData.si_dtl[i].SalesQty) + 
+                    "' isSerial='" + resultData.si_dtl[i].SalesSerialNo + 
+                    "' serial='" + resultData.si_dtl[i].SalesSerialNo + 
+                    "' discount_percent='" + resultData.si_dtl[i].SalesDisPercentage + 
+                    "' cPrice='" + resultData.si_dtl[i].SalesCostPrice + 
+                    "' pL='" + resultData.si_dtl[i].SalesPriceLevel + 
+                    "' fQ='" + resultData.si_dtl[i].SalesFreeQty + 
+                    "' nonDisTotalNet='" + resultData.si_dtl[i].SalesTotalAmount + 
+                    "' netAmount='" + resultData.si_dtl[i].SalesInvNetAmount + 
+                    "' proDiscount='" + resultData.si_dtl[i].SalesDisValue + 
+                    "' proName='" + resultData.si_dtl[i].SalesProductName  + 
+                    "'   isvat='"+resultData.si_dtl[i].SalesIsVat+
+                    "' isnbt='"+resultData.si_dtl[i].SalesIsNbt+
+                    "' nbtRatio='"+resultData.si_dtl[i].SalesNbtRatio+
+                    "' proVat='"+resultData.si_dtl[i].SalesVatAmount+
+                    "' proNbt='"+resultData.si_dtl[i].SalesNbtAmount+
+                    "' salesPerson='"+resultData.si_dtl[i].SalesPerson+
+                    "' warranty='"+resultData.si_dtl[i].WarrantyMonthNew+"'>" +
+                    "' emiNo='"+resultData.si_dtl[i].emiNo+"'>" +
                     "<td class='text-center'>" + (i+1) + "</td>" +
                     "<td class='text-left'>" + resultData.si_dtl[i].ProductCode + "</td>" +
                     "<td>" + resultData.si_dtl[i].SalesProductName + "</td>" +
@@ -2649,6 +2860,7 @@ function strPad(input, length, string, code) {
                     "<td class='text-right' >" + (resultData.si_dtl[i].SalesSerialNo) + "</td>" +
                     // "<td></td>" +
                     "<td>" + resultData.si_dtl[i].WarrantyMonthNew + "</td>" +
+                    "<td>" + resultData.si_dtl[i].emiNo + "</td>" +
                     "<td><i class='glyphicon glyphicon-edit edit btn btn-info btn-xs'></i></td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
                 totalProWiseDiscount += parseFloat(resultData.si_dtl[i].SalesDisValue);
             }
@@ -2706,6 +2918,8 @@ function strPad(input, length, string, code) {
         $("#lbltotalNbtAmount").html(accounting.formatMoney(resultData.si_hed.SalesNbtAmount));
         $("#lbltotalPONetAmount").html(accounting.formatMoney(resultData.si_hed.SalesNetAmount));
         $("#lbltotalPOAdvanceAmount").html(accounting.formatMoney(resultData.si_hed.SalesAdvancePayment));
+        $("#lbltotalPaidAmount").html(accounting.formatMoney(resultData.si_hed.SalesCustomerPayment));
+        $("#lbltotalBlanceAmount").html(accounting.formatMoney(resultData.si_hed.Blance));
 
 
         if(resultData.si_hed.SalesCashAmount>0){

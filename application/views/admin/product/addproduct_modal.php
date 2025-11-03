@@ -88,6 +88,15 @@
                             <span class="input-group-btn"><button class="btn btn-primary" id="editDep1">Update</button></span>
                         </div>
 
+                        <label for="cateogry" class="control-label">Department Discount</label>
+                        <div class="input-group" style="width: 200px;">
+                            <input class="form-control" type="int" name="depDiscount"  id="depDiscount" placeholder="Enter Discount percentage"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning" id="addDepdisbtn"><i class="fa fa-plus"></i></button>
+                                
+                            </span>
+                        </div>
+
                     </div>
 
                     <div class="form-group">
@@ -667,6 +676,23 @@
                 });
             }
         });
+
+        if (s_dep !== '' && s_dep !== '0') {
+            $.ajax({
+                url: "<?php echo base_url('admin/master/getDepDiscount/') ?>",
+                type: 'POST',
+                data: { department: s_dep },
+                success: function(resp) {
+                    resp = JSON.parse(resp);
+
+                    if (resp.fb === true) {
+                        $("#depDiscount").val(resp.discount);
+                    } else {
+                        $("#depDiscount").val(''); 
+                    }
+                }
+            });
+        }
     });
     
     $('#sub_department').change(function() {
@@ -1274,6 +1300,45 @@
         $("#loc_array").val(JSON.stringify(loc_array));
         $("#rack_array").val(JSON.stringify(rack_array));
         $("#bin_array").val(JSON.stringify(bin_array));
+    });
+
+    
+    $('#addDepdisbtn').click(function(e) {
+        e.preventDefault(); 
+
+        var department = $("#department").val();
+        var depDiscount = $("#depDiscount").val();
+
+        if (department === "0" || department === "" || department === null) {
+   
+            $.notify("Please select a department.", "warning");
+            $("#department").focus();
+            return false;
+        }
+
+        if (depDiscount === "" || depDiscount === null) {
+   
+            $.notify("Please Enter Valid Discount.", "warning");
+            $("#depDiscount").focus();
+            return false;
+        }
+        $.ajax({
+                type: "post",
+                url: "<?php echo base_url(); ?>" + "admin/master/depDiscount",
+                data: {department:department,depDiscount:depDiscount},
+                success: function (json) {
+                    var resultData = JSON.parse(json);
+                     if (resultData.fb === true) {
+                        $.notify(resultData.msg, "success");
+                    } else {
+                        $.notify(resultData.msg, "error");
+                    }
+                },
+                error: function () {
+                    alert('Error while request..');
+                }
+            });
+        e.preventDefault();
     });
     
 </script>

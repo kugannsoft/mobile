@@ -133,6 +133,8 @@ class Salesinvoice_model extends CI_Model {
         $proNameArr = json_decode($_POST['proName']);
         $salesPersonArr = json_decode($_POST['salePerson']);
         $warrantytypeArr = json_decode($_POST['warrantytype']);
+        $isEmiArr = json_decode($post['isEmi']);
+
         $location = $post['location'];
         $customerPonumber = $post['po_number'];
         $mchange = $post['mchange'];
@@ -140,6 +142,8 @@ class Salesinvoice_model extends CI_Model {
         $total_Advanceamount = $post['advance_amount'];
         $isRawMat =0;
         $totalCost = 0;
+        $emi_noArr = json_decode($post['emi_no']);
+         
 
         $this->db->trans_start();
 
@@ -182,7 +186,10 @@ class Salesinvoice_model extends CI_Model {
                     'SalesPerson' => $salesPersonArr[$i],
                     'SalesPerson' => $salesPersonArr[$i],
                     'WarrantyMonthNew'=>$warrantytypeArr[$i],
-                    'SellingPriceORG'=>$orgSell_priceArr[$i]
+                    'SellingPriceORG'=>$orgSell_priceArr[$i],
+                    'EmiNo'=>$emi_noArr[$i],
+                    'IsEmi'=>$isEmiArr[$i],
+                    'IsSerial'=>$isSerialArr[$i],
                 );
             $this->db->insert('salesinvoicedtl', $grnDtl);
             $sellPrice =0;
@@ -196,8 +203,19 @@ class Salesinvoice_model extends CI_Model {
              $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','1','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
             //update serial stock
-            if($serial_noArr[$i]!=''){
-                 $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+            // if($serial_noArr[$i]!=''){
+            //      $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+            // }
+
+            if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 0){
+                $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+            }
+
+            if($isSerialArr[$i]== 0 && $isEmiArr[$i] == 1){
+                $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=> $emi_noArr[$i]));
+            }
+            if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 1){
+                $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
             }
         }
         
@@ -1093,6 +1111,8 @@ class Salesinvoice_model extends CI_Model {
         $proNbtArr = json_decode($_POST['proNbt']);
         $proNameArr = json_decode($_POST['proName']);
         $salesPersonArr = json_decode($_POST['salePerson']);
+        $emi_noArr = json_decode($post['emi_no']);
+        $isEmiArr = json_decode($post['isEmi']);
         $location = $location;
         $isRawMat =0;
         $totalCost = 0;
@@ -1138,7 +1158,10 @@ class Salesinvoice_model extends CI_Model {
                 'SalesPerson' => $salesPersonArr[$i],
                 'WarrantyMonth'=>$WarrantyMonth,
                 'SellingPriceORG'=>$orgSell_priceArr[$i],
-                'JobNo'=>$grnHed['SalesPONumber']
+                'JobNo'=>$grnHed['SalesPONumber'],
+                'EmiNo'=>$emi_noArr[$i],
+                'IsEmi'=>$isEmiArr[$i],
+                'IsSerial'=>$isSerialArr[$i],
             );
             $this->db->insert('issuenote_dtl', $grnDtl);
             $sellPrice =0;
@@ -1149,12 +1172,19 @@ class Salesinvoice_model extends CI_Model {
                 $sellPrice=$sell_priceArr[$i];
             }
             //update stock
-            //$this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+            $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
             //update serial stock
-            // if($serial_noArr[$i]!=''){
-            //     $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
-            // }
+                if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 0){
+                    $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                }
+
+                if($isSerialArr[$i]== 0 && $isEmiArr[$i] == 1){
+                    $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=> $emi_noArr[$i]));
+                }
+                if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 1){
+                    $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                }
         }
 
         $cashAmount = $_POST['cashAmount'];
@@ -1220,6 +1250,8 @@ class Salesinvoice_model extends CI_Model {
         $proNbtArr = json_decode($_POST['proNbt']);
         $proNameArr = json_decode($_POST['proName']);
         $salesPersonArr = json_decode($_POST['salePerson']);
+        $emi_noArr = json_decode($post['emi_no']);
+        $isEmiArr = json_decode($post['isEmi']);
         $location = $location;
         $isRawMat =0;
         $totalCost = 0;
@@ -1306,7 +1338,10 @@ class Salesinvoice_model extends CI_Model {
                     'SalesPerson' => $salesPersonArr[$i],
                     'WarrantyMonth'=>$WarrantyMonth,
                     'SellingPriceORG'=>$orgSell_priceArr[$i],
-                    'JobNo'=>$grnHed['SalesPONumber']
+                    'JobNo'=>$grnHed['SalesPONumber'],
+                    'EmiNo'=>$emi_noArr[$i],
+                    'IsEmi'=>$isEmiArr[$i],
+                    'IsSerial'=>$isSerialArr[$i],
                 );
                 $this->db->insert('issuenote_dtl', $grnDtl);
                 $sellPrice =0;
@@ -1320,8 +1355,15 @@ class Salesinvoice_model extends CI_Model {
                 $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
                 //update serial stock
-                if($serial_noArr[$i]!=''){
+                if($serial_noArr[$i]== 1 && $isEmiArr[$i] == 0){
                     $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                }
+
+                if($serial_noArr[$i]== 0 && $isEmiArr[$i] == 1){
+                    $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=> $emi_noArr[$i]));
+                }
+                if($serial_noArr[$i]== 1 && $isEmiArr[$i] == 1){
+                    $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
                 }
             }
 

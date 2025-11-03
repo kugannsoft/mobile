@@ -36,6 +36,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td>Cost Price</td>
                                     <?php } ?>
                                     <td>Set Price</td>
+                                    <td>Retail Price</td>
+                                    <td>Wholesale Price</td>
                                     <td>###</td>
                                 </tr>
                             </thead>
@@ -80,6 +82,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         {"data": "Prd_CostPrice", searchable: false},
                         <?php } ?>
                         {"data": "Prd_SetAPrice", searchable: false},
+                        {"data": "retail_price", searchable: false},
+                        {"data": "wholesale_price", searchable: false},
                         {
                             <?php if (in_array("M6", $blockEdit) || $blockEdit == null) { ?>
                             "data": null, orderable: false, searchable: false,

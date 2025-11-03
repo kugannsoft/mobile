@@ -210,21 +210,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                 
                                             </div>
                                         </div>
-                                       <div class="form-group">
-                                            <label for="sellingPrice"class="col-sm-4 control-label">Wholesale Price <span class="required">*</span></label>
-                                            <div class="col-sm-6">
-                                                <input type="number"  tabindex="13"  min="0" step="1" class="form-control" name="wholesalesPrice" id="wholesalesPrice" placeholder="Enter Wholesales Price">
-                                                
-                                            </div>
-                                        </div>
                                         <div class="form-group" id="dv_SN">
-                                            <label for="product" class="col-sm-4 control-label">EMI No <span class="required">*</span></label>
+                                            <label for="product" class="col-sm-4 control-label">Seial No <span class="required">*</span></label>
                                             <div class="col-sm-6">
                                                 <input type="hidden" tabindex="14" class="form-control" required="required"  name="serialNo" id="serialNo" placeholder="Enter Serial No"  value="">
-                                                <input type="text" tabindex="14" class="form-control" required="required"  name="emiNo" id="emiNo" placeholder="Enter Serial No"  value="">
+                                                <!-- <input type="text" tabindex="14" class="form-control" required="required"  name="emiNo" id="emiNo" placeholder="Enter Serial No"  value=""> -->
                                                 <input type="hidden" tabindex="14" class="form-control" required="required"  name="serialQty" id="serialQty"  value="0">
                                             </div>
                                         </div>
+                                        <div class="form-group" id="emiDiv"> 
+                                             <label for="sellingPrice"class="col-sm-4 control-label">Emi No <span class="required">*</span></label>
+                                             <div class="col-sm-6">
+                                                 <input type="number"  tabindex="13"  min="0" step="1" class="form-control" name="emiNo" id="emiNo" placeholder="Enter IEMI Number">
+                                                 <small id="emiNoError" class="text-danger" style="display:none;"></small>
+                                             </div>
+                                         </div>
                                         <div class="form-group">
                                             <label for="product" class="col-sm-7 control-label">Product Wise Discount<span class="required">*</span></label>
                                             <div class="col-sm-3"><input tabindex="15" type="radio" checked required="required" class="prd_icheck"  name="discount_type" id="productWise" value="1"></div>
