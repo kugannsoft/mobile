@@ -69,7 +69,7 @@ class Stocktransfer extends Admin_Controller {
         $arr['product'] = $this->StockTransfer_model->loadproductbyserial($product, $pl, $location);
         $arr['productstock']  = $this->StockTransfer_model->loadproductstockbyidForSerial($product,$location);
         $arr['serial'] = $this->StockTransfer_model->loadproductbyserialArrayByCode($product, $pl, $location);
-        // $arr['pricestock']  = $this->StockTransfer_model->loadproductstockbypriceerw($product, $pl=1,$location);
+        $arr['pricestock']  = $this->StockTransfer_model->loadpricestockbyid($product, $pl=1,$location);
         echo json_encode($arr);
         die;
     }

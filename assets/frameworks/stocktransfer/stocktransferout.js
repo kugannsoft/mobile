@@ -90,13 +90,17 @@ $(document).ready(function() {
                         }
 
                          if(resultData.product){
-                        autoSerial = resultData.product;
+                         isEmiNo = resultData.product.IsRawMaterial;
                          $("#productStock").html('/ Available Main Stock = ' + resultData.productstock.Stock);
                          $("#priceStock").html('/ Available Price Stock = ' + resultData.pricestock.Stock);
                          stockavalibal = resultData.productstock.Stock;
 
                         //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
+                       // loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
+                       loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
+                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                              resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
                     }
 
                     $("#proStock").html('');
@@ -143,8 +147,11 @@ $(document).ready(function() {
                     var resultData = JSON.parse(json);
                     if (resultData) {
                          if(resultData.serial){
-                        $.each(resultData.serial, function(key, value) {
+                        var serialArr = [resultData.serial.SerialNo]; 
+                        $.each(serialArr, function(key, value) {
+                             console.log('serialNoArrIndex2value',value);
                             var serialNoArrIndex2 = $.inArray(value, stockSerialnoArr);
+                            console.log('serialNoArrIndex2',serialNoArrIndex2);
                             if (serialNoArrIndex2 < 0) {
                                 stockSerialnoArr.push(value);
                             }
@@ -153,7 +160,7 @@ $(document).ready(function() {
 
                         if(resultData.product){
                             itemCode = resultData.product.ProductCode;
-
+                            isEmiNo = resultData.product.IsRawMaterial;
                             // autoSerial = resultData.product.IsRawMaterial;
                             // loadVATNBT(isJobVat,isJobNbt,isJobNbtRatio);
                             
@@ -161,7 +168,11 @@ $(document).ready(function() {
                             stockavalibal = resultData.productstock.Stock;
                             $("#priceStock").html('/ Available Price Stock = ' + resultData.pricestock.Stock);
                             //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                           loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
+                           //loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
+                           loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
+                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                              resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
                         }
 
                         $("#proStock").html('');
@@ -252,24 +263,90 @@ $(document).ready(function() {
     }
 
     //load model
-    function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial) {
+      function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty, isEmiNo,upm,vatSell,EmiNo) {
 
-        $("#productName").html('');
-        $("#qty").focus();
+    //     $("#productName").html('');
+    //     $("#qty").focus();
        
-        if (misSerial == 1) {
-           $("#serialNo").val(mserial);
-           $("#serialNoCheck").val(mserial);
-           $("#qty").val(1);
-           $("#qty").attr('disabled', true);
+    //     if (misSerial == 1) {
+    //        $("#serialNo").val(mserial);
+    //        $("#serialNoCheck").val(mserial);
+    //        $("#qty").val(1);
+    //        $("#qty").attr('disabled', true);
+    //         $("#dv_SN").show();
+    //         $("#qty").focus();
+    //     } else {
+    //        $("#mSerial").val('');
+    //         $("#qty").attr('disabled', false);
+    //         $("#dv_SN").hide();
+    //     }
+    //     $("#qty").val(1);
+    //     $("#prdName").val(mname);
+    //     $("#productName").html(mname);
+    //     $("#itemCode").val(mcode);
+    //     $("#sellingPrice").val(msellPrice);
+    //     $("#orgSellPrice").val(msellPrice);
+    //     $("#unitcost").val(mcostPrice);
+    //     $("#isSerial").val(misSerial);
+     
+
+      
+
+    //     if (misSerial == 1) {
+    //         $("#dv_SN").show();
+    //     } else {
+    //         $("#dv_SN").hide();
+    //     }
+
+    //     // if (misFree == 1) {
+    //     //     $("#dv_FreeQty").show();
+    //     // } else {
+    //     //     $("#dv_FreeQty").hide();
+    //     // }
+    // }
+
+
+
+    $("#productName").html('');
+        $("#qty").focus();
+      console.log(misSerial,isEmiNo,mserial);
+        if (misSerial == 1 && isEmiNo == 0) {
+            $("#serialNo").val(mserial);
+            $("#serialNoCheck").val(mserial);
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
             $("#dv_SN").show();
+            $("#emiDiv").hide();
+           
+            $("#qty").focus();
+            $("#qty").focus();
+        }else if(misSerial == 0 && isEmiNo == 1){
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
+             $("#mSerial").val('');
+            $("#emiDiv").show();
+           
+            $("#qty").focus();
+            $("#qty").focus();
+        }else if (misSerial == 1 && isEmiNo == 1){
+            $("#serialNo").val(mserial);
+            $("#serialNoCheck").val(mserial);
+            $("#qty").val(1);
+            $("#qty").attr('disabled', true);
+            $("#dv_SN").show();
+            $("#emiDiv").show();
+           
+            $("#qty").focus();
             $("#qty").focus();
         } else {
            $("#mSerial").val('');
             $("#qty").attr('disabled', false);
             $("#dv_SN").hide();
+            $("#emiDiv").hide();
+
         }
         $("#qty").val(1);
+//        $("#mLProCode").html(mcode);
         $("#prdName").val(mname);
         $("#productName").html(mname);
         $("#itemCode").val(mcode);
@@ -277,21 +354,29 @@ $(document).ready(function() {
         $("#orgSellPrice").val(msellPrice);
         $("#unitcost").val(mcostPrice);
         $("#isSerial").val(misSerial);
-     
+        $("#upc").val(upc);
+        $("#upm").html(upm);
+        $("#emiNo").val(EmiNo);
+        $("#isEmi").val(isEmiNo);
 
-      
+        if(vatSell==0 || vatSell==null){
+            $("#proVatPrice").val(msellPrice);
+        }else{
+            $("#proVatPrice").val(vatSell);
+        }
 
         if (misSerial == 1) {
             $("#dv_SN").show();
         } else {
             $("#dv_SN").hide();
         }
+        
 
-        // if (misFree == 1) {
-        //     $("#dv_FreeQty").show();
-        // } else {
-        //     $("#dv_FreeQty").hide();
-        // }
+        if (misFree == 1) {
+            $("#dv_FreeQty").show();
+        } else {
+            $("#dv_FreeQty").hide();
+        }
     }
 
 
@@ -361,6 +446,8 @@ $(document).ready(function() {
         var prdName = $("#prdName").val();
         var serialNo = $("#serialNo").val();
         var is_serail = $("#isSerial").val();
+         var emiNo = $("#emiNo").val();
+         var isEmi = $("#isEmi").val();
         priceLevel = $("#priceLevel option:selected").val();
         var qty = parseFloat($("#qty").val());
         var upc = parseFloat($("#upc").val());
@@ -378,7 +465,7 @@ $(document).ready(function() {
         maxSerialQty = qty;
         maxSerialQty2 = qty;
 
-        if (is_serail == 1 && autoSerial == 0) {
+        if (is_serail == 1 && isEmiNo  == 0) {
             serialQty = newSerialQty;
             qty = qty;
         } else {
@@ -393,7 +480,9 @@ $(document).ready(function() {
         }
 
         var itemCodeArrIndex = $.inArray(itemCode, itemcode);
-        autoSerial=0;
+        var itemCodeSellingPrice = itemCode + '_' + sellingPrice;
+        var itemCodesellArrIndex = $.inArray(itemCodeSellingPrice, itemcode);
+        isEmiNo=0;
 
         if (itemCode == '' || itemCode == 0) {
             $.notify("Please select a item.", "warning");
@@ -433,7 +522,22 @@ $(document).ready(function() {
                         $("#serialQty").val(serialQty);
                     }
 
-                    $("#tbl_item tbody").append("<tr serial_batch='0'  ri=" + i + " id=" + i + "' proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "'  org_unit_price='" + orgSellingPrice + "' upc='" + upc + "' isSerial='" + is_serail + "' serial='" + serialNo +"' cPrice='" + costPrice + "' totalNet='" + totalNet +"' pL='" + priceLevel + "' fQ='" + freeQty + "' proName='" + prdName + "'>" +
+                    $("#tbl_item tbody").append("<tr serial_batch='0'  ri=" + i + 
+                        " id=" + i + "' proCode='" + itemCode + 
+                        "' uc='" + unit + 
+                        "' qty='" + qty + 
+                        "' unit_price='" + sellingPrice + 
+                        "'  org_unit_price='" + orgSellingPrice + 
+                        "' upc='" + upc + 
+                        "' isSerial='" + is_serail + 
+                        "' isEmi='" + isEmi + 
+                        "' emiNo='" + emiNo + 
+                        "' serial='" + serialNo +
+                        "' cPrice='" + costPrice + 
+                        "' totalNet='" + totalNet +
+                        "' pL='" + priceLevel + 
+                        "' fQ='" + freeQty + 
+                        "' proName='" + prdName + "'>" +
                         "<td class='text-center'>" + i + "</td>" +
                         "<td class='text-left'>" + itemCode + "</td>" +
                         "<td>" + prdName + "</td><td>" + unit + "</td>" +
@@ -441,7 +545,9 @@ $(document).ready(function() {
                         "<td class=''>" + accounting.formatNumber(sellingPrice) + "</td>" +
                         "<td class='' >" + accounting.formatMoney(totalNet) + "</td>" +
                         "<td>" + serialNo + "</td>" +
-                      
+                        "<td>" + emiNo + "</td>" +
+                        "<td style='display:none'>" + is_serail + "</td>" +
+                        "<td style='display:none'>" + isEmi + "</td>" +
                         // "<td>" + salespname + "</td>" +
                         "<td><i class='glyphicon glyphicon-edit edit btn btn-info btn-xs'></i></td>" +
                         "<td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td>" +
@@ -486,7 +592,7 @@ $(document).ready(function() {
                     else if (((itemCodeArrIndex >= 0 && is_serail == 1) || (itemCodeArrIndex < 0 && is_serail == 1))) {
 
                         
-                        itemcode.push(itemCode);
+                         itemcode.push(itemCodeSellingPrice);
                         serialnoarr.push(serialNo);
                     
                        
@@ -497,18 +603,33 @@ $(document).ready(function() {
                             $("#serialQty").val(serialQty);
                         }
 
-                        $("#tbl_item tbody").append("<tr serial_batch='"+serialBatch+"' ri=" + i + " id=" + i + "'  proCode='" + itemCode + 
-                            "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "'   org_unit_price='" + orgSellingPrice +
-                            "' isSerial='" + is_serail + "' serial='" + serialNo + "' cPrice='" + costPrice + "' pL='" + priceLevel +  "' totalNet='" + totalNet + 
-                            "' fQ='" + freeQty +"' proName='" + prdName +"'>" +
-                            "<td class='text-center'>" + i + "</td>" +
+                        $("#tbl_item tbody").append("<tr serial_batch='"+serialBatch+"' ri=" + i + 
+                            " id=" + i + 
+                            "'  proCode='" + itemCode + 
+                            "' uc='" + unit + 
+                            "' qty='" + qty + 
+                            "' unit_price='" + sellingPrice + 
+                            "' org_unit_price='" + orgSellingPrice +
+                            "' isSerial='" + is_serail + 
+                            "' isEmi='" + isEmi + 
+                            "' emiNo='" + emiNo + 
+                            "' serial='" + serialNo + 
+                            "' cPrice='" + costPrice + 
+                            "' pL='" + priceLevel +  
+                            "' totalNet='" + totalNet + 
+                            "' fQ='" + freeQty +
+                            "' proName='" + prdName +"'>" +
+                            "<td class='text-center'>" + i + 
+                            "</td>" +
                             "<td class='text-left'>" + itemCode + "</td>" +
                             "<td>" + prdName + "</td><td>" + unit + "</td>" +
                             "<td class='qty" + i + "'>" + accounting.formatNumber(qty) + "</td>" +
                             "<td class=''>" + accounting.formatNumber(sellingPrice) + "</td>" +
                             "<td class='totalNet' >" + accounting.formatMoney(totalNet) + "</td>" +
                             "<td>" + serialNo + "</td>" +
-                           
+                                 "<td>" + emiNo + "</td>" +
+                            "<td style='display:none'>" + is_serail + "</td>" +
+                            "<td style='display:none'>" + isEmi + "</td>" +
                             
                             "<td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td>" +
                             "</tr>");
@@ -643,8 +764,8 @@ $(document).ready(function() {
         var price_level = new Array();
         var fee_qty = new Array();
         var cost_price = new Array();
-        
-        
+        var emi_no = new Array();
+        var isEmi = new Array();
         
         let tranferDate = $('#tranfer_Date').val();
        
@@ -674,6 +795,8 @@ $(document).ready(function() {
             caseCost.push(($(this).attr("caseCost")));
             isSerial.push($(this).attr("isSerial"));
             pro_name.push($(this).attr("proName"));
+            emi_no.push($(this).attr('emiNo'));
+            isEmi.push($(this).attr('isEmi'));
            
         });
 
@@ -693,7 +816,8 @@ $(document).ready(function() {
         var sendCaseCost = JSON.stringify(caseCost);
         //var sendPro_total = JSON.stringify(pro_total);
         var sendIsSerial = JSON.stringify(isSerial);
-   
+         var emi_noArr = JSON.stringify(emi_no);
+        var sendIsEmi = JSON.stringify(isEmi);
 
         // var r = confirm("Do you want to save this invoice.?");
         // if (r == true) {
@@ -714,7 +838,7 @@ $(document).ready(function() {
                     data: {remark:remark,action:action,product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,org_unit_price:sendOrgUnit_price,
                         total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level,
                         case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, isSerial: sendIsSerial, proName: sendPro_name,
-                        tranferDate: tranferDate, invUser: invUser, maxSerialQty: maxSerialQty,fromloc:fromloc,toloc:toloc},
+                        tranferDate: tranferDate, invUser: invUser, maxSerialQty: maxSerialQty,fromloc:fromloc,toloc:toloc, emi_no:emi_noArr,isEmi: sendIsEmi},
                     success: function(data) {
                         var resultData = JSON.parse(data);
                         var feedback = resultData['fb'];
