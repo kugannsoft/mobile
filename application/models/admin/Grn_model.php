@@ -378,10 +378,10 @@ class Grn_model extends CI_Model {
                         ->get()->result();
     }
     
-       public function cancelGrn($cancelNo,$location,$canDate,$grnNo,$remark,$user,$supplier) {
+    public function cancelGrn($cancelNo,$location,$canDate,$grnNo,$remark,$user,$supplier) {
         $this->db->trans_start();
         $this->db->query("CALL SPT_CANCEL_GRN('$canDate','$grnNo','$user','$remark','$supplier','$cancelNo','$location')");
-         $isRawMat =0;
+        $isRawMat =0;
         $query = $this->db->get_where('goodsreceivenotedtl',array('GRN_No'=>$grnNo));
         if ($query->num_rows() > 0) {
             foreach ($query->result_array() as $row) {
@@ -390,10 +390,12 @@ class Grn_model extends CI_Model {
                 $price_levelArr=$row['GRN_PriceLevel'];
                 $cost_priceArr=$row['GRN_UnitCost'];
                 $sell_priceArr=$row['GRN_Selling'];
-//                $location=$row[''];
-                $serial_noArr=$row['SerialNo'];
-                $freeQtyArr=$row['GRN_FreeQty'];
 
+                $serial_noArr=$row['SerialNo'];
+                $emi_noArr=$row['EmiNo'];
+                $freeQtyArr=$row['GRN_FreeQty'];
+                $isSeralArr=$row['IsSerial'];
+                $isEmiArr=$row['IsEmiNo'];
                 $isRawMat = $this->db->select('isRawMaterial')->from('productcondition')->where(array('ProductCode'=> $product_codeArr))->get()->row()->isRawMaterial;
 
                 
@@ -404,6 +406,17 @@ class Grn_model extends CI_Model {
                 $this->db->update('product',array('Prd_CostPrice'=>$cost_priceArr),array('ProductCode'=> $product_codeArr));
             //update product stock
             //$this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$totalGrnQty',0,'$location')");
+
+                if($isSeralArr== 1 && $isEmiArr == 0){
+                    $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                }
+
+                if($isSeralArr== 0 && $isEmiArr == 1){
+                    $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
+                }
+                if($isSeralArr== 1 && $isEmiArr == 1){
+                    $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                }
             }
         }
         

@@ -52,9 +52,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php } ?></div>
                 <?php } ?>
                 <?php if (in_array("SM42", $blockDelete) || $blockDelete == null) { ?>
-                    <!--                    <div class="col-sm-2">--><?php //if ($invHed->InvIsCancel == 0) { ?>
-                    <!--                        <button type="button" --><?php //echo $disabled; ?><!-- id="btnCancel"-->
-                    <!--                                class="btn btn-danger btn-sm btn-block">Cancel</button>--><?php //} ?><!--</div>-->
+                    <div class="col-sm-2"><?php if ($invHed->InvIsCancel == 0) { ?>
+                        <button type="button"<?php echo $disabled; ?>id="btnCancel"
+                        class="btn btn-danger btn-sm btn-block">Cancel</button><?php } ?>
+                    </div>
                 <?php } ?>
             </div>
             <div class="row">
@@ -140,52 +141,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td ></td>
                             <td colspan="2" style="text-align:right;"><?php echo date('Y-m-d',strtotime($invHed->SalesDate));?>&nbsp;</td>
                         </tr>
-                        <!--                        <tr style="text-align:left;font-size:13px;">-->
-                        <!--                            <!--        <td> &nbsp;</td>-->
-                        <!--                            <td style="font-size:11px;text-align:left;">Vehicle No</td>-->
-                        <!--                            <td style=""></td>-->
-                        <!--                            <td colspan="2" style="font-size:11px;text-align:right;">--><?php //echo $invHed->SalesVehicle;?><!--</td>-->
-                        <!--                        </tr>-->
-                        <!--    <tr style="text-align:left;font-size:12px;">-->
-                        <!--        <td> &nbsp;</td>-->
-                        <!--        <td style="text-align:left;border-left: 1px solid #000;border-top:1px solid #000;border-right: 1px solid #000;">&nbsp;&nbsp;INVOICE NO.</td>-->
-                        <!--        <td style="border-top: 1px solid #000;"></td>-->
-                        <!--        <td colspan="2" style="text-align:left;border-right: 1px solid #000;border-top: 1px solid #000;">&nbsp;&nbsp;ORDER NO.</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr style="text-align:left;font-size:12px;">-->
-                        <!--        <td> &nbsp;</td>-->
-                        <!--        <td style="padding-top:0px;font-size:11px;text-align:right;border-left: 1px solid #000;border-bottom: 1px solid #000;border-right: 1px solid #000;">--><?php //echo $invHed->SalesInvNo ?><!--&nbsp;&nbsp;</td>-->
-                        <!--        <td style="border-bottom: 1px solid #000;"></td>-->
-                        <!--        <td colspan="2" style="font-size:11px;text-align:right;border-right: 1px solid #000;border-bottom: 1px solid #000;">--><?php //echo $invHed->SalesPONumber; ?><!--&nbsp;&nbsp;</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr style="text-align:left;font-size:12px;">-->
-                        <!--        <td> &nbsp;</td>-->
-                        <!--        <td style="text-align:left;border-left: 1px solid #000;border-right: 1px solid #000;">&nbsp;&nbsp;DATE</td>-->
-                        <!--        <td ></td>-->
-                        <!--        <td colspan="2" style="text-align:left;border-right: 1px solid #000;">&nbsp;&nbsp;CUSTOMER NO.</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr style="text-align:left;font-size:13px;">-->
-                        <!--        <td> &nbsp;</td>-->
-                        <!--        <td style="font-size:11px;text-align:right;border-right: 1px solid #000;border-left: 1px solid #000;border-bottom: 1px solid #000;">--><?php //echo $invHed->SalesDate;?><!--&nbsp;&nbsp;</td>-->
-                        <!--        <td style="border-bottom: 1px solid #000;"></td>-->
-                        <!--        <td colspan="2" style="font-size:11px;text-align:right;border-right: 1px solid #000;border-bottom: 1px solid #000;">--><?php // echo $invCus->CusCode;?><!--&nbsp;&nbsp;</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr style="text-align:left;font-size:12px;">-->
-                        <!--        <td style="text-align:left;font-size:13px;" colspan="2"></td><td></td><td style="text-align:left;font-size:13px;border-left: 1px solid #000;border-right: 1px solid #000;border-right: 1px solid #000;">&nbsp;&nbsp;INSURER </td><td></td><td colspan="2" style="border-right: 1px solid #000;">&nbsp;&nbsp;ISSUED BY</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr style="text-align:left;font-size:12px;">-->
-                        <!--        <td style="text-align:left;font-size:13px;" colspan="2"></td><td></td><td style="text-align:right;font-size:11px;border-left: 1px solid #000;border-bottom: 1px solid #000;border-right: 1px solid #000;">--><?php ////if($invHed->SalesInvType==1){?><!----><?php //echo $invHed->VComName; //}?><!--&nbsp;&nbsp;</td><td style="border-bottom: 1px solid #000;"></td><td colspan="2" style="font-size:11px;text-align:right;border-right: 1px solid #000;border-bottom: 1px solid #000;">--><?php // echo $invHed->first_name." ".$invHed->last_name[0];?><!--&nbsp;&nbsp;</td>-->
-                        <!--    </tr>-->
-                        <!--        </table>-->
-                        <!--        <table  class="tblhead"  style="margin-top:3px;font-size:12px;border-collapse:collapse;width:730px;font-family: Arial, Helvetica, sans-serif;" >-->
-                        <!--  <tr style=" border: 1px solid black;">-->
-                        <!--    <td  style="border: 1px solid black;width: 150px;">REG. NO. <br> &nbsp;&nbsp; <span style="text-align: center;font-size:11px;">--><?php //echo $invHed->SalesVehicle;?><!--</span></td>-->
-                        <!--    <td  style="border: 1px solid black;width: 150px;">CHASSIS NO. <br> &nbsp;&nbsp;<span style="text-align: center;font-size:11px;">--><?php //if(isset($invVehi)){ echo $invVehi->ChassisNo;}?><!--</span></td>-->
-                        <!--    <td  style="border: 1px solid black;width: 150px;">MAKE <br> &nbsp;&nbsp;<span style="text-align: center;font-size:11px;">--><?php //if(isset($invVehi)){ echo $invVehi->make;} ?><!--</span></td>-->
-                        <!--    <td  style="border: 1px solid black;width: 150px;">MODEL <br> &nbsp;&nbsp;<span style="text-align: center;font-size:11px;">--><?php // if(isset($invVehi)){ echo $invVehi->model;}?><!--</span></td>-->
-                        <!--  </tr>-->
-                        <!--  </table>-->
-
+                       
 
                         <style type="text/css" media="screen">
 
@@ -469,7 +425,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="col-lg-1">
                 <table class="table table-hover">
                     <thead>
-                    <th> <center> All Sales Invoice</center></th>
+                    <th> <center> All Issue Note</center></th>
                     </thead>
                     <tbody>
                     <?php foreach($sale as $v){?>
@@ -523,7 +479,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     $("#btnCancel").click(function(){
 
-        var r = prompt('Do you really want to cancel this invoice? Please enter a remark.');
+        var r = prompt('Do you really want to cancel this Issue Note? Please enter a remark.');
 
         if (r == null || r=='') {
             return false;
@@ -534,33 +490,52 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
 
-
-    function cancelInvoice(invoice,remark) {
+    function cancelInvoice(invoice, remark) {
         $.ajax({
-            url:'../../salesinvoice/cancelSalesInvoice',
-            dataType:'json',
-            type:'POST',
-            data:{salesinvno:invoice,remark:remark},
-            success:function(data) {
-                if(data==1){
-                    $.notify("Invoice canceled successfully.", "success");
-                    $("#btnCancel").attr('disabled', true);
-                }else if(data==2){
-                    $.notify("Error. Customer has done payment for this invoice. If you want to cancel this invoice please cancel the payment", "danger");
-                    $("#btnCancel").attr('disabled', false);
-                }else if(data==3){
-                    $.notify("Error. Invoice has already canceled.", "danger");
-                    $("#btnCancel").attr('disabled', false);
-                }else if(data==4){
-                    $.notify("Error. This Invoice not in your Location Please contact Your Admin.", "danger");
-                    $("#btnCancel").attr('disabled', false);
-                }else{
-                    $.notify("Error. Invoice not canceled successfully.", "danger");
-                    $("#btnCancel").attr('disabled', false);
+            url: '../../salesinvoice/cancelIssueNote',
+            dataType: 'json',
+            type: 'POST',
+            data: { salesinvno: invoice, remark: remark },
+            success: function (data) {
+                if (data.status === 'success') {
+                    $.notify("Issue Note Canceled successfully.", "sucess");
+                } else {
+                    $.notify("Issue Note Cancel Failed.", "danger");
                 }
+            },
+            error: function () {
+                $.notify("Something went to wrong.", "warning");
             }
         });
-    }
+}
+
+
+    // function cancelInvoice(invoice,remark) {
+    //     $.ajax({
+    //         url:'../../salesinvoice/cancelSalesInvoice',
+    //         dataType:'json',
+    //         type:'POST',
+    //         data:{salesinvno:invoice,remark:remark},
+    //         success:function(data) {
+    //             if(data==1){
+    //                 $.notify("Invoice canceled successfully.", "success");
+    //                 $("#btnCancel").attr('disabled', true);
+    //             }else if(data==2){
+    //                 $.notify("Error. Customer has done payment for this invoice. If you want to cancel this invoice please cancel the payment", "danger");
+    //                 $("#btnCancel").attr('disabled', false);
+    //             }else if(data==3){
+    //                 $.notify("Error. Invoice has already canceled.", "danger");
+    //                 $("#btnCancel").attr('disabled', false);
+    //             }else if(data==4){
+    //                 $.notify("Error. This Invoice not in your Location Please contact Your Admin.", "danger");
+    //                 $("#btnCancel").attr('disabled', false);
+    //             }else{
+    //                 $.notify("Error. Invoice not canceled successfully.", "danger");
+    //                 $("#btnCancel").attr('disabled', false);
+    //             }
+    //         }
+    //     });
+    // }
 
 
 

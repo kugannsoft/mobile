@@ -3095,17 +3095,33 @@ $arr[] =null;
                     $query = $this->db->get_where('salesinvoicedtl', array('SalesInvNo' => $invCanel['SalesInvoiceNo']));
                     if ($query->num_rows() > 0) {
                         foreach ($query->result_array() as $row) {
-                            //update serial stock
-                            $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
-                            if ($ps->num_rows() > 0) {
-                                $isPro = $this->db->select('SalesProductCode')->from('salesinvoicedtl')->where(array('SalesProductCode' => $row['SalesProductCode'], 'SalesSerialNo' => $row['SalesSerialNo'], 'SalesInvLocation' => $row['SalesInvLocation'], 'SalesInvNo' => $invCanel['SalesInvoiceNo']))->get();
-                                // echo $isPro->num_rows();die;
-                                if ($isPro->num_rows() > 0) {
-                                     $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo']));
-                                }
-                            } else {
-
+                           
+                            $isEmi = $row['IsEmi'];
+                            $isSerial = $row['IsSerial'];
+                            $emi_noArr = $row['EmiNo'];
+                            $serial_noArr = $row['SalesSerialNo'];
+                            $product_codeArr =  $row['SalesProductCode'];
+                            if($isSerial== 1 && $isEmi == 0){
+                                $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
                             }
+
+                            if($isSerial== 0 && $isEmi == 1){
+                                $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
+                            }
+                            if($isSerial== 1 && $isEmi == 1){
+                                $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                            }
+                            //update serial stock
+                            // $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
+                            // if ($ps->num_rows() > 0) {
+                            //     $isPro = $this->db->select('SalesProductCode')->from('salesinvoicedtl')->where(array('SalesProductCode' => $row['SalesProductCode'], 'SalesSerialNo' => $row['SalesSerialNo'], 'SalesInvLocation' => $row['SalesInvLocation'], 'SalesInvNo' => $invCanel['SalesInvoiceNo']))->get();
+                            //     // echo $isPro->num_rows();die;
+                            //     if ($isPro->num_rows() > 0) {
+                            //          $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo']));
+                            //     }
+                            // } else {
+
+                            // }
 
                             $proCode = $row['SalesProductCode'];
                             $totalGrnQty = $row['SalesQty'] +$row['SalesFreeQty'];
@@ -3192,17 +3208,36 @@ $arr[] =null;
                         $query = $this->db->get_where('salesinvoicedtl', array('SalesInvNo' => $invCanel['SalesInvoiceNo']));
                         if ($query->num_rows() > 0) {
                             foreach ($query->result_array() as $row) {
-                                //update serial stock
-                                $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
-                                if ($ps->num_rows() > 0) {
-                                    $isPro = $this->db->select('SalesProductCode')->from('salesinvoicedtl')->where(array('SalesProductCode' => $row['SalesProductCode'], 'SalesSerialNo' => $row['SalesSerialNo'], 'SalesInvLocation' => $row['SalesInvLocation'], 'SalesInvNo' => $invCanel['SalesInvoiceNo']))->get();
-                                    // echo $isPro->num_rows();die;
-                                    if ($isPro->num_rows() > 0) {
-                                        // $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo']));
-                                    }
-                                } else {
+                               echo "<script>console.log(" . json_encode($row) . ");</script>";
 
+                                $isEmi = $row['IsEmi'];
+                                $isSerial = $row['IsSerial'];
+                                $emi_noArr = $row['EmiNo'];
+                                $serial_noArr = $row['SalesSerialNo'];
+                                $product_codeArr =  $row['SalesProductCode'];
+                                if($isSerial== 1 && $isEmi == 0){
+                           
+                                    $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
                                 }
+
+                                if($isSerial== 0 && $isEmi == 1){
+                                  
+                                    $this->db->update('	productimeistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
+                                }
+                                if($isSerial== 1 && $isEmi == 1){
+                                    $this->db->update('productserialemistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                                }
+                                //update serial stock
+                                // $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
+                                // if ($ps->num_rows() > 0) {
+                                //     $isPro = $this->db->select('SalesProductCode')->from('salesinvoicedtl')->where(array('SalesProductCode' => $row['SalesProductCode'], 'SalesSerialNo' => $row['SalesSerialNo'], 'SalesInvLocation' => $row['SalesInvLocation'], 'SalesInvNo' => $invCanel['SalesInvoiceNo']))->get();
+                                //     // echo $isPro->num_rows();die;
+                                //     if ($isPro->num_rows() > 0) {
+                                //         // $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo']));
+                                //     }
+                                // } else {
+
+                                // }
 
                                 $proCode = $row['SalesProductCode'];
                                 $totalGrnQty = $row['SalesQty'];
@@ -3262,6 +3297,100 @@ $arr[] =null;
             }
         }
     }
+
+
+    public function cancelIssueNote() {
+        $checkRole = $_SESSION['role'];
+        $issueNoteNo = $this->input->post('salesinvno');
+        $remark = $this->input->post('remark');
+
+        $this->db->trans_start();
+
+        // Check issue note header
+        $query0 = $this->db->get_where('issuenote_hed', [
+            'SalesInvNo' => $issueNoteNo,
+            'InvIsCancel' => 0
+        ]);
+
+        if ($query0->num_rows() > 0) {
+            // Get details
+            $query = $this->db->get_where('issuenote_dtl', [
+                'SalesInvNo' => $issueNoteNo
+            ]);
+
+            if ($query->num_rows() > 0) {
+                foreach ($query->result_array() as $row) {
+                    $isEmi = $row['IsEmi'];
+                    $isSerial = $row['IsSerial'];
+                    $emi_noArr = $row['EmiNo'];
+                    $serial_noArr = $row['SalesSerialNo'];
+                    $product_codeArr = $row['SalesProductCode'];
+                    $location = $row['SalesInvLocation'];
+
+                    if ($isSerial == 1 && $isEmi == 0) {
+                        $this->db->update('productserialstock', [
+                            'Quantity' => 1
+                        ], [
+                            'ProductCode' => $product_codeArr,
+                            'Location' => $location,
+                            'SerialNo' => $serial_noArr
+                        ]);
+                    }
+
+                    if ($isSerial == 0 && $isEmi == 1) {
+                        $this->db->update('productimeistock', [
+                            'Quantity' => 1
+                        ], [
+                            'ProductCode' => $product_codeArr,
+                            'Location' => $location,
+                            'EmiNo' => $emi_noArr
+                        ]);
+                    }
+
+                    if ($isSerial == 1 && $isEmi == 1) {
+                        $this->db->update('productserialemistock', [
+                            'Quantity' => 1
+                        ], [
+                            'ProductCode' => $product_codeArr,
+                            'Location' => $location,
+                            'SerialNo' => $serial_noArr
+                        ]);
+                    }
+
+                    // Update price and stock
+                    $proCode = $row['SalesProductCode'];
+                    $totalGrnQty = $row['SalesQty'] + $row['SalesFreeQty'];
+                    $loc = $row['SalesInvLocation'];
+                    $pl = $row['SalesPriceLevel'];
+                    $costp = $row['SalesCostPrice'];
+                    $selp = $row['SalesUnitPrice'];
+
+                    $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
+                    $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')");
+                }
+            }
+
+            // Update issue note header
+            $this->db->update('issuenote_hed', [
+                'InvIsCancel' => 1,
+                'salesInvRemark' => $remark
+            ], [
+                'SalesInvNo' => $issueNoteNo
+            ]);
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(['status' => 'error', 'message' => 'Cancel failed']);
+        } else {
+            echo json_encode(['status' => 'success', 'message' => 'Issue note cancelled successfully']);
+        }
+        die;
+    }
+
+
+    
 
     public function saveDeliveryNote() {
         // print_r($_POST);die;

@@ -694,7 +694,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "post",
                 url: baseUrl+"/Product/getProductByIdforSTO",
-                data: {proCode: itemCode, prlevel: 1, location: loc,price:price},
+                data: {proCode: itemCode, prlevel: price_level, location: loc,price:price},
                 success: function(json) {
                     var resultData = JSON.parse(json);
 

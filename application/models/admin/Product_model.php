@@ -190,6 +190,7 @@ class Product_model extends CI_Model {
     }
 
     public function loadproductbypcode($product, $pl) {
+        
         return $this->db->select('product.*,productcondition.*,productprice.ProductPrice,productstock.stock')->from('product')
                         ->where('product.ProductCode', $product)
                         ->where('productprice.PL_No', $pl)
@@ -648,7 +649,8 @@ if($serials){
     public function loadpricestockbyid($product, $location, $price, $pl)
         {
             
-            $serialCheck = $this->db->select('pricestock.Stock AS Stock, pricestock.Price AS Price, pricestock.UnitCost AS UnitCost')
+            if($pl ==1){
+                 $serialCheck = $this->db->select('pricestock.Stock AS Stock, pricestock.Price AS Price, pricestock.UnitCost AS UnitCost')
                 ->from('productserialstock')
                 ->join('pricestock','pricestock.PSCode = productserialstock.ProductCode','INNER')
                 ->where('SerialNo', $product) 
@@ -691,10 +693,60 @@ if($serials){
                     ->where('PSCode', $product)
                     ->where('PSLocation', $location)
                     ->where('Price', $price)
-                    ->where('PSPriceLevel', $pl)
+                    
                     ->get()
                     ->row();
             }
+            }else if($pl==2){
+                
+                 $serialCheck = $this->db->select('pricestock.Stock AS Stock, pricestock.WholesalesPrice AS Price, pricestock.UnitCost AS UnitCost')
+                ->from('productserialstock')
+                ->join('pricestock','pricestock.PSCode = productserialstock.ProductCode','INNER')
+                ->where('SerialNo', $product) 
+                ->where('Location', $location)
+                ->get()
+                ->row();
+
+            $serialEmiCheck = $this->db->select('pricestock.Stock AS Stock, pricestock.WholesalesPrice AS Price, pricestock.UnitCost AS UnitCost')
+                ->from('productserialemistock')
+                ->join('pricestock','pricestock.PSCode = productserialemistock.ProductCode','INNER')
+                ->group_start() // Start OR condition group
+                    ->where('productserialemistock.SerialNo', $product)
+                    ->or_where('productserialemistock.EmiNo', $product)
+                ->group_end()
+                ->where('Location', $location)
+                ->get()
+                ->row();
+
+            $EmiCheck = $this->db->select('pricestock.Stock AS Stock, pricestock.WholesalesPrice AS Price, pricestock.UnitCost AS UnitCost')
+                ->from('productimeistock')
+                ->join('pricestock','pricestock.PSCode = productimeistock.ProductCode','INNER')
+                ->where('EmiNo', $product) 
+                ->where('Location', $location)
+                ->get()
+                ->row();
+
+            
+
+            if ($serialCheck) {
+            
+                return $serialCheck;
+            }else if($serialEmiCheck){
+                return $serialEmiCheck;
+            }else if($EmiCheck){
+                return $EmiCheck;
+            } else {
+            
+                return $this->db->select('Stock,WholesalesPrice AS Price, UnitCost')
+                    ->from('pricestock')
+                    ->where('PSCode', $product)
+                    ->where('PSLocation', $location)
+                    ->where('Price', $price)
+                    ->get()
+                    ->row();
+            }
+            }
+           
         }
 
 
