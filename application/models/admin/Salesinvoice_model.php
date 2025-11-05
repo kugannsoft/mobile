@@ -133,7 +133,7 @@ class Salesinvoice_model extends CI_Model {
         $proNameArr = json_decode($_POST['proName']);
         $salesPersonArr = json_decode($_POST['salePerson']);
         $warrantytypeArr = json_decode($_POST['warrantytype']);
-        $isEmiArr = json_decode($post['isEmi']);
+        
 
         $location = $post['location'];
         $customerPonumber = $post['po_number'];
@@ -143,7 +143,7 @@ class Salesinvoice_model extends CI_Model {
         $isRawMat =0;
         $totalCost = 0;
         $emi_noArr = json_decode($post['emi_no']);
-         
+        $isEmiArr = json_decode($post['isEmi']);
 
         $this->db->trans_start();
 

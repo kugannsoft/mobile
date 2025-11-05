@@ -109,7 +109,7 @@ class Grn extends Admin_Controller {
         $barcode = 1;
         $serialAutoGen=$_POST['serialAutoGen'];
         $maxSerialQty=$_POST['maxSerialQty'];
-         
+        //0 echo var_dump($maxSerialQty);die;
 //        $this->load->model('admin/Grn_model');
         $grnNo = $this->Grn_model->get_max_code('Goods Received Note');
         $invNo = $_POST['invoicenumber'];

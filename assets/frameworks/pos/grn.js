@@ -1246,7 +1246,10 @@ $(document).ready(function() {
         var sendisemiNo = JSON.stringify(isemiNo);
         var sendemiNo = JSON.stringify(emiNo);
 
+        var serialArr = JSON.parse(sendSerial_no); 
+        var lastSerial = serialArr[serialArr.length - 1];
 
+         console.log('lastSerial',lastSerial)
         var r = confirm("Do you want to save this GRN.?");
         if (r == true) {
             if (supcode == '' || supcode == '0') {
@@ -1262,17 +1265,19 @@ $(document).ready(function() {
 //                maxSerialQty= maxSerialQty;
                 return false;
             } else {
-                maxSerialQty += parseFloat($("#maxSerial").val());
+                //maxSerialQty += parseFloat($("#maxSerial").val());
 //alert(maxSerialQty);
                 $("#saveItems").attr('disabled', true);
                 $.ajax({
                     type: "post",
                     url: "saveGrn",
-                    data: {invoicenumber: invoicenumber, additional: additional, grnremark: grnremark, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,
-                        discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level, upc: sendUpc,
-                        case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name, total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
-                        grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,
-                         sendBranch_cost_price: sendBranch_cost_price,sendwholesales_price: sendwholesales_price,sendisemiNo:sendisemiNo,sendemiNo:sendemiNo},
+                    data: {invoicenumber: invoicenumber, additional: additional, grnremark: grnremark, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, 
+                        unit_price: sendUnit_price, discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type,
+                        price_level: sendPrice_level, upc: sendUpc,case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, 
+                        isSerial: sendIsSerial, proName: sendPro_name, total_cost: totalCost,totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
+                        grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, 
+                        supcode: supcode,maxSerialQty: lastSerial, serialAutoGen: serialAutoGen,
+                        sendBranch_cost_price: sendBranch_cost_price,sendwholesales_price: sendwholesales_price,sendisemiNo:sendisemiNo,sendemiNo:sendemiNo},
                     success: function(data) {
                         var resultData = JSON.parse(data);
                         var feedback = resultData['fb'];

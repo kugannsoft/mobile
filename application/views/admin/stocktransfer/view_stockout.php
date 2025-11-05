@@ -81,6 +81,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <th>#</th>
                                         <th>Product Code</th>
                                         <th>Product Name</th>
+                                        <th>Serial No</th>
+                                        <th>Emi No</th>
                                         <th>Quantity</th>
                                         <th>Unit/Case</th>
                                         <th>Unit Cost</th>
@@ -95,6 +97,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <td><?php echo $i ?></td>
                                         <td><?php echo $stockheadDtl->ProductCode ?></td>
                                         <td><?php echo $stockheadDtl->Prd_Description ?></td>
+                                        <td><?php echo $stockheadDtl->Serial ?></td>
+                                        <td><?php echo $stockheadDtl->EmiNo ?></td>
                                         <td><?php echo number_format($stockheadDtl->TransQty,2) ?></td>
                                         <td><?php echo ($stockheadDtl->CaseOrUnit) ?></td>
                                         <td><?php echo number_format($stockheadDtl->CostPrice,2) ?></td>

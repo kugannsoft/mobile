@@ -550,25 +550,59 @@ $(document).ready(function() {
                     var resultData = JSON.parse(json);
 //                    alert(resultData.serial);
                     if (resultData) {
-                         if(resultData.serial){
-                            $.each(resultData.serial, function(key, value) {
-                                var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
+                        //  if(resultData.serial){
+                        //     $.each(resultData.serial, function(key, value) {
+                        //         var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
 
-                                if (serialNoArrIndex1 < 0) {
-                                    stockSerialnoArr.push(value);
+                        //         if (serialNoArrIndex1 < 0) {
+                        //             stockSerialnoArr.push(value);
+                        //         }
+                        //     });
+                        // }
+
+                        if (resultData.serial) {
+                            let SerialNoRaw = resultData.serial.SerialNo;
+
+                            if (Array.isArray(SerialNoRaw)) {
+                                // If it's an array, iterate and push
+                                SerialNoRaw.forEach(function(value) {
+                                    if ($.inArray(value, stockSerialnoArr) < 0) {
+                                        stockSerialnoArr.push(value);
+                                    }
+                                });
+                            } else if (SerialNoRaw) {
+                                // If it's a single value, push it directly
+                                if ($.inArray(SerialNoRaw, stockSerialnoArr) < 0) {
+                                    stockSerialnoArr.push(SerialNoRaw);
                                 }
-                            });
+                            }
                         }
 
+                         let SerialNoRaw = resultData.serial?.SerialNo ?? 0;
+                            let SerialNo = 0;
+
+                            if (SerialNoRaw) {
+                                if (Array.isArray(SerialNoRaw)) {
+                                    
+                                    SerialNo = 0;
+                                } else {
+                                  
+                                    SerialNo = SerialNoRaw;
+                                }
+                            }
+
+                            
+
                          if(resultData.product){
-                        autoSerial = resultData.product.IsRawMaterial;
+                            
+                       
                         // loadVATNBT(isJobVat,isJobNbt,isJobNbtRatio);
                         loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                         //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                         loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
-                             0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice);
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
                         //  loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, 0, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
                     }
 
@@ -1603,6 +1637,7 @@ $("#productName").html('');
 //===============save products ==============================
     $("#saveItems").click(function() {
         setProductTable();
+         $("#saveItems").prop('disabled',true);
         var rowCount = $('#tbl_item tr').length;
         var product_code = new Array();
         var item_code = new Array();
@@ -1769,7 +1804,7 @@ $("#productName").html('');
 
                         if (feedback != 1) {
                             $.notify("Issue Note Saved Failed.", "warning");
-                            $("#saveItems").attr('disabled', true);
+                            $("#saveItems").prop("disabled", true);
 
                             // loadSAlesInvoice(invNumber);
                             return false;
@@ -1789,7 +1824,7 @@ $("#productName").html('');
                             $("#grndiscount").html('0.00');
                             $("#netgrnamount").html('0.00');
                             // $("#grnremark").val('');
-                            $("#saveItems").attr('disabled', true);
+                           $("#saveItems").prop("disabled", true);
                             $("#modelPayment").modal('hide');
 
                             $("#cart-pay-button").prop('disabled',true);
@@ -2205,7 +2240,7 @@ $("#productName").html('');
             // $("#action").val(2);
         } else {
             // $("#saveItems").html('Confirm Payment');
-            $("#saveItems").prop('disabled',false);
+            $("#saveItems").prop('disabled',true);
             // $("#action").val(0);
             estimateNo = 0;
         }
@@ -2368,8 +2403,8 @@ $("#productName").html('');
             });
         }
 
-        $("#saveItems").prop('disabled',false);
-        $("#btnPrint").prop('disabled',false);
+        // $("#saveItems").prop('disabled',false);
+        // $("#btnPrint").prop('disabled',false);
     }
 
     // print invoice
@@ -2680,7 +2715,7 @@ $("#productName").html('');
     var cusPayment=0;
     var cusType=0;
 
-    $("#saveItems").attr('disabled', false);
+    // $("#saveItems").attr('disabled', false);
     $("#chequeData").hide();
 
 

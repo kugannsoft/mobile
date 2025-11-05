@@ -185,6 +185,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     id="upc">
                                                 <input type="hidden" class="form-control" required="required"
                                                     name="isSerial" id="isSerial">
+                                                <input type="hidden" class="form-control" required="required"  name="isEmi" id="isEmi">
                                                 <input type="hidden" class="form-control" required="required"
                                                     name="orgSellPrice" id="orgSellPrice">
                                             </div>
@@ -216,6 +217,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                                     name="serialNoCheck" id="serialNoCheck">
                                             </div>
                                         </div>
+
+                                         <div class="form-group" id="emiDiv"> 
+                                             <label for="sellingPrice"class="col-sm-4 control-label">Emi No <span class="required">*</span></label>
+                                             <div class="col-sm-6">
+                                                 <input type="text"  tabindex="13"  min="0" step="1" class="form-control" name="emiNo" id="emiNo" readonly>
+                                                 
+                                             </div>
+                                         </div>
                                         <div class="form-group">
                                             <input type="hidden" name="salesperson" id="salesperson" value="0">
                                         
@@ -248,7 +257,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             
                                             <th>Total Amount</th>
                                             <th>Serial</th>
-                                           
+                                            <th>IEMI No</th>
                                             <!--<th>Sale person</th>-->
                                             <th>##</th>
                                             <th>##</th>
