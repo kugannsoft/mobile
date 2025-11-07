@@ -106,6 +106,7 @@ $(document).ready(function() {
             alert('Error while request..');
         }
     });
+    
 
     //======= set price levels ==========
     $("#priceLevel").change(function() {
@@ -249,11 +250,11 @@ $(document).ready(function() {
 //        clearProModal();
         $("#qty").focus();
 //       alert(misSerial);
-        if (IsRawMaterial == 1) {
+        if (IsRawMaterial == 1 &&  misFree == 0) {
            $("#emiDiv").show();
         //   $("#qty").attr('disabled', true);
 //            $("#qty").attr('disabled', true);
-            $("#dv_SN").show();
+            $("#dv_SN").hide();
             $("#qty").focus();
         } else {
 //            $("#mSerial").val('');
@@ -608,8 +609,7 @@ $(document).ready(function() {
                             }
                             setProductTable();
                         }
-                   
-            }
+                }
              
             }else{
                 if(is_serail == 1){
@@ -634,6 +634,7 @@ $(document).ready(function() {
                             qty = 1;
                             sinput++;
                             serialNo = strPad(sinput, 8, '', 0);
+                             console.log('serialNo',serialNo);
                             totalNet2 = (costPrice * 1);
                         
                            
@@ -728,13 +729,11 @@ $(document).ready(function() {
 
                             for (var s = 0; s < qty; s++) {
                                 qty = 1;
-                                sinput++;
+                                // sinput++;
                                 //    emiNo = strPad(sinput, 8, '', 0);
                                 
                                 totalNet2 = (costPrice * qty);
-                                
-                                
-                                serialnoarr.push(emiNo);
+                            
                                 emiNoArr.push(emiNo);
                                 total_amount2 += totalNet2;
                                 totalCost += costPrice;
@@ -801,6 +800,8 @@ $(document).ready(function() {
                                         }
                                 setProductTable();
                             }
+
+                       
                     
                        });
                         
@@ -1245,11 +1246,11 @@ $(document).ready(function() {
         var sendwholesales_price = JSON.stringify(wholesales_price);
         var sendisemiNo = JSON.stringify(isemiNo);
         var sendemiNo = JSON.stringify(emiNo);
+        // console.log(serialAutoGen);
+        // var serialArr = JSON.parse(sendSerial_no); 
+        // var lastSerial = serialArr[serialArr.length - 1];
 
-        var serialArr = JSON.parse(sendSerial_no); 
-        var lastSerial = serialArr[serialArr.length - 1];
-
-         console.log('lastSerial',lastSerial)
+        //  console.log('lastSerial',lastSerial)
         var r = confirm("Do you want to save this GRN.?");
         if (r == true) {
             if (supcode == '' || supcode == '0') {
@@ -1276,7 +1277,7 @@ $(document).ready(function() {
                         price_level: sendPrice_level, upc: sendUpc,case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, 
                         isSerial: sendIsSerial, proName: sendPro_name, total_cost: totalCost,totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
                         grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, 
-                        supcode: supcode,maxSerialQty: lastSerial, serialAutoGen: serialAutoGen,
+                        supcode: supcode, serialAutoGen: serialAutoGen,
                         sendBranch_cost_price: sendBranch_cost_price,sendwholesales_price: sendwholesales_price,sendisemiNo:sendisemiNo,sendemiNo:sendemiNo},
                     success: function(data) {
                         var resultData = JSON.parse(data);

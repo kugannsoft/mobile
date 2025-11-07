@@ -54,7 +54,7 @@ class Stocktransfer extends Admin_Controller {
      
         $arr['product'] = $this->StockTransfer_model->loadproductbypcode($product);
         $arr['productstock']  = $this->StockTransfer_model->loadproductstockbyid($product,$fromloc);
-        $arr['pricestock']  = $this->StockTransfer_model->loadproductstockbyprice($product,$fromloc,$costPrice);
+         $arr['pricestock']  = $this->StockTransfer_model->loadproductstockbyprice($product,$fromloc,$costPrice);
         $arr['serial'] = $this->StockTransfer_model->loadproductbyserialArrayByCode($product, $pl=1,$fromloc);
         echo json_encode($arr);
         die;

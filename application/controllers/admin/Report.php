@@ -264,7 +264,7 @@ class Report extends Admin_Controller {
       public function iemistock() {
         $this->breadcrumbs->unshift(1, 'Reports', 'admin/report');
         $this->breadcrumbs->unshift(1, 'Stock', 'admin/report/iemireport');
-        $this->page_title->push(('Product Serial Stock'));
+        $this->page_title->push(('Product IEMI Stock'));
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['locations'] = $this->Report_model->loadroot();
@@ -279,7 +279,7 @@ class Report extends Admin_Controller {
       public function serialiemistock() {
         $this->breadcrumbs->unshift(1, 'Reports', 'admin/report');
         $this->breadcrumbs->unshift(1, 'Stock', 'admin/report/serialiemireport');
-        $this->page_title->push(('Product Serial Stock'));
+        $this->page_title->push(('Product Serial IEMI Stock'));
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['locations'] = $this->Report_model->loadroot();

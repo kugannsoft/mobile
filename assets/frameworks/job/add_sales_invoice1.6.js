@@ -1254,6 +1254,7 @@ var vatSellingPrice = 0;
     function add_products() {
         var serialQty = 0;
         sellingPrice = parseFloat($("#sellingPrice").val());
+        console.log('sellingPrice',sellingPrice);
         orgSellingPrice= parseFloat($("#orgSellPrice").val());
         var unit = $("#mUnit option:selected").val();
         var prdName = $("#prdName").val();
@@ -1277,7 +1278,7 @@ var vatSellingPrice = 0;
         var serialNoCheck = $("#serialNoCheck").val();
         var priceStock =  parseFloat($("#priceStock").html());
         
-        vatSellingPrice = sellingPrice;
+        //vatSellingPrice = sellingPrice;
 
         if(salesperson==''){
             salespname='';
@@ -1366,12 +1367,9 @@ var vatSellingPrice = 0;
             if (is_serail == 0) {
                 if ((itemCodesellArrIndex < 0)) {
 
-                    if(isNewVat==1 || isTotalVat==1){
-                        totalNet2 = (sellingPrice * qty);
-                    }else{
-                        totalNet2 = (vatSellingPrice * qty);
-                        sellingPrice = vatSellingPrice;
-                    }
+                    totalNet2 = (sellingPrice * qty);
+                    console.log('totalNet2sellingPrice',totalNet2);
+                    
                     
                     if(itemCode!=customProCode){
                         itemcode.push(itemCode);
@@ -1419,7 +1417,7 @@ var vatSellingPrice = 0;
                         "' pL='" + priceLevel + 
                         "' fQ='" + freeQty + 
                         "' nonDisTotalNet='" + totalNet2 + 
-                        "' netAmount='" + totalNet + 
+                        "' netAmount='" + totalNet2 + 
                         "' proDiscount='" + product_discount + 
                         "' proName='" + prdName + 
                         "'  isvat='"+isNewVat+
@@ -1436,7 +1434,7 @@ var vatSellingPrice = 0;
                           "<td class='text-right'>" + accounting.formatNumber(freeQty) + "</td>" +
                         "<td class='text-right'>" + accounting.formatNumber(sellingPrice) + "</td>" +
                         "<td class='text-center'>" + discount_precent + "</td>" +
-                        "<td class='text-right' >" + accounting.formatMoney(totalNet) + "</td>" +
+                        "<td class='text-right' >" + accounting.formatMoney(totalNet2) + "</td>" +
                         "<td>" + serialNo + "</td>" +
                         "<td>" + warrantytype + "</td>" +
                         "<td>" + emiNo + "</td>" +
@@ -1465,41 +1463,94 @@ var vatSellingPrice = 0;
                 }
             }
             else if (is_serail == 1) {
-                console.log('Serial',serialNo,stockSerialnoArr);
+                // console.log('Serial',serialNo,stockSerialnoArr);
+                // var serialNoArrIndex = $.inArray(serialNo, serialnoarr);
+                // var StockserialNoArrIndex = $.inArray(serialNo, stockSerialnoArr);
+                //     if (serialNo == '' || serialNo == 0) {
+                //         $.notify("Serial Number can not be empty.", "warning");
+                //         $("#serialNo").focus();
+                //         return false;
+                //     }
+                //     else if (((serialNoArrIndex >= 0 && is_serail == 1))) {
+                //         $.notify("Serial Number already exists.", "warning");
+                //         $("#serialNo").val('');
+                //         return false;
+                //     } else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
+                //         $.notify("Serial Number product not in  stock..", "warning");
+                //         $("#serialNo").val('');
+                //         return false;
+                //     }
+                //     else if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
+
+                //         totalNet2 = (sellingPrice * qty);
+                        
+                        
+                //         console.log('totalNet2sellingPrice',totalNet2);
+                //         serialnoarr.push(serialNo);
+                //         total_amount2 += totalNet2;
+                //         totalCost += (costPrice * qty);
+
+                //         itemcode.push(itemCodeSellingPrice);
+
+                //console.log('Serial', serialNo, stockSerialnoArr);
+
                 var serialNoArrIndex = $.inArray(serialNo, serialnoarr);
                 var StockserialNoArrIndex = $.inArray(serialNo, stockSerialnoArr);
-                    if (serialNo == '' || serialNo == 0) {
-                        $.notify("Serial Number can not be empty.", "warning");
-                        $("#serialNo").focus();
-                        return false;
-                    }
-                    else if (((serialNoArrIndex >= 0 && is_serail == 1))) {
-                        $.notify("Serial Number already exists.", "warning");
+                var sellingPrice = parseFloat($("#sellingPrice").val()) || 0;
+
+                
+                if (typeof serialPriceArr === "undefined") {
+                    var serialPriceArr = [];
+                }
+
+                if (serialNo === '' || serialNo == 0) {
+                    $.notify("Serial Number cannot be empty.", "warning");
+                    $("#serialNo").focus();
+                    return false;
+                }
+                else if (is_serail == 1) {
+
+           
+                    var duplicateSerial = serialPriceArr.find(
+                        item => item.serial === serialNo && item.price === sellingPrice
+                    );
+
+                   
+                    var sameSerialDiffPrice = serialPriceArr.find(
+                        item => item.serial === serialNo && item.price !== sellingPrice
+                    );
+
+                    if (duplicateSerial) {
+                        $.notify("Serial Number already exists with the same price.", "warning");
                         $("#serialNo").val('');
                         return false;
-                    } else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
-                        $.notify("Serial Number product not in  stock..", "warning");
+                    }
+
+                    if (StockserialNoArrIndex < 0) {
+                        $.notify("Serial Number product not in stock.", "warning");
                         $("#serialNo").val('');
                         return false;
                     }
-                    else if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
 
-                        if(isNewVat==1 || isTotalVat==1){
-                            totalNet2 = (sellingPrice * qty);
-                        }else{
-                            totalNet2 = (vatSellingPrice * qty);
-                            sellingPrice = vatSellingPrice;
-                        }
-                        
-                        serialnoarr.push(serialNo);
-                        total_amount2 += totalNet2;
-                        totalCost += (costPrice * qty);
+                  
+                    serialPriceArr.push({ serial: serialNo, price: sellingPrice });
+                }
 
-                        itemcode.push(itemCodeSellingPrice);
+                
+                if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
+                    totalNet2 = (sellingPrice * qty);
+                    //console.log('totalNet2sellingPrice', totalNet2);
+
+                    serialnoarr.push(serialNo);
+                    total_amount2 += totalNet2;
+                    totalCost += (costPrice * qty);
+                    itemcode.push(itemCodeSellingPrice);
+                }
+
 
                         $("#totalWithOutDiscount").val(total_amount2);
 
-                        calculateProductWiseDiscount(totalNet2, discount, discount_type, discount_precent, discount_amount, total_amount2, sellingPrice);
+                        calculateProductWiseDiscount(total_amount2, discount, discount_type, discount_precent, discount_amount, total_amount2, sellingPrice);
 
                         proVat=addProductVat((totalNet),isNewVat,isNewNbt,newNbtRatio);
                         proNbt=addProductNbt((totalNet),isNewVat,isNewNbt,newNbtRatio) ;
@@ -1536,7 +1587,7 @@ var vatSellingPrice = 0;
                             "' pL='" + priceLevel + 
                             "' fQ='" + freeQty + 
                             "' nonDisTotalNet='" + totalNet2 + 
-                            "' netAmount='" + totalNet + 
+                            "' netAmount='" + totalNet2 + 
                             "' proDiscount='" + product_discount + 
                             "' proName='" + prdName + 
                             "'  isvat='"+isNewVat+
@@ -1553,7 +1604,7 @@ var vatSellingPrice = 0;
                               "<td class='text-right'>" + accounting.formatNumber(freeQty) + "</td>" +
                             "<td class='text-right'>" + accounting.formatNumber(sellingPrice) + "</td>" +
                             "<td class='text-center'>" + discount_precent + "</td>" +
-                            "<td class='text-right' >" + accounting.formatMoney(totalNet) + "</td>" +
+                            "<td class='text-right' >" + accounting.formatMoney(totalNet2) + "</td>" +
                             "<td>" + serialNo + "</td>" +
                             "<td>" + warrantytype + "</td>" +
                             "<td>" + emiNo + "</td>" +
@@ -1582,7 +1633,7 @@ var vatSellingPrice = 0;
                         return false;
                     }
             }
-        }
+        
     }
 
 // edit grid
@@ -2503,24 +2554,25 @@ var finalVat=0;
 var finalNbt=0;
 
     //===========calculate total summery======================================
-    function cal_total(total, discount, extra, downPay, downPayInt, qurPayInt, totalInt, totalExtra) {
+    function cal_total(total_amount2, discount, extra, downPay, downPayInt, qurPayInt, totalInt, totalExtra) {
 
-        var total_net2 = parseFloat(total) - parseFloat(discount);
-
+        var total_net2 = parseFloat(total_amount2) - parseFloat(discount);
+        //console.log('total_net2',total_net2);
      
         totalVat=addTotalVat(total_net2,isTotalVat,isTotalNbt,nbtRatio);
         totalNbt=addTotalNbt(total_net2,isTotalVat,isTotalNbt,nbtRatio);
-        finalAmount = parseFloat(total_net2+totalVat+totalNbt+totalProVAT+totalProNBT+shipping);
+        finalAmount = parseFloat(total_amount2+totalVat+totalNbt+totalProVAT+totalProNBT+shipping);
+        //console.log('finalAmount',finalAmount);
         total_net2=parseFloat(total_net2+totalVat+totalNbt+shipping);
 
         $("#netgrnamount").html(accounting.formatMoney(finalAmount));
         $("#grndiscount").html(accounting.formatMoney(discount));
         $("#shippingcharges,#mshipping").html(accounting.formatMoney(shipping));
-        $("#totalgrn").html(accounting.formatMoney(total));
+        $("#totalgrn").html(accounting.formatMoney(total_amount2));
         $("#totalVat").html(accounting.formatNumber(totalVat+totalProVAT));
         $("#totalNbt").html(accounting.formatNumber(totalNbt+totalProNBT));
 
-        $('#mtotal').html(accounting.formatMoney(total));
+        $('#mtotal').html(accounting.formatMoney(total_amount2));
         $('#mdiscount').html(accounting.formatMoney(discount));
         $('#mnetpay').html(accounting.formatMoney(finalAmount));
         $('#mvat').html(accounting.formatMoney(totalVat+totalProVAT));
@@ -2530,7 +2582,7 @@ var finalNbt=0;
 
         if (coPayment != 0) {
 
-            if (total > coPayment) {
+            if (total_amount2 > coPayment) {
                 $("#changeLable").html('Due');
                 $("#changeLable").css({"color": "red", "font-size": "100%"});
                 $("#mchange").html(accounting.formatMoney(finalAmount-coPayment));
@@ -2548,8 +2600,8 @@ var finalNbt=0;
         
         
         total_discount = discount;
-        total_amount  = total;
-        total_amount2  = total;
+        total_amount  = total_amount2;
+        total_amount2  = total_amount2;
         totalNetAmount  = finalAmount;
         finalVat=totalVat + totalProVAT;
         finalNbt=totalNbt + totalProNBT;

@@ -895,6 +895,7 @@ class Salesinvoice extends Admin_Controller {
     public function loadproductjson() {
         $query = $_GET['q'];
         $pLevel = $_GET['price_level'];
+      
         $sup= 0;$supCode= '';
          $this->load->model('admin/Grn_model');
         echo $this->Grn_model->loadproductjson($query,$sup,$supCode,$pLevel);
@@ -3065,13 +3066,10 @@ $arr[] =null;
         
             $checkRole = $_SESSION['role'];
 
-
-        if ($checkRole == 1) {
-
             $salesInvNo = $this->input->post('salesinvno');
-
+            
             $this->db->trans_start();
-
+            
             $cancelNo = $this->get_max_code('CancelSalesInvoice');
             $invCanel = array(
                 'AppNo' => '1',
@@ -3081,18 +3079,22 @@ $arr[] =null;
                 'SalesInvoiceNo' => $salesInvNo,
                 'Remark' => $_POST['remark'],
                 'CancelUser' => $_SESSION['user_id']);
-            $this->db->insert('cancelsalesinvoice', $invCanel);
+                $this->db->insert('cancelsalesinvoice', $invCanel);
+                
+                //check is made any previous payment
+                $isPay = $this->db->select('count(invoicesettlementdetails.InvNo) AS inv')->from('invoicesettlementdetails')->join('customerpaymenthed', 'invoicesettlementdetails.CusPayNo = customerpaymenthed.CusPayNo', 'INNER')->where('invoicesettlementdetails.InvNo', $salesInvNo)->where('customerpaymenthed.IsCancel', 0)->get()->row()->inv;
+                
+                if ($isPay > 0) {
+                    echo 2;
+                } else {
+                    //check invoice already cancel or not
+                    $query0 = $this->db->select('*')->from('salesinvoicehed')->where('SalesInvNo',$salesInvNo)->where('InvIsCancel',0)->get();
 
-            //check is made any previous payment
-            $isPay = $this->db->select('count(invoicesettlementdetails.InvNo) AS inv')->from('invoicesettlementdetails')->join('customerpaymenthed', 'invoicesettlementdetails.CusPayNo = customerpaymenthed.CusPayNo', 'INNER')->where('invoicesettlementdetails.InvNo', $salesInvNo)->where('customerpaymenthed.IsCancel', 0)->get()->row()->inv;
-
-            if ($isPay > 0) {
-                echo 2;
-            } else {
-                //check invoice already cancel or not
-                $query0 = $this->db->get_where('salesinvoicehed', array('SalesInvNo' => $invCanel['SalesInvoiceNo'], 'InvIsCancel' => 0));
+                    
                 if ($query0->num_rows() > 0) {
-                    $query = $this->db->get_where('salesinvoicedtl', array('SalesInvNo' => $invCanel['SalesInvoiceNo']));
+                    //$query =$this->db->select('*')->from('salesinvoicedtl')->where('SalesInvNo',$salesInvNo)->get();
+                    $query = $this->db->get_where('salesinvoicedtl', array('SalesInvNo' => $salesInvNo));
+                    
                     if ($query->num_rows() > 0) {
                         foreach ($query->result_array() as $row) {
                            
@@ -3101,15 +3103,18 @@ $arr[] =null;
                             $emi_noArr = $row['EmiNo'];
                             $serial_noArr = $row['SalesSerialNo'];
                             $product_codeArr =  $row['SalesProductCode'];
+                            $location =  $row['SalesInvLocation'];
                             if($isSerial== 1 && $isEmi == 0){
-                                $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                                 
+                                $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
                             }
 
                             if($isSerial== 0 && $isEmi == 1){
-                                $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
+                                $this->db->update('	productimeistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
                             }
                             if($isSerial== 1 && $isEmi == 1){
-                                $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                              
+                                $this->db->update('productserialemistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
                             }
                             //update serial stock
                             // $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
@@ -3175,127 +3180,9 @@ $arr[] =null;
                 }
             }
             die;
-        }
-//  if login using other roles
-        else {
-            $salesInvNo = $this->input->post('salesinvno');
-            $checkInvoiceAvailable = $this->db->get_where('salesinvoicehed', array('SalesInvNo' => $salesInvNo, 'SalesLocation' => $_SESSION['location']));
+        
 
-            if ($checkInvoiceAvailable->num_rows() > 0) {
-
-                $this->db->trans_start();
-
-                $cancelNo = $this->get_max_code('CancelSalesInvoice');
-                $invCanel = array(
-                    'AppNo' => '1',
-                    'CancelNo' => $cancelNo,
-                    'Location' => $_SESSION['location'],
-                    'CancelDate' => date("Y-m-d H:i:s"),
-                    'SalesInvoiceNo' => $salesInvNo,
-                    'Remark' => $_POST['remark'],
-                    'CancelUser' => $_SESSION['user_id']);
-                $this->db->insert('cancelsalesinvoice', $invCanel);
-
-                //check is made any previous paymen
-                $isPay = $this->db->select('count(invoicesettlementdetails.InvNo) AS inv')->from('invoicesettlementdetails')->join('customerpaymenthed', 'invoicesettlementdetails.CusPayNo = customerpaymenthed.CusPayNo', 'INNER')->where('invoicesettlementdetails.InvNo', $salesInvNo)->where('customerpaymenthed.IsCancel', 0)->get()->row()->inv;
-
-                if ($isPay > 0) {
-                    echo 2;
-                } else {
-                    //check invoice already cancel or not
-                    $query0 = $this->db->get_where('salesinvoicehed', array('SalesInvNo' => $invCanel['SalesInvoiceNo'], 'InvIsCancel' => 0));
-                    if ($query0->num_rows() > 0) {
-                        $query = $this->db->get_where('salesinvoicedtl', array('SalesInvNo' => $invCanel['SalesInvoiceNo']));
-                        if ($query->num_rows() > 0) {
-                            foreach ($query->result_array() as $row) {
-                               echo "<script>console.log(" . json_encode($row) . ");</script>";
-
-                                $isEmi = $row['IsEmi'];
-                                $isSerial = $row['IsSerial'];
-                                $emi_noArr = $row['EmiNo'];
-                                $serial_noArr = $row['SalesSerialNo'];
-                                $product_codeArr =  $row['SalesProductCode'];
-                                if($isSerial== 1 && $isEmi == 0){
-                           
-                                    $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
-                                }
-
-                                if($isSerial== 0 && $isEmi == 1){
-                                  
-                                    $this->db->update('	productimeistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
-                                }
-                                if($isSerial== 1 && $isEmi == 1){
-                                    $this->db->update('productserialemistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
-                                }
-                                //update serial stock
-                                // $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo'], 'Location' => $row['SalesInvLocation']))->get();
-                                // if ($ps->num_rows() > 0) {
-                                //     $isPro = $this->db->select('SalesProductCode')->from('salesinvoicedtl')->where(array('SalesProductCode' => $row['SalesProductCode'], 'SalesSerialNo' => $row['SalesSerialNo'], 'SalesInvLocation' => $row['SalesInvLocation'], 'SalesInvNo' => $invCanel['SalesInvoiceNo']))->get();
-                                //     // echo $isPro->num_rows();die;
-                                //     if ($isPro->num_rows() > 0) {
-                                //         // $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['SalesProductCode'], 'SerialNo' => $row['SalesSerialNo']));
-                                //     }
-                                // } else {
-
-                                // }
-
-                                $proCode = $row['SalesProductCode'];
-                                $totalGrnQty = $row['SalesQty'];
-                                $loc = $row['SalesInvLocation'];
-                                $pl = $row['SalesPriceLevel'];
-                                $costp = $row['SalesCostPrice'];
-                                $selp = $row['SalesUnitPrice'];
-
-                                //update price stock
-                                // $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
-
-                                //update product stock
-                                $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')");
-                                // }
-                            }
-                        }
-
-                        //update/ cancel credit invoice
-                        $query2 = $this->db->get_where('creditinvoicedetails', array('InvoiceNo' => $invCanel['SalesInvoiceNo'], 'Location' => $invCanel['Location']));
-                        if ($query2->num_rows() > 0) {
-                            $this->db->update('creditinvoicedetails', array('IsCancel' => 1), array('InvoiceNo' => $invCanel['SalesInvoiceNo'], 'Location' => $invCanel['Location']));
-                            foreach ($query2->result_array() as $row) {
-                                //update customer outstanding
-                                $creditAmount = $row['CreditAmount'];
-                                $cuscode = $row['CusCode'];
-                                $this->db->query("CALL SPT_UPDATE_CUSOUTSTAND_RBACK('$cuscode','0','$creditAmount','0');");
-                            }
-                        }
-
-                        //cancel cheques
-                        $query3 = $this->db->get_where('chequedetails', array('ReferenceNo' => $invCanel['SalesInvoiceNo'], 'IsCancel' => 0, 'IsRelease' => 0,));
-                        if ($query3->num_rows() > 0) {
-                            $this->db->update('chequedetails', array('IsCancel' => 1), array('ReferenceNo' => $invCanel['SalesInvoiceNo']));
-                        }
-
-                        //cancel return payment
-                        $returnPayment =$query0->row()->SalesReturnPayment;
-                        if ($returnPayment > 0){
-
-                            $returnPayNo = $invCanel['SalesInvoiceNo'];
-                            $this->db->update('return_payment',array('IsComplete'=>0),array('InvoiceNo'=>$returnPayNo));
-
-                        }
-
-                        $this->db->update('salesinvoicehed', array('InvIsCancel' => 1), array('SalesInvNo' => $invCanel['SalesInvoiceNo'], 'SalesLocation' => $invCanel['Location']));
-                        $this->update_max_code('CancelSalesInvoice');
-                        $this->db->trans_complete();
-                        echo $this->db->trans_status();
-                    } else {
-                        echo 3;
-                    }
-                }
-                die;
-            } else {
-                echo 4;
-                die;
-            }
-        }
+        
     }
 
 
@@ -4252,28 +4139,23 @@ public function all_delivery_note() {
         $isInvoice = $this->db->select('JobCardNo')->from('jobinvoicehed')->where('JobCardNo', $jobNo)->where('IsCancel', 0)->get()->num_rows();
         $cusCode = $this->db->select('JCustomer')->from('jobcardhed')->where('JobCardNo', $jobNo)->get()->row()->JCustomer;
         $regNo =$this->db->select('JRegNo')->from('jobcardhed')->where('JobCardNo', $jobNo)->get()->row()->JRegNo;
-        $isIssueNote = $this->db->select('SalesInvNo')->from('issuenote_hed')->where('SalesPONumber', $jobNo)->get()->num_rows();
+        $isIssueNote = $this->db->select('SalesInvNo')->from('issuenote_hed')->where('SalesPONumber', $jobNo)->where('InvIsCancel',0)->get()->num_rows();
         if($isIssueNote>0){
-            $issueNo =$this->db->select('SalesInvNo')->from('issuenote_hed')->where('SalesPONumber', $jobNo)->get()->row()->SalesInvNo;
-//            $supNo =$this->db->select_max('Supplimentry')->from('estimatehed')->where('EstJobCardNo', $jobNo)->get()->row()->Supplimentry;
-//            if(isset($estNo) && isset($supNo)){
-//                $arr['est_hed'] = $this->db->select()->from('estimatehed')->where('EstimateNo', $estNo)
-//                    ->where('estimatehed.Supplimentry', $supNo)->get()->row();
-//                $arr['est_dtl'] = $this->db->select('estimatedtl.*,jobtype.jobtype_name,jobtype.jobhead')
-//                    ->from('estimatedtl')
-//                    ->join('jobtype', 'jobtype.jobtype_id = estimatedtl.EstJobType')
-//                    ->where('estimatedtl.EstimateNo', $estNo)->where('estimatedtl.SupplimentryNo', $supNo)
-//                    ->order_by('estimatedtlid')->get()->result();
-//                $arr['job_est'] = $this->Job_model->getEstimateDtlbyid($estNo,$supNo);
-//            }else{
-                $arr['est_hed'] = $this->db->select()->from('issuenote_hed')->where('SalesInvNo', $issueNo)->get()->row();
-                $arr['est_dtl'] = $this->db->select('issuenote_dtl.*')
-                    ->from('issuenote_dtl')
-//                    ->join('jobtype', 'jobtype.jobtype_id = issuenote_dtl.EstJobType')
-                    ->where('issuenote_dtl.JobNo', $jobNo)
-                    ->order_by('SalesInvNo')->get()->result();
-                $arr['job_est'] = $this->Job_model->getEstimateDtlbyid($issueNo);
-//            }
+            $issueNo =$this->db->select('SalesInvNo')->from('issuenote_hed')->where('SalesPONumber', $jobNo)->where('InvIsCancel',0)->get()->row()->SalesInvNo;
+           
+
+            $arr['est_hed'] = $this->db->select()->from('issuenote_hed')->where('SalesInvNo', $issueNo)->where('InvIsCancel',0)->get()->row();
+            $arr['est_dtl'] = $this->db->select('d.*')
+                ->from('issuenote_dtl d')
+                ->join('issuenote_hed h', 'h.SalesInvNo = d.SalesInvNo')
+                ->where('d.JobNo', $jobNo)
+                ->where('h.InvIsCancel', 0)
+                ->order_by('d.SalesInvNo', 'ASC')
+                ->get()
+                ->result();
+                
+            $arr['job_est'] = $this->Job_model->getEstimateDtlbyid($issueNo);
+
 
         }else{
             $arr['est_dtl'] =null;

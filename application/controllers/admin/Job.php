@@ -1001,21 +1001,127 @@ class Job extends Admin_Controller {
         die;
     }
 
-    public function cancelJob() {
+    // public function cancelJob() {
 
-        $data['IsCancel'] = 1;
+    //     $data['IsCancel'] = 1;
 
-        $this->db->trans_start();
-        $this->db->update('jobcardhed',$data,array('JobCardNo' => $_POST['jobNo']));
-        $this->Job_model->bincard($_POST['jobNo'],5,'cancelled');//update bincard
-        $this->db->trans_complete();
-        $res2= $this->db->trans_status();
+    //     $this->db->trans_start();
+    //     $job_no = $_POST['jobNo'];
+    //     $this->db->where('SalesPONumber', $job_no);
+    //     $this->db->update('issuenote_hed', ['InvIsCancel' => 1]);
+    //     $this->db->update('jobcardhed',$data,array('JobCardNo' => $_POST['jobNo']));
+    //     $this->Job_model->bincard($_POST['jobNo'],5,'cancelled');
+    //     $this->db->trans_complete();
+    //     $res2= $this->db->trans_status();
 
-        $return = array('JobCardNo' => ($_POST['jobNo']));
-        $return['fb'] = $res2;
-        echo json_encode($return);
-        die;
-    }
+    //     $return = array('JobCardNo' => ($_POST['jobNo']));
+    //     $return['fb'] = $res2;
+    //     echo json_encode($return);
+    //     die;
+    // }
+
+
+    public function cancelJob()
+        {
+            $job_no = $this->input->post('jobNo');
+
+            $this->db->trans_start();
+
+           
+            $this->db->where('JobCardNo', $job_no);
+            $this->db->update('jobcardhed', ['IsCancel' => 1]);
+
+           
+            $this->db->where('SalesPONumber', $job_no);
+            $this->db->update('issuenote_hed', ['InvIsCancel' => 1]);
+
+          
+            $issueNoteQuery = $this->db->get_where('issuenote_hed', [
+                'SalesPONumber' => $job_no
+            ]);
+
+            if ($issueNoteQuery->num_rows() > 0) {
+                $issueNoteNo = $issueNoteQuery->row()->SalesInvNo;
+
+               
+                $query = $this->db->get_where('issuenote_dtl', [
+                    'SalesInvNo' => $issueNoteNo
+                ]);
+
+                if ($query->num_rows() > 0) {
+                    foreach ($query->result_array() as $row) {
+                        $isEmi = $row['IsEmi'];
+                        $isSerial = $row['IsSerial'];
+                        $emi_noArr = $row['EmiNo'];
+                        $serial_noArr = $row['SalesSerialNo'];
+                        $product_codeArr = $row['SalesProductCode'];
+                        $location = $row['SalesInvLocation'];
+
+                        
+                        $totalQty = $row['SalesQty'] + $row['SalesFreeQty'];
+
+                        
+                        if ($isSerial == 1 && $isEmi == 0) {
+                          
+                            $this->db->update('productserialstock', [
+                                'Quantity' => 1
+                            ], [
+                                'ProductCode' => $product_codeArr,
+                                'Location' => $location,
+                                'SerialNo' => $serial_noArr
+                            ]);
+                        }
+
+                        if ($isSerial == 0 && $isEmi == 1) {
+                          
+                            $this->db->update('productimeistock', [
+                                'Quantity' => 1
+                            ], [
+                                'ProductCode' => $product_codeArr,
+                                'Location' => $location,
+                                'EmiNo' => $emi_noArr
+                            ]);
+                        }
+
+                        if ($isSerial == 1 && $isEmi == 1) {
+                           
+                            $this->db->update('productserialemistock', [
+                                'Quantity' => 1
+                            ], [
+                                'ProductCode' => $product_codeArr,
+                                'Location' => $location,
+                                'SerialNo' => $serial_noArr
+                            ]);
+                        }
+
+                        
+                        $proCode = $row['SalesProductCode'];
+                        $pl = $row['SalesPriceLevel'];
+                        $costp = $row['SalesCostPrice'];
+                        $selp = $row['SalesUnitPrice'];
+                        $loc = $row['SalesInvLocation'];
+
+                        
+                        $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalQty','$pl','$costp','$selp','$loc')");
+                        $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalQty',0,'$loc')");
+                    }
+                }
+            }
+
+      
+            $this->Job_model->bincard($job_no, 5, 'Job Cancelled with Issue Note stock restored');
+            $this->db->trans_complete();
+
+            $res2 = $this->db->trans_status();
+
+            $return = [
+                'JobCardNo' => $job_no,
+                'fb' => $res2
+            ];
+            echo json_encode($return);
+            die;
+        }
+
 
     public function loadproductjson() {
         $query = $_GET['q'];

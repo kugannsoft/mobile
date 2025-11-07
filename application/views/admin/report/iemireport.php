@@ -120,7 +120,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td>GRN Date</td>
                                     <td>Product Code</td>
                                     <td>Product Name</td>
-                                    <td>Serial</td>
+                                    <td>IEMI No</td>
                                     <td>Location</td>
                                     <td>Stock</td>
                                     <td>Cost Price</td>
@@ -395,7 +395,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         row.append($("<td>" + formatDate(date) + "</td>"));
         row.append($("<td>" + rowData[index].ProductCode + "</td>"));
         row.append($("<td>" + rowData[index].Prd_Description + "</td>"));
-        row.append($("<td>" + rowData[index].SerialNo + "</td>"));
+        row.append($("<td>" + rowData[index].EmiNo + "</td>"));
         row.append($("<td>" + rowData[index].location + "</td>"));
         row.append($("<td>" + rowData[index].Quantity + "</td>"));
         row.append($("<td>" + rowData[index].Prd_CostPrice + "</td>"));

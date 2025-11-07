@@ -98,27 +98,14 @@ id="invUser" value="<?php echo $_SESSION['user_id'] ?>">
                             }
                         },
 
-                        {
-                            
-                            "data": null, orderable: false, searchable: false,
-                            mRender: function (data, type, row) {
-                                if(row.IsCancel==0){
-                                    return '<button onclick="handleCancel(\'' + Base64.encode(row.TrnsNo) + '\')" class="btn btn-xs btn-danger"> To Cancel</button>';
-
-                                }else{
-                                     return '<button onclick="handleCancel(\'' + Base64.encode(row.TrnsNo) + '\')" class="btn btn-xs btn-warning" disabled>Canceled</button>';
-                                }
-                            }
-
-                         
-                        },
+                      
 
                         {
                             
                             "data": null, orderable: false, searchable: false,
                             mRender: function (data, type, row) {
                                 if(row.TransIsInProcess==1 && row.IsCancel==0){
-                                    return '<button onclick="handleStockIn(\'' + Base64.encode(row.TrnsNo) + '\')" class="btn btn-xs btn-warning">Make Stock In</button>';
+                                    return '<button  onclick="handleStockIn(\'' + Base64.encode(row.TrnsNo) + '\')" class="btn btn-xs btn-warning">Make Stock In</button>';
                                 }else{
                                      return '<button onclick="handleStockIn(\'' + Base64.encode(row.TrnsNo) + '\')" class="btn btn-xs btn-warning" disabled>Make Stock In</button>';
                                 }
@@ -136,23 +123,30 @@ id="invUser" value="<?php echo $_SESSION['user_id'] ?>">
         var invUser    = $("#invUser").val();
         
         $.ajax({
-            
-            url: "<?php echo base_url(); ?>" + "admin/stocktransfer/newsaveStockIn",
-            type: 'POST',
-            data: { trnsNo: trnsNo,invUser:invUser },
+            url: "<?php echo base_url('admin/stocktransfer/newsaveStockIn'); ?>",
+            type: "POST",
+            data: { trnsNo: trnsNo, invUser: invUser },
             success: function(response) {
-                 $.notify("Stock In Successful!.", "Sucess");
-               
+                $.notify("Stock In Successful!", "success");
+                 window.location.reload();
+            },
+            error: function() {
+                $.notify("Error while processing Stock In.", "error");
+                
             }
         });
         
     }
 
+  
+
+
 
      function handleCancel(encodedTrnsNo) {
         const trnsNo = atob(encodedTrnsNo);
         var invUser    = $("#invUser").val();
-        
+        $(`button[data-trns='${encodedTrnsNo}']`).prop("disabled", true);
+
         $.ajax({
             
             url: "<?php echo base_url(); ?>" + "admin/stocktransfer/newStockCancel",
@@ -160,11 +154,13 @@ id="invUser" value="<?php echo $_SESSION['user_id'] ?>">
             data: { trnsNo: trnsNo,invUser:invUser },
             success: function(response) {
                  $.notify("Stock Out Cancel Successful!.", "Sucess");
-               
+                  $("#saveItems").attr('disabled', true);
             }
         });
         
     }
+
+
     
      var Base64 = {
                 _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",

@@ -79,16 +79,49 @@ $(document).ready(function() {
 
                   
                     if (resultData) {
-                         if(resultData.serial){
-                            $.each(resultData.serial, function(key, value) {
-                                var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
+                        //  if(resultData.serial){
+                        //     $.each(resultData.serial, function(key, value) {
+                        //         var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
 
-                                if (serialNoArrIndex1 < 0) {
-                                    stockSerialnoArr.push(value);
+                        //         if (serialNoArrIndex1 < 0) {
+                        //             stockSerialnoArr.push(value);
+                        //         }
+                        //     });
+                        // }
+                        if (resultData.serial) {
+                            let SerialNoRaw = resultData.serial.SerialNo;
+
+                            if (Array.isArray(SerialNoRaw)) {
+                                // If it's an array, iterate and push
+                                SerialNoRaw.forEach(function(value) {
+                                    if ($.inArray(value, stockSerialnoArr) < 0) {
+                                        stockSerialnoArr.push(value);
+                                    }
+                                });
+                            } else if (SerialNoRaw) {
+                                // If it's a single value, push it directly
+                                if ($.inArray(SerialNoRaw, stockSerialnoArr) < 0) {
+                                    stockSerialnoArr.push(SerialNoRaw);
                                 }
-                            });
+                            }
                         }
 
+                        let SerialNoRaw = resultData.serial?.SerialNo ?? 0;
+                            let SerialNo = 0;
+
+                            if (SerialNoRaw) {
+                                if (Array.isArray(SerialNoRaw)) {
+                                    
+                                    SerialNo = 0;
+                                } else {
+                                  
+                                    SerialNo = SerialNoRaw;
+                                }
+                            }
+
+                            
+
+                        let EmiNo = resultData.serial?.EmiNo ?? 0;
                          if(resultData.product){
                          isEmiNo = resultData.product.IsRawMaterial;
                          $("#productStock").html('/ Available Main Stock = ' + resultData.productstock.Stock);
@@ -98,7 +131,7 @@ $(document).ready(function() {
                         //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                        // loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
-                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                             SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
                                resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
                     }
@@ -146,17 +179,40 @@ $(document).ready(function() {
 
                     var resultData = JSON.parse(json);
                     if (resultData) {
-                         if(resultData.serial){
-                        var serialArr = [resultData.serial.SerialNo]; 
-                        $.each(serialArr, function(key, value) {
-                             console.log('serialNoArrIndex2value',value);
-                            var serialNoArrIndex2 = $.inArray(value, stockSerialnoArr);
-                            console.log('serialNoArrIndex2',serialNoArrIndex2);
-                            if (serialNoArrIndex2 < 0) {
-                                stockSerialnoArr.push(value);
+                         if (resultData.serial) {
+                            let SerialNoRaw = resultData.serial.SerialNo;
+
+                            if (Array.isArray(SerialNoRaw)) {
+                                // If it's an array, iterate and push
+                                SerialNoRaw.forEach(function(value) {
+                                    if ($.inArray(value, stockSerialnoArr) < 0) {
+                                        stockSerialnoArr.push(value);
+                                    }
+                                });
+                            } else if (SerialNoRaw) {
+                                // If it's a single value, push it directly
+                                if ($.inArray(SerialNoRaw, stockSerialnoArr) < 0) {
+                                    stockSerialnoArr.push(SerialNoRaw);
+                                }
                             }
-                        });
-                    }
+                        }
+
+                        let SerialNoRaw = resultData.serial?.SerialNo ?? 0;
+                            let SerialNo = 0;
+
+                            if (SerialNoRaw) {
+                                if (Array.isArray(SerialNoRaw)) {
+                                    
+                                    SerialNo = 0;
+                                } else {
+                                  
+                                    SerialNo = SerialNoRaw;
+                                }
+                            }
+
+                            
+
+                        let EmiNo = resultData.serial?.EmiNo ?? 0;
 
                         if(resultData.product){
                             itemCode = resultData.product.ProductCode;
@@ -170,7 +226,7 @@ $(document).ready(function() {
                             //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                            //loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.pricestock.UnitCost, 0, resultData.product.IsSerial);
                            loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
-                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                             SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
                                resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
                         }

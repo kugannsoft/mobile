@@ -133,6 +133,10 @@ $(document).ready(function() {
     var bank_amount=0;
     var loc = $("#location").val();
 
+
+       $("#serialNo").keyup(function(){
+        $("#serialNoCheck").val('');
+    });
     $("#advance_payment_no").autocomplete({
         source: function(request, response) {
             $.ajax({
@@ -429,11 +433,11 @@ $(document).ready(function() {
                         $('#disPercent').val(resultData.product.Discount);
                         discount_precent = resultData.product.Discount;
                         loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                       
+                       let EmiNo = resultData.serial?.EmiNo ?? 0;
                         loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
-                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                             SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,EmiNo);
                     }
 
                     $("#proStock").html('');
@@ -593,18 +597,18 @@ $(document).ready(function() {
 
                             
 
-                         if(resultData.product){
+                        let EmiNo = resultData.serial?.EmiNo ?? 0;
                             
                        
                         // loadVATNBT(isJobVat,isJobNbt,isJobNbtRatio);
                         loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                         //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                         loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
-                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                             SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,EmiNo);
                         //  loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, 0, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
-                    }
+                    
 
                     $("#proStock").html('');
                     $("#priceStock").html('');
@@ -1157,6 +1161,7 @@ $("#productName").html('');
         var case1 = $("#mUnit option:selected").val();
         var salesperson = $("#salesperson").val();
         var salespname = $("#salesperson option:selected").html();
+        var serialNoCheck = $("#serialNoCheck").val();
         // vatSellingPrice = parseFloat($("#proVatPrice").val());
         vatSellingPrice = sellingPrice;
 
@@ -1225,6 +1230,9 @@ $("#productName").html('');
             return false;
         } else if (qty == '' || qty == 0 || isNaN(qty) == true) {
             $.notify("Please enter a qty.", "warning");
+            return false;
+        } else if (is_serail == 1 && serialNoCheck == '') {
+            $.notify("Please Enter valid Serial No", "warning");
             return false;
         } else if (costPrice > sellingPrice && isSellZero==0) {
             $.notify("Selling price can not be less than cost price.", "warning");
@@ -2037,6 +2045,7 @@ $("#productName").html('');
         $("#sellingPrice").val('');
         $("#proVatPrice").val('');
         $("#serialNo").val('');
+        $("#serialNoCheck").val('');
         $("#emiNo").val('');
         $("#dv_SN").hide();
         $("#itemCode").val('');
@@ -2697,7 +2706,9 @@ $("#productName").html('');
         autoFocus: true,
         minLength: 0,
         select: function(event, ui) {
-            serialNo = ui.item.value;
+             serialNo = ui.item.value;
+            $('#serialNo').val(serialNo);
+            $('#serialNoCheck').val(serialNo);
         }
     });
 

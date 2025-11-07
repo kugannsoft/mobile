@@ -55,13 +55,13 @@ class StockTransfer_model extends CI_Model {
             ->get()->row();
     }
 
-    // public function loadproductstockbyprice($product,$fromloc,$costPrice)
-    // {
+    public function loadproductstockbyprice($product,$fromloc,$costPrice)
+    {
 
-    //     return $this->db->select('Stock,Price,UnitCost')
-    //         ->from('pricestock')->where('PSCode', $product)->where('PSLocation', $fromloc)->where('Price',$costPrice)
-    //         ->get()->row();
-    // }
+        return $this->db->select('Stock,Price,UnitCost')
+            ->from('pricestock')->where('PSCode', $product)->where('PSLocation', $fromloc)->where('Price',$costPrice)
+            ->get()->row();
+    }
 
     public function loadpricestockbyid($product, $location, $price, $pl)
         {
@@ -359,19 +359,16 @@ class StockTransfer_model extends CI_Model {
             //                     WHERE S.SerialNo = D.Serial AND D.IsSerial = 1 AND D.TrnsNo = '$grnNo' AND D.Location = '$location_from'");
 
              if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 0){
-                $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location_from,'SerialNo'=> $serial_noArr[$i]));
             }
 
             if($isSerialArr[$i]== 0 && $isEmiArr[$i] == 1){
-                $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=> $emi_noArr[$i]));
+                $this->db->update('	productimeistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location_from,'EmiNo'=> $emi_noArr[$i]));
             }
             if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 1){
-                $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                $this->db->update('productserialemistock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location_from,'SerialNo'=> $serial_noArr[$i]));
             }
             }
-        
-        
-        
         
         $this->db->insert('newstocktransferhed', $grnHed);
         $this->update_max_code('Stock Transfer Out');
@@ -424,56 +421,68 @@ class StockTransfer_model extends CI_Model {
     }
 
 
-     public function newsaveStockIn($location_to,$location_from,$canDate,$grnNo,$remark,$user) {
-        $this->db->trans_start();
-        $dattime = date("Y-m-d H:i:s");
-       $this->db->update('newstocktransferhed',array('TransIsInProcess'=>0,'TransInDate'=>$dattime,'TransInUser'=>$user,'TransInRemark'=>$remark),array('TrnsNo'=>$grnNo,'FromLocation'=>$location_from,'ToLocation'=>$location_to));
-        $query = $this->db->get_where('newstocktransferdtl',array('TrnsNo'=>$grnNo));
-        if ($query->num_rows() > 0) {
-            foreach ($query->result_array() as $row) {
-                $product_codeArr=$row['ProductCode'];
-                $qtyArr=$row['TransQty'];
-                $price_levelArr=$row['PriceLevel'];
-                $cost_priceArr=$row['CostPrice'];
-                $sell_priceArr=$row['SellingPrice'];
-                $serial_noArr=$row['Serial'];
-                $emi_noArr=$row['EmiNo'];
-                $freeQtyArr=0;
-                $isSerialArr=$row['IsSerial'];
-                $isEmiArr=$row['IsEmi'];
-                
-                //update stock trans dtl
-                 $this->db->update('newstocktransferdtl',array('DismissQty'=>$qtyArr),array('ProductCode'=> $product_codeArr,'TrnsNo'=>$serial_noArr,'FromLocation'=> $location_from,'ToLocation'=>$location_to));
-                 
-                //update to location serial stock 
-                $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode'=> $product_codeArr,'SerialNo'=>$serial_noArr,'Location'=>$location_to))->get();
-                if($ps->num_rows()>0){
-                    $isPro = $this->db->select('InvProductCode')->from('invoicedtl')->where(array('InvProductCode'=> $product_codeArr,'InvSerialNo'=>$serial_noArr,'InvLocation'=>$location_to))->get();
-                    // if($isPro->num_rows()==0){
-                    //     $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'SerialNo'=>$serial_noArr,'Location'=> $location_to));
-                    // }
-                }else{
-                    if($isSerialArr==1 &&  $isEmiArr == 0 ){
-                        $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr,'Location'=> $location_to,'SerialNo'=>$serial_noArr,'Quantity'=>1,'GrnNo'=>$grnNo));
-                    }else if($isSerialArr==0 &&  $isEmiArr == 1 ){
-                        $this->db->insert('productemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_to,'EmiNo'=>$isEmiArr,'Quantity'=>1,'GrnNo'=>$grnNo));
-                    }else if($isSerialArr==1 &&  $isEmiArr == 1 ){
-                        $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_to,'SerialNo'=>$serial_noArr,'Quantity'=>1,'GrnNo'=>$grnNo));
-                    }
-                }
-                
-                //update price stock
-               $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','$price_levelArr','$cost_priceArr','$sell_priceArr','$location_to')");
+    public function newsaveStockIn($location_to,$location_from,$canDate,$grnNo,$remark,$user) {
+    
+    {
+            // Start transaction
+            $this->db->trans_start();
 
-            //update product stock
-            $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
+            
+            $this->db->update('newstocktransferhed', ['TransIsInProcess' => 0,'TransInDate'=> $dattime,'TransInUser'=> $user,'TransInRemark'=> $remark], ['TrnsNo'=> $grnNo,'FromLocation'=> $location_from,'ToLocation'   => $location_to]);
+
+            // Step 2: Get joined header + detail rows
+            $this->db->select('h.TrnsNo, h.FromLocation, h.ToLocation,d.ProductCode, d.TransQty, d.PriceLevel, d.CostPrice, d.SellingPrice, d.Serial, d.EmiNo, d.IsSerial, d.IsEmi');
+            $this->db->from('newstocktransferhed h');
+            $this->db->join('newstocktransferdtl d', 'h.TrnsNo = d.TrnsNo', 'inner');
+            $this->db->where('h.TrnsNo', $grnNo);
+            $this->db->where('h.TransIsInProcess', 0);
+            $query = $this->db->get();
+
+            // Step 3: Process each product
+            if ($query->num_rows() > 0) {
+                foreach ($query->result_array() as $row) {
+                    $product_codeArr = $row['ProductCode'];
+                    $qtyArr          = $row['TransQty'];
+                    $price_levelArr  = $row['PriceLevel'];
+                    $cost_priceArr   = $row['CostPrice'];
+                    $sell_priceArr   = $row['SellingPrice'];
+                    $serial_noArr    = $row['Serial'];
+                    $emi_noArr       = $row['EmiNo'];
+                    $isSerialArr     = $row['IsSerial'];
+                    $isEmiArr        = $row['IsEmi'];
+                    $location_to     = $row['ToLocation'];
+
+                    // Update detail table dismiss qty
+                    $this->db->update('newstocktransferdtl', ['DismissQty' => $qtyArr], ['ProductCode' => $product_codeArr,'TrnsNo'=> $grnNo,'FromLocation'=> $location_from,'ToLocation'=> $location_to]);
+
+                    // Update stock tables
+                    if ($isSerialArr == 1 && $isEmiArr == 0) {
+                        // Serial only
+                        $this->db->update('productserialstock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location'=> $location_to,'SerialNo'=> $serial_noArr]);
+
+                    } elseif ($isSerialArr == 0 && $isEmiArr == 1) {
+                        // EMI only
+                        $this->db->update('productimeistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location'=> $location_to,'EmiNo'=> $emi_noArr]);
+
+                    } elseif ($isSerialArr == 1 && $isEmiArr == 1) {
+                        // Serial + EMI
+                        $this->db->update('productserialemistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location'=> $location_to,'SerialNo'=> $serial_noArr]);
+
+                    } else {
+                        // Normal stock update via stored procedure
+                        $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
+                    }
+
+                    // Optional: also update price and stock levels
+                    $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','$price_levelArr','$cost_priceArr','$sell_priceArr','$location_to')");
+                }
             }
+
+            // Step 4: Commit transaction
+            $this->db->trans_complete();
+            return $this->db->trans_status();
         }
-        
-//        $this->update_max_code('CancelGRN');
-        $this->db->trans_complete();
-       return $this->db->trans_status();
-    }
+     }
 
 
 
@@ -495,28 +504,28 @@ class StockTransfer_model extends CI_Model {
                 $emi_noArr=$row['EmiNo'];
                 $isEmiArr=$row['IsEmi'];
                 //update stock trans dtl
-                 $this->db->update('newstocktransferdtl',array('DismissQty'=>0),array('ProductCode'=> $product_codeArr,'TrnsNo'=>$serial_noArr,'FromLocation'=> $location_from,'ToLocation'=>$location_to));
+                 $this->db->update('newstocktransferdtl',array('DismissQty'=>0),array('ProductCode'=> $product_codeArr,'TrnsNo'=>$grnNo,'FromLocation'=> $location_from,'ToLocation'=>$location_to));
                  
                 //update to location serial stock 
-                $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode'=> $product_codeArr,'SerialNo'=>$serial_noArr,'Location'=>$location_from))->get();
-                if($ps->num_rows()>0){
-                    $isPro = $this->db->select('InvProductCode')->from('invoicedtl')->where(array('InvProductCode'=> $product_codeArr,'InvSerialNo'=>$serial_noArr,'InvLocation'=>$location_from))->get();
+                // $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode'=> $product_codeArr,'SerialNo'=>$serial_noArr,'Location'=>$location_from))->get();
+                // if($ps->num_rows()>0){
+                //     $isPro = $this->db->select('InvProductCode')->from('invoicedtl')->where(array('InvProductCode'=> $product_codeArr,'InvSerialNo'=>$serial_noArr,'InvLocation'=>$location_from))->get();
                     // if($isPro->num_rows()==0){
                     //     $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'SerialNo'=>$serial_noArr,'Location'=> $location_from));
                     // }
-                }else{
+                // }else{
                     // if($isSerialArr==1){
                     //     $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'SerialNo'=>$serial_noArr,'Quantity'=>1,'GrnNo'=>$grnNo));
                     // }
 
                     if($isSerialArr==1 &&  $isEmiArr == 0 ){
-                        $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'SerialNo'=>$serial_noArr,'Quantity'=>1,'GrnNo'=>$grnNo));
+                        $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'SerialNo'=>$serial_noArr,'Quantity'=>1));
                     }else if($isSerialArr==0 &&  $isEmiArr == 1 ){
-                        $this->db->insert('productemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'EmiNo'=>$isEmiArr,'Quantity'=>1,'GrnNo'=>$grnNo));
+                        $this->db->insert('productemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'EmiNo'=>$isEmiArr,'Quantity'=>1));
                     }else if($isSerialArr==1 &&  $isEmiArr == 1 ){
-                        $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'SerialNo'=>$serial_noArr,'Quantity'=>1,'GrnNo'=>$grnNo));
+                        $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr,'Location'=> $location_from,'SerialNo'=>$serial_noArr,'Quantity'=>1));
                     }
-                }
+                //}
                 
 
                 //update price stock

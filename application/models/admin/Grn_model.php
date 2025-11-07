@@ -182,9 +182,10 @@ class Grn_model extends CI_Model {
         $sendwholesales_priceArr = json_decode($post['sendwholesales_price']);
         $sendisemiNo_Arr = json_decode($_POST['sendisemiNo']);
         $sendemiNo_Arr = json_decode($_POST['sendemiNo']);
-        //var_dump($maxSerialQty);die;
+        // var_dump($sendemiNo_Arr);die;
         $location = $post['location'];
         $isRawMat =0;
+        $lastSerialNo = end($serial_noArr);
         //        $this->db->trans_begin();
         $this->db->trans_start();
         for ($i = 0; $i < count($product_codeArr); $i++) {
@@ -195,7 +196,7 @@ class Grn_model extends CI_Model {
                 'GRN_No' => $grnNo,
                 'GRN_PONo' => '',
                 'GRN_Date' => $post['grnDate'],
-                'GRN_LineNo' => $i,
+                'GRN_LineNo' => $i + 1,
                 'GRN_Product' => $product_codeArr[$i],
                 'GRN_UPC' => $upcArr[$i],
                 'GRN_UPCType' => $unitArr[$i],
@@ -214,16 +215,18 @@ class Grn_model extends CI_Model {
                 'GRN_DisPersantage' => $pro_discount_precentArr[$i],
                 'GRN_Amount' => $totalAmountArr[$i],
                 'GRN_NetAmount' => $total_netArr[$i],
-                'IsSerial' => $isSerialArr[$i],
+                'IsSerial' => isset($isSerialArr[$i]) && $isSerialArr[$i] != '' ? $isSerialArr[$i] : '0',
                 'SerialNo' => isset($serial_noArr[$i]) && $serial_noArr[$i] != '' ? $serial_noArr[$i] : '0',
                 'CostCode' => $sell_priceArr[$i],
                 'BranchCostPrice' => $branchCostArr[$i],
-                'WholesalesPrice' => $sendwholesales_priceArr[$i],
-                'IsEmiNo' => $sendisemiNo_Arr[$i],
-                'EmiNo' => $sendemiNo_Arr[$i]);
+                'WholesalesPrice' => isset($sendwholesales_priceArr[$i]) && $sendwholesales_priceArr[$i] != '' ? $sendwholesales_priceArr[$i] : '0',
+                'IsEmiNo' => isset($sendisemiNo_Arr[$i]) ? $sendisemiNo_Arr[$i] : 0,
+                'EmiNo' => isset($sendemiNo_Arr[$i]) ? $sendemiNo_Arr[$i] : 0,
+            );
                 $this->db->insert('goodsreceivenotedtl', $grnDtl);
-                
-                $isRawMat = $this->db->select('isRawMaterial')->from('productcondition')->where(array('ProductCode'=> $product_codeArr[$i]))->get()->row()->isRawMaterial;
+
+               
+                //$isRawMat = $this->db->select('isRawMaterial')->from('productcondition')->where(array('ProductCode'=> $product_codeArr[$i]))->get()->row()->isRawMaterial;
                 //echo var_dump($isRawMat);     
                 //update serial stock
             //   if( $isRawMat==0){
@@ -245,9 +248,7 @@ class Grn_model extends CI_Model {
                     else if($isSerialArr[$i]==0 && $sendisemiNo_Arr[$i] ==1){
                     //echo var_dump('$sendisemiNo_Arr[$i]' . '-' . $sendisemiNo_Arr[$i] . '-'. $product_codeArr[$i] . '-' .$location . '-' . $sendemiNo_Arr[$i] . '-' . $qtyArr[$i] . '-' . $grnNo);die;
                     $this->db->insert('productimeistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>$qtyArr[$i],'GrnNo'=>$grnNo));
-                    // echo $this->db->last_query();
-                    // print_r($this->db->error());
-                    // die;
+                    
                 }else if ($isSerialArr[$i]==1 && $sendisemiNo_Arr[$i] ==1){
                          //echo var_dump('$sendaerialisemiNo_Arr[$i]' . $sendisemiNo_Arr[$i]);die;
                          $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=>$serial_noArr[$i],'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>$qtyArr[$i],'GrnNo'=>$grnNo));
@@ -307,9 +308,10 @@ class Grn_model extends CI_Model {
          }
         $this->db->insert('creditgrndetails', $grnCredit);
         $this->db->insert('goodsreceivenotehed', $grnHed);
+       
         $this->update_max_code('Goods Received Note');
-        if (!empty($maxSerialQty)) {
-        $this->db->update('codegenerate',array('AutoNumber'=>($maxSerialQty)),array('FormName'=>('AutoSerial')));
+        if (!empty($lastSerialNo)) {
+        $this->db->update('codegenerate',array('AutoNumber'=>($lastSerialNo)),array('FormName'=>('AutoSerial')));
         }
         $this->db->trans_complete();
        return $this->db->trans_status();
