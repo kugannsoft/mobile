@@ -306,8 +306,9 @@ class StockTransfer_model extends CI_Model {
         $sell_priceArr = json_decode($_POST['unit_price']);
         $cost_priceArr = json_decode($_POST['cost_price']);
         $upcArr = json_decode($_POST['upc']);
-        //$price_levelArr = json_decode($post['price_level']);
-        $price_levelArr = 1;
+        $price_levelArr = json_decode($_POST['price_level']);
+        // $price_levelArr = 1;
+        //  echo var_dump($price_levelArr );die;
         $totalAmountArr = json_decode($_POST['total_net']);
         $isSerialArr = json_decode($_POST['isSerial']);
 
@@ -339,7 +340,7 @@ class StockTransfer_model extends CI_Model {
                     'TransQty' => $qtyArr[$i],
                     'DismissQty' => 0,
                     'CostPrice' => $cost_priceArr[$i],
-                    'PriceLevel' => 1,
+                    'PriceLevel' => $price_levelArr[$i],
                     'SellingPrice' => $sell_priceArr[$i],
                     'TransAmount' => $totalAmountArr[$i],
                     'IsSerial' => $isSerialArr[$i],
@@ -352,6 +353,7 @@ class StockTransfer_model extends CI_Model {
           
                 //update price and product stock
             $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sell_priceArr[$i]','$location_from','$serial_noArr[$i]',0,0,0)");
+             $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_from')");
              //update serial stock
             //  $this->db->query("UPDATE productserialstock AS S
             //                     INNER JOIN  newstocktransferdtl AS D ON S.ProductCode=D.ProductCode
@@ -468,10 +470,10 @@ class StockTransfer_model extends CI_Model {
                         // Serial + EMI
                         $this->db->update('productserialemistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location'=> $location_to,'SerialNo'=> $serial_noArr]);
 
-                    } else {
+                    }
                         // Normal stock update via stored procedure
                         $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
-                    }
+                    
 
                     // Optional: also update price and stock levels
                     $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','$price_levelArr','$cost_priceArr','$sell_priceArr','$location_to')");

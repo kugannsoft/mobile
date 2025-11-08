@@ -42,6 +42,13 @@ class Transer_model extends CI_Model {
                  ->like("productserialstock.SerialNo", $q ,'left')
                 ->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode')
                 ->get();
+        $query1 = $this->db->select('productserialemistock.SerialNo,productserialemistock.EmiNo')->from('product')
+                ->where('product.ProductCode', $product)
+                ->where('productserialemistock.Location', $location)
+                ->where('productserialemistock.Quantity', 1)
+                 ->like("productserialemistock.SerialNo", $q ,'left')
+                ->join('productserialemistock', 'productserialemistock.ProductCode = product.ProductCode')
+                ->get();
     
             if (($query2->num_rows()) > 0) {
                 foreach ($query2->result_array() as $row) {
@@ -51,7 +58,13 @@ class Transer_model extends CI_Model {
                 }
                 return json_encode($row_set);
             } else {
-                return NULL;
+                 foreach ($query1->result_array() as $row) {
+                    $new_row['label'] = htmlentities(stripslashes($row['SerialNo']));
+                    $new_row['value'] = htmlentities(stripslashes($row['SerialNo']));
+                    $new_row['emiNo'] = htmlentities(stripslashes($row['EmiNo']));
+                    $row_set[] = $new_row;
+                }
+                return json_encode($row_set);
             }
  
     }

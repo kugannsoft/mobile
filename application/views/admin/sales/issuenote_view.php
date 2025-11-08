@@ -52,7 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php } ?></div>
                 <?php } ?>
                 <?php if (in_array("SM42", $blockDelete) || $blockDelete == null) { ?>
-                    <div class="col-sm-2"><?php if ($invHed->InvIsCancel == 0) { ?>
+                    <div class="col-sm-2"><?php if ($invHed->InvIsCancel == 0 && $invHed->IsComplete == 0) { ?>
                         <button type="button"<?php echo $disabled; ?>id="btnCancel"
                         class="btn btn-danger btn-sm btn-block">Cancel</button><?php } ?>
                     </div>

@@ -185,7 +185,16 @@ class Grn_model extends CI_Model {
         // var_dump($sendemiNo_Arr);die;
         $location = $post['location'];
         $isRawMat =0;
-        $lastSerialNo = end($serial_noArr);
+
+        $lastSerialNo = null;
+        foreach (array_reverse($serial_noArr) as $val) {
+            if (!empty($val)) {
+                $lastSerialNo = $val;
+                break;
+            }
+        }
+       
+        //echo var_dump($lastSerialNo);die;
         //        $this->db->trans_begin();
         $this->db->trans_start();
         for ($i = 0; $i < count($product_codeArr); $i++) {

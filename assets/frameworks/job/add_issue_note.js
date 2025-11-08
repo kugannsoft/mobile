@@ -1354,12 +1354,13 @@ $("#productName").html('');
                         $("#serialNo").val('');
                         $("#emiNo").val('');
                         return false;
-                    } else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
-                        $.notify("Serial Number product not in  stock..", "warning");
-                        $("#serialNo").val('');
-                        $("#emiNo").val('');
-                        return false;
-                    }
+                    } 
+                    // else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
+                    //     $.notify("Serial Number product not in  stock..", "warning");
+                    //     $("#serialNo").val('');
+                    //     $("#emiNo").val('');
+                    //     return false;
+                    // }
                     else if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
 
                         if(isNewVat==1 || isTotalVat==1){
@@ -2697,7 +2698,8 @@ $("#productName").html('');
                         return {
                             label: item.label,
                             value: item.value,
-                            data: item
+                            data: item,
+                            emiNo:item.emiNo
                         }
                     }));
                 }
@@ -2706,8 +2708,10 @@ $("#productName").html('');
         autoFocus: true,
         minLength: 0,
         select: function(event, ui) {
-             serialNo = ui.item.value;
+            serialNo = ui.item.value;
+            emiNo = ui.item.emiNo;
             $('#serialNo').val(serialNo);
+            $('#emiNo').val(emiNo);
             $('#serialNoCheck').val(serialNo);
         }
     });

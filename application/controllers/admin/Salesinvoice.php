@@ -1546,7 +1546,10 @@ $arr[] =null;
             $costPriceArr = json_decode($_POST['costPrice']);
             $estLineNoArr = json_decode($_POST['estLineNo']);
             $serialArray = json_decode($_POST['serialArray']);
-
+            $emiArray = json_decode($_POST['emiArray']);
+            $isserialArray = json_decode($_POST['isserialArray']);
+            $isemiArray = json_decode($_POST['isemiArray']);
+            
             $EstJobType=0;
             if($_POST['estimateNo']!='' || $_POST['estimateNo']!=0){
                 $EstJobType = $this->db->select('EstJobType')->from('estimatehed')->where('EstCustomer', $_POST['cusCode'])->where('EstRegNo', $_POST['regNo'])->where('EstimateNo', $_POST['estimateNo'])->get()->row()->EstJobType;
@@ -1604,7 +1607,9 @@ $arr[] =null;
                         'JobDisValue' => $proDiscountArr[$i],
                         'JobDisPercentage' =>$disPrecentArr[$i],
                         'JobDiscountType' => $discountTypeArr[$i],
-                        'JobNetAmount' => $net_priceArr[$i],
+                        'EmiNo' => $emiArray[$i],
+                        'IsSerial' => $isserialArray[$i],
+                        'IsEmi' => $isemiArray[$i],
                         'JobinvoiceTimestamp' => $estTimestmp
                         );
                      $this->db->insert('jobinvoicedtl',$jobDtl);
@@ -2569,41 +2574,125 @@ $arr[] =null;
             if ($isPay > 0) {
                 echo 2;
             } else {
-                //check invoice already cancel or not
-                $query0 = $this->db->get_where('jobinvoicehed', array('JobInvNo' => $invCanel['JobInvoiceNo'], 'IsCancel' => 0));
+
+                $query0 = $this->db->select('JobCardNo')
+                    ->from('jobinvoicehed')
+                    ->where('JobInvNo', $jobInvNo)
+                    ->where('IsCancel', 0)
+                    ->get();
 
                 if ($query0->num_rows() > 0) {
-                    $query = $this->db->get_where('jobinvoicedtl', array('JobInvNo' => $invCanel['JobInvoiceNo']));
+                    $jobNo = $query0->row()->JobCardNo;
 
-                    if ($query->num_rows() > 0) {
-                        foreach ($query->result_array() as $row) {
-                            //update serial stock
-                            $jobtype = $row['JobType'];
-                            if ($jobtype == 2) {
-                                //    $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['JobCode'], 'SerialNo' => $row['InvSerialNo'], 'Location' => $row['InvLocation']))->get();
-                                // if ($ps->num_rows() > 0) {
-                                //     $isPro = $this->db->select('InvProductCode')->from('invoicedtl')->where(array('InvProductCode' => $row['InvProductCode'], 'InvSerialNo' => $row['InvSerialNo'], 'InvLocation' => $row['InvLocation']))->get();
-                                //     if ($isPro->num_rows() == 0) {
-                                //         $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['InvProductCode'], 'SerialNo' => $row['InvSerialNo']));
-                                //     }
-                                // } else {
+                    $this->db->where('JobCardNo', $jobNo);
+                    $this->db->update('jobcardhed', ['IsCancel' => 1]);
 
-                                // }
-                                $proCode = $row['JobCode'];
-                                $totalGrnQty = $row['JobQty'];
-                                $loc = $_SESSION['location'];
-                                $pl = 1;
-                                $costp = $row['JobCost'];
-                                $selp = $row['JobPrice'];
+                    $this->db->where('SalesPONumber', $jobNo);
+                    $this->db->update('issuenote_hed', ['InvIsCancel' => 1]);
 
-                                //update price stock
-                                $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
+                    $this->db->where('SalesPONumber', $jobNo);
+                    $issueNoteQuery = $this->db->get('issuenote_hed');
 
-                                //update product stock
-                                $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')");
-                            }
+                    if ($issueNoteQuery->num_rows() > 0) {
+                        $issueNoteNo = $issueNoteQuery->row()->SalesInvNo;
+
+                        $query = $this->db->get_where('issuenote_dtl', [
+                            'SalesInvNo' => $issueNoteNo
+                        ]);
+
+                        if ($query->num_rows() > 0) {
+                             foreach ($query->result_array() as $row) {
+                                $isEmi = $row['IsEmi'];
+                                $isSerial = $row['IsSerial'];
+                                $emi_noArr = $row['EmiNo'];
+                                $serial_noArr = $row['SalesSerialNo'];
+                                $product_codeArr = $row['SalesProductCode'];
+                                $location = $row['SalesInvLocation'];
+                                $totalQty = $row['SalesQty'] + $row['SalesFreeQty'];
+
+                                if ($isSerial == 1 && $isEmi == 0) {
+                                    $this->db->update('productserialstock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location' => $location,'SerialNo' => $serial_noArr]);
+                                }
+
+                                if ($isSerial == 0 && $isEmi == 1) {
+                                    $this->db->update('productimeistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location' => $location,'EmiNo' => $emi_noArr]);
+                                }
+
+                                if ($isSerial == 1 && $isEmi == 1) {
+                                    $this->db->update('productserialemistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location' => $location,'SerialNo' => $serial_noArr]);
+                                }
+
+                                $proCode = $row['SalesProductCode'];
+                                $pl = $row['SalesPriceLevel'];
+                                $costp = $row['SalesCostPrice'];
+                                $selp = $row['SalesUnitPrice'];
+                                $loc = $row['SalesInvLocation'];
+
+                                $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalQty','$pl','$costp','$selp','$loc')");
+                                $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalQty',0,'$loc')");
+                                // echo json_encode($row);die;
+                             }
                         }
+                        
                     }
+                    // $jobNoQuery = $query->row();
+                   
+                
+                //check invoice already cancel or not
+                //$query0 = $this->db->get_where('jobinvoicehed', array('JobInvNo' => $invCanel['JobInvoiceNo'], 'IsCancel' => 0));
+
+                // if ($query0->num_rows() > 0) {
+                //     $query = $this->db->get_where('jobinvoicedtl', array('JobInvNo' => $invCanel['JobInvoiceNo']));
+
+                //     if ($query->num_rows() > 0) {
+                //         foreach ($query->result_array() as $row) {
+                            
+                //             //update serial stock
+                //             $jobtype = $row['JobType'];
+
+                //             $isEmi = $row['IsEmi'];
+                //             $isSerial = $row['IsSerial'];
+                //             $emi_noArr = $row['EmiNo'];
+                //             $serial_noArr = $row['SalesSerialNo'];
+                //             $product_codeArr =  $row['JobCode'];
+                //             $location =  $row['JobLocation'];
+                //             if($isSerial== 1 && $isEmi == 0){
+                                 
+                //                 $this->db->update('productserialstock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                //             }
+
+                //             if($isSerial== 0 && $isEmi == 1){
+                //                 $this->db->update('	productimeistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'EmiNo'=> $emi_noArr));
+                //             }
+                //             if($isSerial== 1 && $isEmi == 1){
+                             
+                //                 $this->db->update('productserialemistock',array('Quantity'=>1),array('ProductCode'=> $product_codeArr,'Location'=> $location,'SerialNo'=> $serial_noArr));
+                //             }
+                //             if ($jobtype == 2) {
+                //                 //    $ps = $this->db->select('ProductCode')->from('productserialstock')->where(array('ProductCode' => $row['JobCode'], 'SerialNo' => $row['InvSerialNo'], 'Location' => $row['InvLocation']))->get();
+                //                 // if ($ps->num_rows() > 0) {
+                //                 //     $isPro = $this->db->select('InvProductCode')->from('invoicedtl')->where(array('InvProductCode' => $row['InvProductCode'], 'InvSerialNo' => $row['InvSerialNo'], 'InvLocation' => $row['InvLocation']))->get();
+                //                 //     if ($isPro->num_rows() == 0) {
+                //                 //         $this->db->update('productserialstock', array('Quantity' => 1), array('ProductCode' => $row['InvProductCode'], 'SerialNo' => $row['InvSerialNo']));
+                //                 //     }
+                //                 // } else {
+
+                //                 // }
+                //                 $proCode = $row['JobCode'];
+                //                 $totalGrnQty = $row['JobQty'];
+                //                 $loc = $_SESSION['location'];
+                //                 $pl = 1;
+                //                 $costp = $row['JobCost'];
+                //                 $selp = $row['JobPrice'];
+
+                //                 //update price stock
+                //                 $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
+
+                //                 //update product stock
+                //                 $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')");
+                //             }
+                //         }
+                //     }
 
                     //update/ cancel credit invoice
                     $query2 = $this->db->get_where('creditinvoicedetails', array('InvoiceNo' => $invCanel['JobInvoiceNo']));

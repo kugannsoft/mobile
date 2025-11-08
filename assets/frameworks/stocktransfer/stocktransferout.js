@@ -480,7 +480,8 @@ $(document).ready(function() {
                         return {
                             label: item.label,
                             value: item.value,
-                           data: item
+                            data: item,
+                            emiNo:item.emiNo
                         }
                     }));
                 }
@@ -490,7 +491,9 @@ $(document).ready(function() {
         minLength: 0,
         select: function(event, ui) {
             serialNo = ui.item.value;
+            emiNo = ui.item.emiNo;
             $('#serialNo').val(serialNo);
+            $('#emiNo').val(emiNo);
             $('#serialNoCheck').val(serialNo);
         }
     });
@@ -640,15 +643,16 @@ $(document).ready(function() {
                         $.notify("Serial Number already exists.", "warning");
                         $("#serialNo").val('');
                         return false;
-                    } else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
-                        $.notify("Serial Number product not in  stock..", "warning");
-                        $("#serialNo").val('');
-                        return false;
-                    }
+                    } 
+                    // else if (((StockserialNoArrIndex < 0 && is_serail == 1))) {
+                    //     $.notify("Serial Number product not in  stock..", "warning");
+                    //     $("#serialNo").val('');
+                    //     return false;
+                    // }
                     else if (((itemCodeArrIndex >= 0 && is_serail == 1) || (itemCodeArrIndex < 0 && is_serail == 1))) {
 
                         
-                         itemcode.push(itemCodeSellingPrice);
+                        itemcode.push(itemCodeSellingPrice);
                         serialnoarr.push(serialNo);
                     
                        
@@ -843,7 +847,7 @@ $(document).ready(function() {
             org_unit_price.push(($(this).attr('org_unit_price')));
           
             total_net.push(($(this).attr('totalNet')));
-            price_level.push($(this).attr("pL"));
+            price_level.push("1");
             unit_type.push($(this).attr("uc"));
             fee_qty.push($(this).attr("fQ"));
             cost_price.push(($(this).attr("cPrice")));
@@ -863,7 +867,6 @@ $(document).ready(function() {
         var sendUnit_price = JSON.stringify(unit_price);
         var sendOrgUnit_price = JSON.stringify(org_unit_price);
         var sendTotal_net = JSON.stringify(totalNet);
-        
         var sendPrice_level = JSON.stringify(price_level);
         var sendUnit_type = JSON.stringify(unit_type);
         var sendFree_qty = JSON.stringify(fee_qty);

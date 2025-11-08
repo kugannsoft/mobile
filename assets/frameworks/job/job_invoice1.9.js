@@ -1206,6 +1206,9 @@ $(document).ready(function() {
         var costPrice =[];
         var estLineNo=[];
         var serialArr=[];
+        var emiNoArr=[];
+        var isserialArr=[];
+        var isemiNoArr=[];
 
         $('#tbl_job tbody tr').each(function(rowIndex, element) {
             net_price.push($(this).attr('netprice'));
@@ -1231,6 +1234,9 @@ $(document).ready(function() {
             costPrice.push($(this).attr('cost_price'));
             estLineNo.push($(this).attr('estlineno'));
             serialArr.push($(this).attr('serial'));
+            emiNoArr.push($(this).attr('emiNo'));
+            isserialArr.push($(this).attr('isSerial'));
+            isemiNoArr.push($(this).attr('isEmi'));
         });
 
         var net_priceArr = JSON.stringify(net_price);
@@ -1256,6 +1262,9 @@ $(document).ready(function() {
         var costPriceArr = JSON.stringify(costPrice);
         var estLineNoArr = JSON.stringify(estLineNo);
         var serialArray = JSON.stringify(serialArr);
+        var emiArray = JSON.stringify(emiNoArr);
+        var isserialArray = JSON.stringify(isserialArr);
+        var isemiArray = JSON.stringify(isemiNoArr);
 
         var supNum = $("#supplemetNo").val();
         estimateNo = $("#estimateNo").val();
@@ -1327,8 +1336,9 @@ $(document).ready(function() {
                     disPercent:disPercentArr,discountType:disTypeArr,estPrice:estimatePriceArr,costPrice:costPriceArr,nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,
                     isTotalNbt:isTotalNbt,totalNet:totalNet,totalAmount:totalAmount,totalVat:finalVat,totalNbt:finalNbt,total_discount:total_discount,bankacc:bankacc,
                     bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,
-                    advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,ccAmount: ccAmountArr, ccRef: ccRefArr, ccType: ccTypeArr,
-                    ccName: ccNameArr,chequeNo:chequeNo,bank: bank,chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, chequeDate: chequeDate,pay_remark:pay_remark},
+                    advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,ccAmount: ccAmountArr, ccRef: ccRefArr, 
+                    ccType: ccTypeArr,ccName: ccNameArr,chequeNo:chequeNo,bank: bank,chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, 
+                    chequeDate: chequeDate,pay_remark:pay_remark,emiArray:emiArray,isserialArray:isserialArray,isemiArray:isemiArray},
                 success: function(data) {
                     var newdata = JSON.parse(data);
                     var fb = newdata.fb;
@@ -2320,7 +2330,29 @@ SupNumber = $("#supplemetNo").val();
                     totalProNBT += parseFloat(resultData.est_dtl[i].SalesNbtAmount);
                     totalNetAmount += parseFloat(resultData.est_dtl[i].SalesInvNetAmount);
                 // }
-                $("#tbl_job tbody").append("<tr serial='"+resultData.est_dtl[i].SalesSerialNo+"' estlineno='"+(i + 1)+"' cost_price='"+resultData.est_dtl[i].SalesCostPrice+"' est_price='"+resultData.est_dtl[i].SalesInvNetAmount+"' discount_type='0'  proDiscount='0' disPrecent='0'  totalPrice='"+resultData.est_dtl[i].SalesTotalAmount+"' isvat='"+resultData.est_dtl[i].SalesIsVat+"' isnbt='"+resultData.est_dtl[i].SalesIsNbt+"' nbtRatio='"+resultData.est_dtl[i].SalesNbtRatio+"' proVat='"+resultData.est_dtl[i].SalesVatAmount+"' proNbt='"+resultData.est_dtl[i].SalesNbtAmount+"'  job='" + resultData.est_dtl[i].SalesProductName + "' jobid='" + 2 + "' qty='" + resultData.est_dtl[i].SalesQty + "' jobOrder='" + resultData.est_dtl[i].EstJobOrder + "' netprice='" + resultData.est_dtl[i].SalesInvNetAmount + "'  sellprice='" + resultData.est_dtl[i].SalesUnitPrice + "'  isIns='" + resultData.est_dtl[i].EstIsInsurance + "' insurance='" + resultData.est_dtl[i].EstInsurance + "' work_id='" + resultData.est_dtl[i].SalesProductCode + "'  timestamp='" + resultData.est_dtl[i].SalesInvDate + "'>" +
+                $("#tbl_job tbody").append("<tr serial='"+resultData.est_dtl[i].SalesSerialNo+
+                    "' estlineno='"+(i + 1)+
+                    "' cost_price='"+resultData.est_dtl[i].SalesCostPrice+
+                    "' est_price='"+resultData.est_dtl[i].SalesInvNetAmount+
+                    "' discount_type='0'  proDiscount='0' disPrecent='0'  totalPrice='"+resultData.est_dtl[i].SalesTotalAmount+
+                    "' isvat='"+resultData.est_dtl[i].SalesIsVat+
+                    "' isnbt='"+resultData.est_dtl[i].SalesIsNbt+
+                    "' nbtRatio='"+resultData.est_dtl[i].SalesNbtRatio+
+                    "' proVat='"+resultData.est_dtl[i].SalesVatAmount+
+                    "' proNbt='"+resultData.est_dtl[i].SalesNbtAmount+
+                    "'  job='" + resultData.est_dtl[i].SalesProductName + 
+                    "' jobid='" + 2 + 
+                    "' qty='" + resultData.est_dtl[i].SalesQty + 
+                    "' jobOrder='" + resultData.est_dtl[i].EstJobOrder + 
+                    "' netprice='" + resultData.est_dtl[i].SalesInvNetAmount + 
+                    "'  sellprice='" + resultData.est_dtl[i].SalesUnitPrice + 
+                    "'  isIns='" + resultData.est_dtl[i].EstIsInsurance + 
+                    "' insurance='" + resultData.est_dtl[i].EstInsurance + 
+                    "' work_id='" + resultData.est_dtl[i].SalesProductCode + 
+                    "' emiNo='" + resultData.est_dtl[i].EmiNo + 
+                    "' isEmi='" + resultData.est_dtl[i].IsEmi + 
+                    "' isSerial='" + resultData.est_dtl[i].IsSerial + 
+                    "'  timestamp='" + resultData.est_dtl[i].SalesInvDate + "'>" +
                     "<td>" + (i + 1) + "</td>" +
                     "<td work_id='" + 2 + "'> STOCK PARTS </td>" +
                     "<td>" + resultData.est_dtl[i].SalesProductName + " </td>" +
@@ -2330,6 +2362,9 @@ SupNumber = $("#supplemetNo").val();
                     "<td  class=''>"+accounting.formatNumber(0)+"</td>" +
                     "<td class=''>" + accounting.formatNumber(resultData.est_dtl[i].SalesInvNetAmount) + "</td>" +
                     "<td class=''>" + accounting.formatNumber(resultData.est_dtl[i].SalesInvNetAmount) + "</td>" +
+                    "<td style='display:none'>" + resultData.est_dtl[i].EmiNo + "</td>" +
+                    "<td style='display:none'>" + resultData.est_dtl[i].IsEmi + "</td>" +
+                    "<td style='display:none'>" + resultData.est_dtl[i].IsSerial + "</td>" +
                     "<td>&nbsp;&nbsp;<i class='glyphicon glyphicon-edit edit btn btn-info btn-xs'></i>" +
                     // "&nbsp;<i class='remove btn btn-danger btn-xs glyphicon glyphicon-remove-circle'></i>" +
                     "</td>" +

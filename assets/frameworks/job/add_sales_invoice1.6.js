@@ -1492,12 +1492,12 @@ var vatSellingPrice = 0;
 
                 //         itemcode.push(itemCodeSellingPrice);
 
-                //console.log('Serial', serialNo, stockSerialnoArr);
-
+                
                 var serialNoArrIndex = $.inArray(serialNo, serialnoarr);
                 var StockserialNoArrIndex = $.inArray(serialNo, stockSerialnoArr);
                 var sellingPrice = parseFloat($("#sellingPrice").val()) || 0;
-
+                console.log('sellingPricesellingPrice',sellingPrice);
+                console.log('Serialsdfsfsdf', StockserialNoArrIndex);
                 
                 if (typeof serialPriceArr === "undefined") {
                     var serialPriceArr = [];
@@ -1526,18 +1526,25 @@ var vatSellingPrice = 0;
                         return false;
                     }
 
-                    if (StockserialNoArrIndex < 0) {
-                        $.notify("Serial Number product not in stock.", "warning");
-                        $("#serialNo").val('');
-                        return false;
-                    }
+                    // if (StockserialNoArrIndex < 0) {
+                    //     $.notify("Serial Number product not in stock.", "warning");
+                    //     $("#serialNo").val('');
+                    //     return false;
+                    // }
 
                   
                     serialPriceArr.push({ serial: serialNo, price: sellingPrice });
                 }
 
                 
+                
+
                 if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
+                    if (serialnoarr.includes(serialNo)) {
+                        $.notify("Serial Number already added.", "warning");
+                        $("#serialNo").val('');
+                        return false;
+                    }
                     totalNet2 = (sellingPrice * qty);
                     //console.log('totalNet2sellingPrice', totalNet2);
 
@@ -3424,7 +3431,8 @@ $("#compayto").autocomplete({
                         return {
                             label: item.label,
                             value: item.value,
-                           data: item
+                            data: item,
+                            emiNo:item.emiNo
                         }
                     }));
                 }
@@ -3434,7 +3442,9 @@ $("#compayto").autocomplete({
         minLength: 0,
         select: function(event, ui) {
             serialNo = ui.item.value;
+            emiNo = ui.item.emiNo;
             $('#serialNo').val(serialNo);
+            $('#emiNo').val(emiNo);
             $('#serialNoCheck').val(serialNo);
         }
     });
