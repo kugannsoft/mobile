@@ -133,7 +133,7 @@ $(document).ready(function() {
                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
                              SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,EmiNo);
                     }
 
                     $("#proStock").html('');
@@ -228,7 +228,7 @@ $(document).ready(function() {
                            loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.pricestock.Price, resultData.product.Prd_CostPrice,
                              SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,EmiNo);
                         }
 
                         $("#proStock").html('');

@@ -398,6 +398,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     var endFloat=0;
     var cashSale=0;
     function drawTable(data) {
+        console.log('data',data);
         startBalance = 0;
         endBalance=0;
         totalCashIn=0;
@@ -559,15 +560,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         
         row.append($("<td>" + rowData.JobInvDate + "</td>"));
         row.append($("<td>" + rowData.JobInvNo + "</td>"));
-        row.append($("<td>" + rowData.JRegNo + "</td>"));
+       
         row.append($("<td  align='left'>" + rowData.JobDescription + "</td>"));
         row.append($("<td class='net' align='right'>" + accounting.formatMoney(rowData.JobNetAmount) + "</td>"));
         row.append($("<td class='cash' align='right'>" + accounting.formatMoney(rowData.JobCashAmount) + "</td>"));
         row.append($("<td class='card' align='right'>" + accounting.formatMoney(rowData.JobCardAmount) + "</td>"));
         row.append($("<td class='cheque' align='right'>" + accounting.formatMoney(rowData.JobChequeAmount) + "</td>"));
         row.append($("<td class='bank' align='right'>" + accounting.formatMoney(rowData.JobBankAmount) + "</td>"));
-        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(0) + "</td>"));
-        row.append($("<td class='' align='right'>" + accounting.formatMoney(rowData.JobAdvance) + "</td>"));
+        
+        row.append($("<td class='oderadvance' align='right'>" + accounting.formatMoney(rowData.JobAdvance) + "</td>"));
         row.append($("<td class='credit' align='right'>" + accounting.formatMoney(rowData.JobCreditAmount) + "</td>"));
     }
 

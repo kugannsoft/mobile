@@ -66,8 +66,8 @@
                 <!--div class="col-sm-1"><a href="<?php echo base_url('admin/Salesinvoice/print_invoice_pdf/').base64_encode($invNo); ?>" target="blank_" class="btn btn-primary btn-sm">Pdf</a></div-->
                 <?php if (in_array("SM45", $blockEdit) || $blockEdit == null) { ?>
                 <div class="col-sm-1"><?php if($invHed->IsCancel==0){?>
-                    <a href="<?php echo base_url('admin/Salesinvoice/addSalesInvoice?action=2&id=') . base64_encode($invNo); ?>"
-                        target="blank_" class="btn btn-info btn-sm">Edit</a>
+                    <!-- <a href="<?php echo base_url('admin/Salesinvoice/addSalesInvoice?action=2&id=') . base64_encode($invNo); ?>"
+                        target="blank_" class="btn btn-info btn-sm">Edit</a> -->
                     <?php } ?>
                 </div>
                 <?php } ?>
