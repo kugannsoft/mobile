@@ -12,6 +12,7 @@ class Stocktransfer extends Admin_Controller {
         $this->load->model('admin/Customer_model');
         $this->load->model('admin/StockTransfer_model');
         $this->load->model('admin/Transer_model');
+        $this->load->model('admin/Stock_model');
         date_default_timezone_set("Asia/Colombo");
     }
 
@@ -51,10 +52,11 @@ class Stocktransfer extends Admin_Controller {
         $product = $_POST['proCode'];
         $fromloc = $_POST['fromloc'];
         $costPrice = $_POST['costPrice'];
+        $pl = $_POST['prlevel'];
      
         $arr['product'] = $this->StockTransfer_model->loadproductbypcode($product);
         $arr['productstock']  = $this->StockTransfer_model->loadproductstockbyid($product,$fromloc);
-         $arr['pricestock']  = $this->StockTransfer_model->loadproductstockbyprice($product,$fromloc,$costPrice);
+         $arr['pricestock']  = $this->StockTransfer_model->loadproductstockbyprice($product,$fromloc,$costPrice, $pl);
         $arr['serial'] = $this->StockTransfer_model->loadproductbyserialArrayByCode($product, $pl=1,$fromloc);
         echo json_encode($arr);
         die;

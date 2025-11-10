@@ -55,12 +55,18 @@ class StockTransfer_model extends CI_Model {
             ->get()->row();
     }
 
-    public function loadproductstockbyprice($product,$fromloc,$costPrice)
+    public function loadproductstockbyprice($product,$fromloc,$costPrice,$pl)
     {
-
-        return $this->db->select('Stock,Price,UnitCost')
+        if($pl ==1){
+             return $this->db->select('Stock,Price,UnitCost')
             ->from('pricestock')->where('PSCode', $product)->where('PSLocation', $fromloc)->where('Price',$costPrice)
             ->get()->row();
+        }else{
+             return $this->db->select('Stock,WholesalesPrice AS Price,UnitCost')
+            ->from('pricestock')->where('PSCode', $product)->where('PSLocation', $fromloc)->where('Price',$costPrice)
+            ->get()->row();
+        }
+       
     }
 
     public function loadpricestockbyid($product, $location, $price, $pl)
@@ -307,8 +313,9 @@ class StockTransfer_model extends CI_Model {
         $cost_priceArr = json_decode($_POST['cost_price']);
         $upcArr = json_decode($_POST['upc']);
         $price_levelArr = json_decode($_POST['price_level']);
+        $tofindSellPrice = json_decode($_POST['price_level'], true);
         // $price_levelArr = 1;
-        //  echo var_dump($price_levelArr );die;
+          //echo var_dump($tofindSellPrice );die;
         $totalAmountArr = json_decode($_POST['total_net']);
         $isSerialArr = json_decode($_POST['isSerial']);
 
@@ -350,10 +357,16 @@ class StockTransfer_model extends CI_Model {
                     
                 );
                 $this->db->insert('newstocktransferdtl', $grnDtl);
-          
+                if (!empty($tofindSellPrice) && $tofindSellPrice[0] == "2") {
+                    
+                    $this->Stock_model->updateStock($product_codeArr[$i], $location_from, -$qtyArr[$i], $sell_priceArr[$i]);
+                   
+                }else{
+                     $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','1','$cost_priceArr[$i]','$sell_priceArr[$i]','$location_from','$serial_noArr[$i]',0,0,0)");
+                    // $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_from')");
+                }
                 //update price and product stock
-            $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sell_priceArr[$i]','$location_from','$serial_noArr[$i]',0,0,0)");
-             $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_from')");
+           
              //update serial stock
             //  $this->db->query("UPDATE productserialstock AS S
             //                     INNER JOIN  newstocktransferdtl AS D ON S.ProductCode=D.ProductCode
@@ -426,6 +439,7 @@ class StockTransfer_model extends CI_Model {
     public function newsaveStockIn($location_to,$location_from,$canDate,$grnNo,$remark,$user) {
     
     {
+       
             // Start transaction
             $this->db->trans_start();
 
@@ -443,6 +457,7 @@ class StockTransfer_model extends CI_Model {
             // Step 3: Process each product
             if ($query->num_rows() > 0) {
                 foreach ($query->result_array() as $row) {
+                     
                     $product_codeArr = $row['ProductCode'];
                     $qtyArr          = $row['TransQty'];
                     $price_levelArr  = $row['PriceLevel'];
@@ -471,12 +486,15 @@ class StockTransfer_model extends CI_Model {
                         $this->db->update('productserialemistock', ['Quantity' => 1], ['ProductCode' => $product_codeArr,'Location'=> $location_to,'SerialNo'=> $serial_noArr]);
 
                     }
-                        // Normal stock update via stored procedure
-                        $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
-                    
 
-                    // Optional: also update price and stock levels
-                    $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','$price_levelArr','$cost_priceArr','$sell_priceArr','$location_to')");
+                    if($price_levelArr==1){
+                        // $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
+                        $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','1','$cost_priceArr','$sell_priceArr','$location_to')");
+                    }else{
+                        $this->Stock_model->updateStock($product_codeArr, $location_to, $qtyArr, $sell_priceArr);
+                    }
+                        
+                   
                 }
             }
 
@@ -531,10 +549,15 @@ class StockTransfer_model extends CI_Model {
                 
 
                 //update price stock
-               $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','$price_levelArr','$cost_priceArr','$sell_priceArr','$location_from')");
+                if($price_levelArr==1){
+                    $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','1','$cost_priceArr','$sell_priceArr','$location_from')");
+                }else{
+                     $this->Stock_model->updateStock($product_codeArr, $location_from, $qtyArr, $sell_priceArr);
+                }
+               
 
             //update product stock
-            $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_from')");
+            //$this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_from')");
             }
         }
         $this->db->insert('newstockcanceltranser', $invCanel);

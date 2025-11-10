@@ -515,29 +515,57 @@ $(document).ready(function() {
     $("#itemCode").autocomplete({
         source: function(request, response) {
             $price_level = $('#priceLevel').val();
-            $.ajax({
-                url: baseUrl+'/Salesinvoice/loadproductjson',
-                dataType: "json",
-                data: {
-                    q: request.term,
-                    type: 'getActiveProductCodes',
-                    sup: isSup,
-                    supcode: supcode,
-                    row_num: 1,
-                    action: "getActiveProductCodes",
-                    price_level: price_level,
-                    isGrn:0
-                },
-                success: function(data) {
-                    response($.map(data, function(item) {
-                        return {
-                            label: item.label,
-                            value: item.value,
-                            price: item.price
-                        }
-                    }));
-                }
-            });
+            
+            if( $price_level ==1){
+                 $.ajax({
+                    url: baseUrl+'/Salesinvoice/loadproductjson',
+                    dataType: "json",
+                    data: {
+                        q: request.term,
+                        type: 'getActiveProductCodes',
+                        sup: isSup,
+                        supcode: supcode,
+                        row_num: 1,
+                        action: "getActiveProductCodes",
+                        price_level: price_level,
+                        isGrn:0
+                    },
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                price: item.price
+                            }
+                        }));
+                    }
+                });
+            }else{
+                $.ajax({
+                    url: baseUrl+'/Salesinvoice/loadwholesalepriceproductjson',
+                    dataType: "json",
+                    data: {
+                        q: request.term,
+                        type: 'getActiveProductCodes',
+                        sup: isSup,
+                        supcode: supcode,
+                        row_num: 1,
+                        action: "getActiveProductCodes",
+                        price_level: price_level,
+                        isGrn:0
+                    },
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                price: item.price
+                            }
+                        }));
+                    }
+                });
+            }
+           
         },
         autoFocus: true,
         minLength: 0,

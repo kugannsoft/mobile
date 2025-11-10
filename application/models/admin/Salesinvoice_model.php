@@ -123,6 +123,8 @@ class Salesinvoice_model extends CI_Model {
         $upcArr = json_decode($post['upc']);
         $total_netArr = json_decode($post['total_net']);
         $price_levelArr = json_decode($post['price_level']);
+        $tofindSellPrice = json_decode($post['price_level'], true);
+        
         $totalAmountArr = json_decode($post['pro_total']);
         $isSerialArr = json_decode($post['isSerial']);
         $isVatArr = json_decode($_POST['isVat']);
@@ -170,7 +172,7 @@ class Salesinvoice_model extends CI_Model {
                     'SalesSerialNo' => $serial_noArr[$i],
                     'SalesProductName' => $proNameArr[$i],
                     'SalesQty' => $qtyArr[$i],
-                    'SalesPriceLevel' => 1,
+                    'SalesPriceLevel' => $price_levelArr[$i],
                     'SalesFreeQty' => $freeQtyArr[$i],
                     'SalesCostPrice' => $cost_priceArr[$i],
                     'SalesUnitPrice' => $sell_priceArr[$i],
@@ -199,9 +201,14 @@ class Salesinvoice_model extends CI_Model {
             }else{
                 $sellPrice=$sell_priceArr[$i];
             }
-            //update stock
-             $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','1','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
+            if (!empty($tofindSellPrice) && $tofindSellPrice[0] == "2") {
+                $this->Stock_model->updateStock($product_codeArr[$i], $location, -$qtyArr[$i], $sell_priceArr[$i]);
+            }else{
+                $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','1','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+            }
+
+           
             //update serial stock
             // if($serial_noArr[$i]!=''){
             //      $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
@@ -537,7 +544,7 @@ class Salesinvoice_model extends CI_Model {
                                 $selp = $row['SalesUnitPrice'];
 
                             //update price stock
-                           $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
+                           $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','1','$costp','$selp','$loc')");
 
                             //update product stock
                            $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')"); 
@@ -1102,6 +1109,7 @@ class Salesinvoice_model extends CI_Model {
         $upcArr = json_decode($post['upc']);
         $total_netArr = json_decode($post['total_net']);
         $price_levelArr = json_decode($post['price_level']);
+        $tofindSellPrice = json_decode($post['price_level'], true);
         $totalAmountArr = json_decode($post['pro_total']);
         $isSerialArr = json_decode($post['isSerial']);
         $isVatArr = json_decode($_POST['isVat']);
@@ -1171,9 +1179,15 @@ class Salesinvoice_model extends CI_Model {
             }else{
                 $sellPrice=$sell_priceArr[$i];
             }
-            //update stock
-            $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
+            if (!empty($tofindSellPrice) && $tofindSellPrice[0] == "2") {
+                $this->Stock_model->updateStock($product_codeArr[$i], $location, - $qtyArr[$i], $sell_priceArr[$i]);
+            }else{
+                 //update stock
+                $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','1','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+
+            }
+           
             //update serial stock
                 if($isSerialArr[$i]== 1 && $isEmiArr[$i] == 0){
                     $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));

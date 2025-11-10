@@ -1935,6 +1935,7 @@ var action=0;
         var warrantytypeArr = JSON.stringify(warrantytype);
         var emi_noArr = JSON.stringify(emi_no);
         var sendIsEmi = JSON.stringify(isEmi);
+     
 
         // var r = confirm("Do you want to save this invoice.?");
         // if (r == true) {

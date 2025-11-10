@@ -38,7 +38,7 @@ $(document).ready(function() {
                             }
                         });
                     } else{
-                    $.ajax({
+                        $.ajax({
                             url: baseUrl+'/Salesinvoice/loadwholesalepriceproductjson',
                             dataType: "json",
                             data: {
@@ -69,11 +69,11 @@ $(document).ready(function() {
             itemCode = ui.item.value;
             price = ui.item.price;
             let fromloc = $('#from').val();
-
+             let priceLevel = $('#priceLevel').val();
             $.ajax({
                 type: "post",
                 url: baseUrl+"/stocktransfer/getProductByIdforSTO",
-                data: {proCode: itemCode,fromloc:fromloc,costPrice:price},
+                data: {proCode: itemCode,fromloc:fromloc,costPrice:price,prlevel:priceLevel},
                 success: function(json) {
                     var resultData = JSON.parse(json);
 
@@ -847,7 +847,7 @@ $(document).ready(function() {
             org_unit_price.push(($(this).attr('org_unit_price')));
           
             total_net.push(($(this).attr('totalNet')));
-            price_level.push("1");
+            price_level.push($(this).attr("pL"));
             unit_type.push($(this).attr("uc"));
             fee_qty.push($(this).attr("fQ"));
             cost_price.push(($(this).attr("cPrice")));

@@ -9,6 +9,7 @@ class Job extends Admin_Controller {
         /* Load :: Common */
         $this->load->helper('number');
         $this->load->model('admin/Job_model');
+        $this->load->model('admin/Stock_model');
         date_default_timezone_set("Asia/Colombo");
         $title='';
         $titleno='';
@@ -1101,9 +1102,13 @@ class Job extends Admin_Controller {
                         $selp = $row['SalesUnitPrice'];
                         $loc = $row['SalesInvLocation'];
 
-                        
-                        $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalQty','$pl','$costp','$selp','$loc')");
-                        $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalQty',0,'$loc')");
+                        if($pl ==1){
+
+                            $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalQty','1','$costp','$selp','$loc')");
+                        }else{
+                             $this->Stock_model->updateStock($proCode, $loc, $row['SalesQty'], $selp);
+                        }
+                        //$this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalQty',0,'$loc')");
                     }
                 }
             }

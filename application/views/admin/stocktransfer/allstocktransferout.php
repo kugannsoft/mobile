@@ -128,7 +128,7 @@ id="invUser" value="<?php echo $_SESSION['user_id'] ?>">
             data: { trnsNo: trnsNo, invUser: invUser },
             success: function(response) {
                 $.notify("Stock In Successful!", "success");
-                 window.location.reload();
+                
             },
             error: function() {
                 $.notify("Error while processing Stock In.", "error");

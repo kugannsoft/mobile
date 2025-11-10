@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             value="<?php echo $company['NBT']; ?>">
                                         <input type="hidden" name="nbtRatioRate" id="nbtRatioRate"
                                             value="<?php echo $company['NBT_Ratio']; ?>">
-                                        <input type="hidden" name="priceLevel" id="priceLevel" value="1">
+                                        
                                     </div>
                                 </div>
 
