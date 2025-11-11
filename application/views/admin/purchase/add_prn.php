@@ -85,15 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <input type="hidden" tabindex="6"  min="0" step="200" name="additional" value="0" id="additional" class="form-control" />
                                     </div>
                                 </div> -->
-                                <div class="form-group">
-                                        <label class="col-sm-4 control-label">Price Level</label>  
-                                        <div class="col-sm-6">
-                                            <select tabindex="7" class="form-control" id="priceLevel"> 
-                                             <?php foreach ($plv as $pl) { ?>
-                                            <option value="<?php echo $pl->PL_No; ?>" <?php if ($pl->PL_No == 1) {echo 'selected';}?>><?php echo $pl->PriceLevel; ?></option>
-                                            <?php } ?></select>
-                                        </div>
-                                    </div> 
+                                
                             </form>
                         </div>
                         <div  class="col-md-3">

@@ -96,20 +96,21 @@ $(document).ready(function() {
 
     $("#advance_payment_no").autocomplete({
         source: function(request, response) {
+            let jobNo = $('#jobNo').val();
             $.ajax({
                 url: '../salesinvoice/loadadvancepaymentjson',
                 dataType: "json",
                 data: {
                     q: request.term,
-                    cusCode:cusCode,
-                    loc:loc
+                    jobNo:jobNo
                 },
                 success: function(data) {
                     response($.map(data, function(item) {
+                       
                         return {
-                            label: item.text,
-                            value: item.id,
-                            data: item
+                            
+                            value: item,
+                           
                         }
                     }));
                 }
@@ -118,31 +119,33 @@ $(document).ready(function() {
         autoFocus: true,
         minLength: 0,
         select: function(event, ui) {
-            advance_payment_no = ui.item.value;            
-            $("#advance_amount").val(0);
-            $("#madvance").html(0);
-            loadAdvanceData(advance_payment_no);
+            advance_amount = parseFloat(ui.item.value);   
+                  
+            $("#advance_amount").val(advance_amount);
+            $("#madvance").html(advance_amount);
+            addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
+            //loadAdvanceData(advance_payment_no);
         }
     });
 
-     function loadAdvanceData(pay_no){
-        $.ajax({
-            type: "POST",
-            url: "../Salesinvoice/getadvancepaymentbyid",
-            data: { payid: pay_no },
-            success: function(data) {
-                var resultData = JSON.parse(data);
+    //  function loadAdvanceData(pay_no){
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "../Salesinvoice/getadvancepaymentbyid",
+    //         data: { payid: pay_no },
+    //         success: function(data) {
+    //             var resultData = JSON.parse(data);
                 
-                if (resultData.advance){
-                    advance_amount = parseFloat(resultData.advance.TotalPayment);
-                    advance_payment_no = resultData.advance.CusPayNo;
-                    $("#advance_amount").val(advance_amount);
-                    $("#madvance").html(advance_amount);
-                    addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
-                }
-            }
-        });
-    }
+    //             if (resultData.advance){
+    //                 advance_amount = parseFloat(resultData.advance.TotalPayment);
+    //                 advance_payment_no = resultData.advance.CusPayNo;
+    //                 $("#advance_amount").val(advance_amount);
+    //                 $("#madvance").html(advance_amount);
+    //                 addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
+    //             }
+    //         }
+    //     });
+    // }
 
     $("#return_payment_no").autocomplete({
         source: function(request, response) {
@@ -1265,6 +1268,7 @@ $(document).ready(function() {
         var emiArray = JSON.stringify(emiNoArr);
         var isserialArray = JSON.stringify(isserialArr);
         var isemiArray = JSON.stringify(isemiNoArr);
+        var mchange =  $("#mchange").html()
 
         var supNum = $("#supplemetNo").val();
         estimateNo = $("#estimateNo").val();
@@ -1338,7 +1342,7 @@ $(document).ready(function() {
                     bank_amount:bank_amount,cashAmount:cashAmount,creditAmount:creditAmount,chequeAmount:chequeAmount,cardAmount:cardAmount,advance_amount:advance_amount,
                     advance_pay_no:advance_payment_no,return_payment_no:return_payment_no,return_amount:return_amount,ccAmount: ccAmountArr, ccRef: ccRefArr, 
                     ccType: ccTypeArr,ccName: ccNameArr,chequeNo:chequeNo,bank: bank,chequeReference: chequeReference, chequeRecivedDate: chequeReciveDate, 
-                    chequeDate: chequeDate,pay_remark:pay_remark,emiArray:emiArray,isserialArray:isserialArray,isemiArray:isemiArray},
+                    chequeDate: chequeDate,pay_remark:pay_remark,emiArray:emiArray,isserialArray:isserialArray,isemiArray:isemiArray,mchange: mchange},
                 success: function(data) {
                     var newdata = JSON.parse(data);
                     var fb = newdata.fb;
@@ -1466,7 +1470,8 @@ $("#btnSaveTemp").click(function() {
         var estimatePriceArr = JSON.stringify(estimatePrice);
         var costPriceArr = JSON.stringify(costPrice);
         var estLineNoArr = JSON.stringify(estLineNo);
-
+        var mchange =  $("#mchange").html();
+        
          var ccRef = new Array();
         var ccAmount = new Array();
         var ccType = new Array();
@@ -1532,8 +1537,14 @@ $("#btnSaveTemp").click(function() {
             $.ajax({
                 url: "../salesinvoice/saveTempInvoices",
                 type: "POST",
-                data: { action: action, InvoiceType:InvoiceType,remark:remark ,mileageout:mileageout,mileageoutUnit:mileageoutUnit, date: esdate, estimateNo: estimateNo,invoiceNo: tempInvoiceNo, remark: remark, estimateAmount: totalAmount, insCompany: insCompany, cusCode: cusCode, regNo: regNo, sup_no: supNum, jobNo: jobNo, job_type: job_type, estimate_type: estimate_type, net_price: net_priceArr, qty: qtyArr, sell_price: sell_priceArr, is_ins: is_insArr, insurance: insuranceArr, desc: descArr, job_id: job_idArr, job_order: job_orderArr, work_id: work_idArr,estLineNo:estLineNoArr,  timestamp: timestampArr,isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,totalPrice:totalPriceArr,proDiscount:proDiscountArr,disPercent:disPercentArr,discountType:disTypeArr,estPrice:estimatePriceArr,costPrice:costPriceArr,
-                nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalNet:totalNet,totalAmount:totalAmount,totalVat:finalVat,totalNbt:finalNbt,total_discount:total_discount},
+                data: { action: action, InvoiceType:InvoiceType,remark:remark ,mileageout:mileageout,mileageoutUnit:mileageoutUnit, date: esdate, estimateNo: estimateNo,
+                    invoiceNo: tempInvoiceNo, remark: remark, estimateAmount: totalAmount, insCompany: insCompany, cusCode: cusCode, regNo: regNo, sup_no: supNum, 
+                    jobNo: jobNo, job_type: job_type, estimate_type: estimate_type, net_price: net_priceArr, qty: qtyArr, sell_price: sell_priceArr, is_ins: is_insArr, 
+                    insurance: insuranceArr, desc: descArr, job_id: job_idArr, job_order: job_orderArr, work_id: work_idArr,estLineNo:estLineNoArr,  timestamp: timestampArr,
+                    isVat:isVatArr,isNbt:isNbtArr,nbtRatio:nbtRatioArr,proVat:proVatArr,proNbt:proNbtArr,totalPrice:totalPriceArr,proDiscount:proDiscountArr,
+                    disPercent:disPercentArr,discountType:disTypeArr,estPrice:estimatePriceArr,costPrice:costPriceArr,
+                nbtRatioRate: nbtRatioRate,isTotalVat:isTotalVat,isTotalNbt:isTotalNbt,totalNet:totalNet,totalAmount:totalAmount,totalVat:finalVat,totalNbt:finalNbt,
+                total_discount:total_discount,mchange: mchange},
                 success: function(data) {
                     var newdata = JSON.parse(data);
                     var fb = newdata.fb;

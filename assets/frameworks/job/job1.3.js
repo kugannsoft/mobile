@@ -97,37 +97,37 @@ $(document).ready(function() {
     var advance_amount=0;
     var loc = $("#invlocation").val();
 
-    $("#advance").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: '../salesinvoice/loadadvancepaymentjson',
-                dataType: "json",
-                data: {
-                    q: request.term,
-                    cusCode:cusCode,
-                    loc:loc
-                },
-                success: function(data) {
-                    response($.map(data, function(item) {
-                        return {
-                            label: item.text,
-                            value: item.id,
-                            data: item
-                        }
-                    }));
-                }
-            });
-        },
-        autoFocus: true,
-        minLength: 0,
-        select: function(event, ui) {
-            advance_payment_no = ui.item.value;            
-            $("#advance_amount").val(0);
-            $("#advanceno").val(0);
-            $("#lbladvanceno").html('');
-            loadAdvanceData(advance_payment_no);
-        }
-    });
+    // $("#advance").autocomplete({
+    //     source: function(request, response) {
+    //         $.ajax({
+    //             url: '../salesinvoice/loadadvancepaymentjson',
+    //             dataType: "json",
+    //             data: {
+    //                 q: request.term,
+    //                 cusCode:cusCode,
+    //                 loc:loc
+    //             },
+    //             success: function(data) {
+    //                 response($.map(data, function(item) {
+    //                     return {
+    //                         label: item.text,
+    //                         value: item.id,
+    //                         data: item
+    //                     }
+    //                 }));
+    //             }
+    //         });
+    //     },
+    //     autoFocus: true,
+    //     minLength: 0,
+    //     select: function(event, ui) {
+    //         advance_payment_no = ui.item.value;            
+    //         $("#advance_amount").val(0);
+    //         $("#advanceno").val(0);
+    //         $("#lbladvanceno").html('');
+    //         loadAdvanceData(advance_payment_no);
+    //     }
+    // });
 
  function loadAdvanceData(pay_no){
         $.ajax({
@@ -655,7 +655,7 @@ $(document).ready(function() {
                     var encode_url = "../payment/view_customer/"+(cusCode);
                     var advance_url ="../payment/cus_payment?cus="+(cusCode);
                     
-                    $("#addadvance").attr("href",advance_url);
+                    // $("#addadvance").attr("href",advance_url);
                     $("#customerName").html("<a href='"+encode_url+"'>"+resultData.cus_data.CusName+"</a>");
                     $("#customer,#cusCode").val(resultData.cus_data.CusCode);
                     $("#creditLimit").html(accounting.formatMoney(resultData.cus_data.CreditLimit));

@@ -1424,7 +1424,7 @@ $arr[] =null;
         $advancePayNo = $_POST['advance_pay_no'];
         $returnAmount = $_POST['return_amount'];
         $returnPayNo = $_POST['return_payment_no'];
-//        var_dump($returnAmount,$returnPayNo);die();
+     
         $companyAmount = 0;
         $customer = $_POST['cusCode'];
         // $returnPayNo = $_POST['return_payment_no'];
@@ -1442,6 +1442,17 @@ $arr[] =null;
         $chequeDate=date_create($chequeDate);
         $chequeDate = date_format($chequeDate,"Y-m-d");
         $bank = $_POST['bank'];
+        if($advanceAmount >0 ){
+            if($advanceAmount >$mchange){
+                $mchange = $_POST['mchange'];
+                
+            }else{
+                $mchange = 0;
+            }
+        }else{
+            $mchange = $_POST['mchange'];
+        }
+        
 
         $customer_payment = $cashAmount+$cardAmount+$chequeAmount+$advanceAmount+$bankAmount+$returnAmount;
 
@@ -1513,6 +1524,7 @@ $arr[] =null;
             $data['JobAdvance']=$advanceAmount;
             $data['JobComCus']=$compayto;
             $data['JobCommsion']=$com_amount;
+            $data['Blance']=$mchange;
             // $data['JobAdvance']=$_POST['mileageoutUnit'];
             // $data['JobAdvance']=$_POST['mileageoutUnit'];
             // JobComCus
@@ -1575,6 +1587,7 @@ $arr[] =null;
                 // }
                 $this->db->trans_start();
                 $this->db->insert('jobinvoicehed',$data);
+                
                 $estTimestmp = '';
                 for ($i = 0; $i < count($work_idArr); $i++) {
                     $totalCost+=($qtyArr[$i]*$costPriceArr[$i]);
@@ -1614,6 +1627,7 @@ $arr[] =null;
                         'JobinvoiceTimestamp' => $estTimestmp
                         );
                      $this->db->insert('jobinvoicedtl',$jobDtl);
+                     
                       if($job_idArr[$i]==2){
                         //$this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$work_idArr[$i]','$qtyArr[$i]','1','0','$sell_priceArr[$i]','$location','','0','0','0')");
                     }
@@ -1684,10 +1698,13 @@ $arr[] =null;
 
         // insert invoice payment
         if($advanceAmount>0){
+           
+            $mchange = str_replace(',', '', $mchange);
              $this->db->insert('jobinvoicepaydtl', $advancePay);
-
+            $this->db->update('jobcardhed',array('Advance' => $mchange),array('JobCardNo' => $data['JobCardNo']));
+            
              //release advance payment
-             $this->db->update('customerpaymentdtl',array('IsRelease'=>1),array('CusPayNo'=>$advancePayNo));
+             //$this->db->update('customerpaymentdtl',array('IsRelease'=>1),array('CusPayNo'=>$advancePayNo));
 
          }
 
@@ -2503,23 +2520,30 @@ $arr[] =null;
         $this->db->update('codegenerate',array('AutoNumber'=>($input+1)),array('FormName'=>($form)));
     }
 
+    // public function loadadvancepaymentjson() {
+    //     $query = $_GET['q'];
+    //     $customer = $_GET['cusCode'];
+    //     $location = $_GET['loc'];
+    //     $q = $this->db->select('customerpaymenthed.CusPayNo AS id, CONCAT(customerpaymenthed.CusPayNo," ",TotalPayment," ",Remark) AS text')
+    //         ->from('customerpaymenthed')
+    //         ->join('customerpaymentdtl','customerpaymentdtl.CusPayNo=customerpaymenthed.CusPayNo')
+    //         ->where('customerpaymenthed.Location',$location)
+    //         ->where('customerpaymenthed.CusCode',$customer)
+    //         ->where('customerpaymenthed.PaymentType',2)
+    //         ->where('customerpaymenthed.IsCancel',0)
+    //         ->where('customerpaymentdtl.IsRelease',0)
+    //         ->like('customerpaymenthed.CusPayNo', $query)
+    //         ->order_by('customerpaymenthed.CusPayNo','DESC')
+    //         ->get()->result();
+    //     echo json_encode($q);die;
+    // }
+
     public function loadadvancepaymentjson() {
         $query = $_GET['q'];
-        $customer = $_GET['cusCode'];
-        $location = $_GET['loc'];
-        $q = $this->db->select('customerpaymenthed.CusPayNo AS id, CONCAT(customerpaymenthed.CusPayNo," ",TotalPayment," ",Remark) AS text')
-            ->from('customerpaymenthed')
-            ->join('customerpaymentdtl','customerpaymentdtl.CusPayNo=customerpaymenthed.CusPayNo')
-            ->where('customerpaymenthed.Location',$location)
-            ->where('customerpaymenthed.CusCode',$customer)
-            ->where('customerpaymenthed.PaymentType',2)
-            ->where('customerpaymenthed.IsCancel',0)
-            ->where('customerpaymentdtl.IsRelease',0)
-            ->like('customerpaymenthed.CusPayNo', $query)
-            ->order_by('customerpaymenthed.CusPayNo','DESC')
-            ->get()->result();
-        echo json_encode($q);die;
-    }
+        $jobNo = $_GET['jobNo'];
+        $q = $this->db->select('Advance')->from('jobcardhed')->where('JobCardNo',$jobNo)->get()->row();
+         echo json_encode($q);die;
+     }
 
     public function getadvancepaymentbyid() {
         $id = $_POST['payid'];
@@ -3219,20 +3243,21 @@ $arr[] =null;
                             $totalGrnQty = $row['SalesQty'] +$row['SalesFreeQty'];
                             $loc = $row['SalesInvLocation'];
                             $pl = $row['SalesPriceLevel'];
+                           
                             $costp = $row['SalesCostPrice'];
                             $selp = $row['SalesUnitPrice'];
 
-                            if($pl == 2){
-                                 $this->Stock_model->updateStock($product_codeArr[$i], $location, $row['SalesQty'], $selp);
-                               
+                            if($pl == 1){
+                                 $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','1','$costp','$selp','$loc')");
+                                $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')"); 
                             }else{
                                  //update price stock
-                                $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','1','$costp','$selp','$loc')");
-
+                                $this->Stock_model->updateStock($proCode, $location, $row['SalesQty'], $selp);
+                                // echo var_dump($pl);die;
                                 //update product stock
                                 //$this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')");
                             }
-
+                             
                            
                             // }
                         }

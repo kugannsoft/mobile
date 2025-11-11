@@ -238,7 +238,8 @@ $(document).ready(function() {
     $("#itemCode").autocomplete({
         source: function(request, response) {
             $.ajax({
-                url: 'loadproductjson',
+                 url: 'loadproductjson',
+                
                 dataType: "json",
                 data: {
                     q: request.term,
@@ -256,7 +257,7 @@ $(document).ready(function() {
                         return {
                             label: item.label,
                             value: item.value,
-                            data: item
+                            price: item.price
                         }
                     }));
                 }
@@ -267,42 +268,99 @@ $(document).ready(function() {
         select: function(event, ui) {
 //            var names = (ui.item.label);
             itemCode = ui.item.value;
+            price = ui.item.price;
 //        alert(itemCode);
-            $.ajax({
+             $.ajax({
                 type: "post",
-                url: "../../admin/Product/getProductByIdforSTO",
-                data: {proCode: itemCode, prlevel: price_level, location: loc},
+                url: baseUrl+'/Product/getProductByIdforSTO',
+                data: {proCode: itemCode, prlevel: 1, location: loc,price:price},
                 success: function(json) {
                     var resultData = JSON.parse(json);
+//                    alert(resultData.serial);
                     if (resultData) {
-                        $.each(resultData.serial, function(key, value) {
-                            var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
-                            if (serialNoArrIndex1 < 0) {
-                                stockSerialnoArr.push(value);
-                            }
-                        });
+                        //  if(resultData.serial){
+                        //     $.each(resultData.serial, function(key, value) {
+                        //         var serialNoArrIndex1 = $.inArray(value, stockSerialnoArr);
 
-                        //loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod);
-                            loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
-                             resultData.serial.SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
+                        //         if (serialNoArrIndex1 < 0) {
+                        //             stockSerialnoArr.push(value);
+                        //         }
+                        //     });
+                        // }
+
+                        if (resultData.serial) {
+                            let SerialNoRaw = resultData.serial.SerialNo;
+
+                            if (Array.isArray(SerialNoRaw)) {
+                                // If it's an array, iterate and push
+                                SerialNoRaw.forEach(function(value) {
+                                    if ($.inArray(value, stockSerialnoArr) < 0) {
+                                        stockSerialnoArr.push(value);
+                                    }
+                                });
+                            } else if (SerialNoRaw) {
+                                // If it's a single value, push it directly
+                                if ($.inArray(SerialNoRaw, stockSerialnoArr) < 0) {
+                                    stockSerialnoArr.push(SerialNoRaw);
+                                }
+                            }
+                        }
+
+                         let SerialNoRaw = resultData.serial?.SerialNo ?? 0;
+                            let SerialNo = 0;
+
+                            if (SerialNoRaw) {
+                                if (Array.isArray(SerialNoRaw)) {
+                                    
+                                    SerialNo = 0;
+                                } else {
+                                  
+                                    SerialNo = SerialNoRaw;
+                                }
+                            }
+
+                            
+
+                        let EmiNo = resultData.serial?.EmiNo ?? 0;
+                            
+                       
+                  
+                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
+                             SerialNo, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
-                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.serial.EmiNo);
-//                    $("#modelBilling").modal('toggle');
-                        //loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, 0, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
-//                    $('html, body').animate({scrollTop: $('#cart-table-body').offset().top}, 'slow');
+                               resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,EmiNo);
+                    
+
+                    $("#proStock").html('');
+                    $("#priceStock").html('');
+
+                    if(resultData.price_stock){
+                     
+                        $("#proStock").html(resultData.productstock.Stock);
+                        $("#priceStock").html(resultData.price_stock.Stock);
+
+                     }else{
+                        $("#proStock").html(0);
+                        $("#priceStock").html('0');
+                     }
+
                     } else {
-                        $.notify("Product not found.", "danger");
+
+                        $.notify("Product not found.", "warning");
                         $("#itemCode").val('');
                         $("#itemCode").focus();
                         return false;
                     }
                 },
                 error: function() {
-                    alert('Error while request..');
-                }
+                    $.notify("Error while request.", "warning");
+                 }
             });
         }
     });
+
+
+    
 
 //load model
     // function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty) {
@@ -875,6 +933,10 @@ $("#serialNo").autocomplete({
 
         var r = confirm("Do you want to save this transaction.?");
         if (r == true) {
+            if(supcode ==''){
+                 $.notify("Please select a Supllier.", "warning");
+                return false;
+            }
             if ((rowCount - 1) == '0' || (rowCount - 1) == '') {
                 $.notify("Please add products.", "danger");
                 return false;
@@ -898,11 +960,11 @@ $("#serialNo").autocomplete({
                         var feedback = resultData['fb'];
                         var invNumber = resultData['InvNo'];
                         if (feedback != 1) {
-                            $.notify("Transaction not saved successfully..", "danger");
+                            $.notify("Purchase Return Failed..", "danger");
                             $("#saveItems").attr('disabled', false);
                             return false;
                         } else {
-                            $.notify("Transaction saved successfully..", "success");
+                            $.notify("Purchase Return saved successfully..", "success");
                             $("input[name=suppliercheck][value='1']").prop('checked', false);
 //                        $('#tbl_item tbody').html("");
                             $("#invoicenumber").val("");

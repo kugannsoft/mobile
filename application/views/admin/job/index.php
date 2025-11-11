@@ -209,12 +209,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <span class="input-group">
                                                 <input type="text" class="form-control" onfocus="this.select();"   name="advance" id="advance" placeholder="" value="0">
                                             </span>
-                                            <span class="input-group-btn">
+                                            <!-- <span class="input-group-btn">
                                                 <a href="#" target="_blank" id="addadvance" class="btn btn-primary" title="Add advance"><i class="fa fa-plus"></i></a>
                                             </span>
                                             <span class="input-group-btn">
                                                 <button class="btn btn-danger" id="removeadv" title="Remove advance"><i class="fa fa-close"></i></button>
-                                            </span>
+                                            </span> -->
                                             <input type="hidden" class="form-control" onfocus="this.select();"   name="advanceno" id="advanceno" placeholder="" value="0">
                                         </div>
                                         <span id="lbladvanceno"></span>

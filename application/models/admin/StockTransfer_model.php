@@ -490,6 +490,7 @@ class StockTransfer_model extends CI_Model {
                     if($price_levelArr==1){
                         // $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')");
                         $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$product_codeArr','$qtyArr','1','$cost_priceArr','$sell_priceArr','$location_to')");
+                         $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$product_codeArr','$qtyArr',0,'$location_to')"); 
                     }else{
                         $this->Stock_model->updateStock($product_codeArr, $location_to, $qtyArr, $sell_priceArr);
                     }
