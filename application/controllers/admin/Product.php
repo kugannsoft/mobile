@@ -66,7 +66,7 @@ class Product extends Admin_Controller {
         $this->data['product']    = $this->Product_model->loadproductbyid($productid);
         $this->data['productpl']  = $this->Product_model->loadpricelistbyid($productid);
         $this->data['productloc'] = $this->Product_model->loadproductlocationbyid($productid);
-        
+        $this->data['productStockpls']  = $this->Product_model->loadPriceStockPrice($productid);
         $this->data['brand'] = $this->db->select('*')->from('productbrand')->get()->result();
         $this->data['quality'] = $this->db->select('*')->from('productquality')->get()->result();
         $this->data['alldepartment']    = $this->Product_model->loaddepartment();
@@ -500,6 +500,63 @@ class Product extends Admin_Controller {
         $this->Product_model->update_data('productcondition', $productcondition, array('Productcode' => $productcode));
         echo 'success';
         die;
+    }
+
+      public function updateNewSellingPrice(){
+      
+        $proCode  = $this->input->post('productCode', true);  
+        $oldPrice = $this->input->post('old_price',   true);
+        $newPrice = $this->input->post('new_price',   true);
+        $newwholeprice = $this->input->post('newwholeprice',   true);
+        
+        
+        // if (!is_numeric($oldPrice) || !is_numeric($newPrice) || !is_numeric($newwholeprice)) {
+        //     echo json_encode(['status' => 'error', 'message' => 'Invalid price input.']);
+        //     exit;
+        // }
+
+       if($newPrice>0){
+            $this->db->where('PSCode', $proCode)
+                ->where('Price',  (float) $oldPrice)
+                ->set  ('Price',  (float) $newPrice)
+                ->update('pricestock');
+
+            $this->db->where('ProductCode',$proCode)
+                ->set('Prd_SetAPrice', (float) $newPrice)
+                ->update('product');
+
+        //    $this->db->where('ProductCode',$proCode)->where('PL_No',1)
+        //     ->set('ProductPrice', (float) $newPrice)
+        //     ->update('productprice');
+
+            $this->db->set('ProductPrice', (float) $newPrice)
+            ->where('ProductCode', $proCode)
+            ->where('PL_No', 1)
+            ->update('productprice');
+       }
+       
+       if($newwholeprice>0){
+        
+            $this->db->where('PSCode', $proCode)
+                ->where('Price',  (float) $oldPrice)
+                ->set  ('WholesalesPrice',  (float) $newwholeprice)
+                ->update('pricestock');
+
+            $this->db->set('ProductPrice', (float) $newwholeprice)
+            ->where('ProductCode', $proCode)
+            ->where('PL_No', 2)
+            ->update('productprice');
+       }
+         
+       
+       if ($this->db->affected_rows() === 1) {
+            echo json_encode(['status' => 'success', 'message' => 'Price updated successfully.']);
+        } else {
+            echo json_encode(['status' => 'warning', 'message' => 'No change made.']);
+        }
+
+        exit;
+
     }
 
 }

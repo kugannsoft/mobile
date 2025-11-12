@@ -127,6 +127,13 @@ class Product_model extends CI_Model {
         }
     }
 
+    public function loadPriceStockPrice($product){
+        return $this->db->select('Price')
+                    ->from('pricestock')
+                    ->where('PSCode', $product)
+                    ->get()->result();
+    }
+
     public function get_max_code($form) {
         $query = $this->db->select('*')->where('FormName', $form)->get('codegenerate');
         foreach ($query->result_array() as $row) {

@@ -397,6 +397,37 @@
                         <?php // print_r($productpl); ?>
                     </div>
                 </div>
+                <br/>
+                <div class="pricelevelChangearea">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="costprice" class="control-label">Select Selling Price Level</label>
+                                <select class="form-control"  name="pricestock" id="pricestock">
+                                    <option value="0">-Select Selling Price Level-</option>
+                                    <?php foreach ($productStockpls AS $productStockpl) { ?>
+                                        <option value="<?php echo $productStockpl->Price ?>"><?php echo $productStockpl->Price ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="averagecost" class="control-label">Replace Selling Price</label>
+                                <input type="text" class="form-control"  name="newpricestock" id="newpricestock"  value="">
+                            </div>
+
+                             <div class="form-group">
+                                <label for="averagecost" class="control-label">Replace Wholesale Price</label>
+                                <input type="text" class="form-control"  name="newwholeprice" id="newwholeprice"  value="">
+                            </div>
+                            <div class="form-group">
+                                <button type="button"  name="setStockprice" id="setStockprice">Change </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                   
+                </div>
 
                 <div class="form-group">
                     <label for="proDate" class="control-label"> <span class="required">*</span></label>
@@ -1262,5 +1293,41 @@
                 }
             });
         e.preventDefault();
+    });
+
+    $('#setStockprice').on('click', function () {
+        let productCode = $('#productCode').val();
+        let costprice = $('#costprice').val();
+        let oldPrice = $('#pricestock').val();
+            
+        let newPrice = $('#newpricestock').val();
+        let newwholeprice = $('#newwholeprice').val();
+        
+
+        if(newPrice !== ''){
+            if (costprice > newPrice) {
+                $.notify("Please Enter price level morethan costprice.","warning");
+                return;
+            }
+        }
+         
+
+        $.ajax({
+            url: "<?php echo base_url('admin/product/updatenewsellingprice/') ?>", 
+            type: "POST",
+            data: {
+                productCode: productCode,
+                old_price: oldPrice,
+                new_price: newPrice,
+                newwholeprice:newwholeprice
+            },
+            success: function (response) {
+                $.notify('Price updated successfully.',"success"); 
+                window.location.reload();
+            },
+            error: function () {
+                 $.notify('Something went wrong while updating the price.',"warning");
+            }
+        });
     });
 </script>

@@ -1884,7 +1884,7 @@ class Report_model extends CI_Model {
                             product.Prd_Description,
                             product.SubDepCode,
                             subdepartment.Description,
-                            product.Prd_CostPrice,
+                            pricestock.UnitCost AS Prd_CostPrice,
                             location.location,
                             pricestock.Stock,
                             pricestock.Price,
@@ -1929,7 +1929,7 @@ class Report_model extends CI_Model {
 
         $this->db->select('product.ProductCode,
                             product.Prd_Description,
-                            product.Prd_CostPrice AS Prd_CostPrice,
+                            pricestock.UnitCost AS Prd_CostPrice,
                             location.location,
                             productserialstock.Quantity,
                             productserialstock.SerialNo,
@@ -1937,6 +1937,7 @@ class Report_model extends CI_Model {
                             subdepartment.Description,
                             goodsreceivenotehed.GRN_DateORG');
         $this->db->from('product');
+        $this->db->join('pricestock', 'pricestock.PSCode  = product.ProductCode', 'Left');
         $this->db->join('productserialstock', 'productserialstock.ProductCode = product.ProductCode', 'Left');
         $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
         $this->db->join('location', 'location.location_id = productserialstock.Location', 'INNER');
@@ -2057,7 +2058,7 @@ class Report_model extends CI_Model {
 
         $this->db->select('product.ProductCode,
                             product.Prd_Description,
-                            product.Prd_CostPrice AS Prd_CostPrice,
+                             pricestock.UnitCost AS Prd_CostPrice,
                             location.location,
                             productimeistock.Quantity,
                             productimeistock.EmiNo,
@@ -2065,6 +2066,7 @@ class Report_model extends CI_Model {
                             subdepartment.Description,
                             goodsreceivenotehed.GRN_DateORG');
         $this->db->from('product');
+        $this->db->join('pricestock', 'pricestock.PSCode  = product.ProductCode', 'Left');
         $this->db->join('productimeistock', 'productimeistock.ProductCode = product.ProductCode', 'Left');
         $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
         $this->db->join('location', 'location.location_id = productimeistock.Location', 'INNER');
@@ -2185,7 +2187,7 @@ class Report_model extends CI_Model {
 
         $this->db->select('product.ProductCode,
                             product.Prd_Description,
-                            product.Prd_CostPrice AS Prd_CostPrice,
+                            pricestock.UnitCost AS Prd_CostPrice,
                             location.location,
                             productserialemistock.Quantity,
                             productserialemistock.SerialNo,
@@ -2194,6 +2196,7 @@ class Report_model extends CI_Model {
                             subdepartment.Description,
                             goodsreceivenotehed.GRN_DateORG');
         $this->db->from('product');
+        $this->db->join('pricestock', 'pricestock.PSCode  = product.ProductCode', 'Left');
         $this->db->join('productserialemistock', 'productserialemistock.ProductCode = product.ProductCode', 'Left');
         $this->db->join('subdepartment', 'subdepartment.SubDepCode = product.SubDepCode', 'INNER');
         $this->db->join('location', 'location.location_id = productserialemistock.Location', 'INNER');
