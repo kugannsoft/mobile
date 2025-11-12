@@ -392,6 +392,7 @@ class Grn extends Admin_Controller {
     public function check_emi_no(){
         $emiNo = $this->input->post('emiNo');
         
+        
         if (!$emiNo) {
             echo json_encode(['exists' => false]);
             return;
@@ -402,9 +403,9 @@ class Grn extends Admin_Controller {
                                 ->get('productserialemistock')
                                 ->num_rows() > 0;
 
-        $existsInSerial = $this->db->where('SerialNo', $emiNo)
+        $existsInSerial = $this->db->where('EmiNo', $emiNo)
                                 ->limit(1)
-                                ->get('productserialstock')
+                                ->get('productimeistock')
                                 ->num_rows() > 0;
 
         echo json_encode(['exists' => ($existsInEmi || $existsInSerial)]);die;

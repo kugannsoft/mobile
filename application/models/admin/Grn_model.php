@@ -233,7 +233,7 @@ class Grn_model extends CI_Model {
                 'EmiNo' => isset($sendemiNo_Arr[$i]) ? $sendemiNo_Arr[$i] : 0,
             );
                 $this->db->insert('goodsreceivenotedtl', $grnDtl);
-
+            
                
                 //$isRawMat = $this->db->select('isRawMaterial')->from('productcondition')->where(array('ProductCode'=> $product_codeArr[$i]))->get()->row()->isRawMaterial;
                 //echo var_dump($isRawMat);     
@@ -252,15 +252,15 @@ class Grn_model extends CI_Model {
                 }else{
                     if($isSerialArr[$i]==1 && $sendisemiNo_Arr[$i] ==0){
                          // var_dump('isSerialArr' . $isSerialArr[$i]);die;
-                        $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=>$serial_noArr[$i],'Quantity'=>$qtyArr[$i],'GrnNo'=>$grnNo));
+                        $this->db->insert('productserialstock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=>$serial_noArr[$i],'Quantity'=>1,'GrnNo'=>$grnNo));
                     }
                     else if($isSerialArr[$i]==0 && $sendisemiNo_Arr[$i] ==1){
                     //echo var_dump('$sendisemiNo_Arr[$i]' . '-' . $sendisemiNo_Arr[$i] . '-'. $product_codeArr[$i] . '-' .$location . '-' . $sendemiNo_Arr[$i] . '-' . $qtyArr[$i] . '-' . $grnNo);die;
-                    $this->db->insert('productimeistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>$qtyArr[$i],'GrnNo'=>$grnNo));
+                    $this->db->insert('productimeistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>1,'GrnNo'=>$grnNo));
                     
                 }else if ($isSerialArr[$i]==1 && $sendisemiNo_Arr[$i] ==1){
                          //echo var_dump('$sendaerialisemiNo_Arr[$i]' . $sendisemiNo_Arr[$i]);die;
-                         $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=>$serial_noArr[$i],'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>$qtyArr[$i],'GrnNo'=>$grnNo));
+                         $this->db->insert('productserialemistock', array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=>$serial_noArr[$i],'EmiNo'=>$sendemiNo_Arr[$i],'Quantity'=>1,'GrnNo'=>$grnNo));
                     }
                 }
             //   }
